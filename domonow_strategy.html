@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DomoNow – Dashboard de Implementación</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --domo:#820ad1;--domo-70:#a34dde;--domo-30:#ddb3f3;
+  --gold:#F7B500;
+  --bg:#f4f3fa;--surface:#fff;--surface2:#f0edf8;--surface3:#e8e3f5;
+  --border:#e0d9f5;--text:#16122a;--text-muted:#7c6fa0;
+  --shadow:0 2px 14px rgba(130,10,209,.07);
+  --shadow-md:0 6px 30px rgba(130,10,209,.13);
+  --radius:18px;
+  --green:#00b460;--blue:#0088cc;--orange:#e67e00;--red:#e03030;
+}
+[data-theme="dark"]{
+  --bg:#0d0a1a;--surface:#15102a;--surface2:#1e1838;--surface3:#261e46;
+  --border:#2d2448;--text:#ede9ff;--text-muted:#9287b8;
+  --shadow:0 2px 14px rgba(0,0,0,.4);--shadow-md:0 6px 30px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden}
+
+.sidebar{position:fixed;top:0;left:0;width:230px;height:100vh;background:linear-gradient(170deg,#5a0899 0%,#820ad1 55%,#a020d0 100%);display:flex;flex-direction:column;z-index:100;box-shadow:6px 0 30px rgba(130,10,209,.25)}
+.sidebar-logo{padding:26px 22px 20px;border-bottom:1px solid rgba(255,255,255,.12)}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.logo-text{font-size:19px;font-weight:800;color:#fff;letter-spacing:-.3px}.logo-text span{color:var(--gold)}
+.sidebar-greeting{padding:14px 20px 6px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px}
+.greeting-name{font-size:14px;font-weight:700;color:#fff;padding:0 20px 16px}
+.sidebar-date{padding:0 20px 14px;font-size:11px;color:rgba(255,255,255,.55);font-family:'JetBrains Mono',monospace}
+.sidebar-sep{height:1px;background:rgba(255,255,255,.1);margin:0 20px 10px}
+.sidebar-nav{flex:1;padding:6px 12px;display:flex;flex-direction:column;gap:3px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:10px;color:rgba(255,255,255,.7);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:1px solid transparent;user-select:none}
+.nav-item:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav-item.active{background:rgba(247,181,0,.18);border-color:rgba(247,181,0,.35);color:var(--gold);font-weight:700}
+.nav-strategy{background:rgba(255,255,255,.06);border:1px dashed rgba(255,255,255,.2)!important;margin-top:4px}
+.nav-strategy.active{background:rgba(247,181,0,.18)!important;border-color:rgba(247,181,0,.35)!important}
+.nav-icon{font-size:16px;width:22px;text-align:center}
+.sidebar-bottom{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1)}
+.sidebar-version{font-size:10px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace}
+
+.topbar{position:fixed;top:0;left:230px;right:0;height:62px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 26px;z-index:99;box-shadow:var(--shadow)}
+.topbar-title{font-size:15px;font-weight:700}
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.btn-icon{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:15px;color:var(--text-muted)}
+.btn-icon:hover{border-color:var(--domo);color:var(--domo)}
+.lang-sel{padding:5px 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--text);outline:none}
+.topbar-clock{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);padding:5px 12px;border-radius:9px}
+
+.main{margin-left:230px;padding-top:62px;min-height:100vh}
+.content{padding:26px}
+
+.connect-wrap{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 62px);padding:30px}
+.connect-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-md);padding:44px;max-width:580px;width:100%}
+.connect-icon{font-size:52px;margin-bottom:14px;text-align:center}
+.connect-title{font-size:22px;font-weight:800;text-align:center;margin-bottom:6px}
+.connect-sub{font-size:13px;color:var(--text-muted);text-align:center;line-height:1.6;margin-bottom:28px}
+
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px}
+.form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border .2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--domo);background:var(--surface)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-textarea{resize:vertical;min-height:70px}
+.form-hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+
+.btn-primary{padding:11px 22px;border-radius:10px;background:var(--domo);color:#fff;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-outline{padding:11px 22px;border-radius:10px;background:transparent;color:var(--domo);border:1.5px solid var(--domo);font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-outline:hover{background:var(--domo);color:#fff}
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-edit{padding:5px 11px;border-radius:7px;background:rgba(130,10,209,.08);color:var(--domo);border:1px solid rgba(130,10,209,.2);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-edit:hover{background:var(--domo);color:#fff}
+.btn-del{padding:5px 11px;border-radius:7px;background:rgba(220,50,50,.07);color:#e03030;border:1px solid rgba(220,50,50,.18);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-del:hover{background:#e03030;color:#fff}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:all .25s}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc)}
+.kpi-label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px}
+.kpi-value{font-size:30px;font-weight:800;line-height:1;margin-bottom:5px}
+.kpi-sub{font-size:11px;color:var(--text-muted)}
+.kpi-icon{position:absolute;right:16px;top:16px;width:38px;height:38px;border-radius:9px;background:var(--kbg);display:flex;align-items:center;justify-content:center;font-size:18px}
+
+.week-compare{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px}
+.wc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.wc-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.wc-title::before{content:'';width:4px;height:16px;border-radius:2px;background:var(--domo);display:block}
+.wc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.wc-item{background:var(--surface2);border-radius:12px;padding:14px 16px;border:1px solid var(--border)}
+.wc-mod{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.wc-cur{font-size:24px;font-weight:800;color:var(--domo)}
+.wc-prev{font-size:13px;color:var(--text-muted)}
+.wc-delta{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px}
+.wc-delta.up{background:rgba(0,180,100,.12);color:#00b460}
+.wc-delta.down{background:rgba(224,48,48,.1);color:#e03030}
+.wc-delta.eq{background:var(--surface3);color:var(--text-muted)}
+
+.phases-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.phase-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);transition:all .25s}
+.phase-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.phase-header{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.phase-dot{width:9px;height:9px;border-radius:50%}
+.phase-name{font-size:12px;font-weight:700;margin-left:7px}
+.phase-count{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.phase-body{padding:14px 16px}
+.phase-pct{font-size:22px;font-weight:800}
+.progress-track{width:100%;height:5px;border-radius:3px;background:var(--surface2);margin:7px 0;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.phase-days{font-size:11px;color:var(--text-muted)}
+
+.section-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;margin-bottom:14px}
+.section-title::before{content:'';width:4px;height:16px;border-radius:2px;background:var(--domo);display:block}
+
+.module-meters{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
+.mod-meter{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:16px 18px;box-shadow:var(--shadow)}
+.mm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mm-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
+.mm-icon{font-size:18px}
+.mm-pct{font-size:18px;font-weight:800}
+.mm-bar{flex:1;height:7px;border-radius:4px;background:var(--surface2);overflow:hidden}
+.mm-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.mm-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:6px}
+
+.charts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}
+.chart-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.chart-header{padding:16px 20px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.chart-header .section-title{margin-bottom:0}
+.chart-body{padding:14px 18px 18px;height:250px;position:relative}
+.chart-full{grid-column:1/-1}
+.chart-tall{height:340px}
+
+.table-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px}
+.table-topbar{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.table-search{padding:8px 13px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:12px;color:var(--text);outline:none;width:200px;transition:border .2s}
+.table-search:focus{border-color:var(--domo)}
+.filter-tabs{display:flex;gap:5px;flex-wrap:wrap}
+.filter-tab{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all .2s}
+.filter-tab:hover{border-color:var(--domo);color:var(--domo)}
+.filter-tab.active{background:var(--domo);color:#fff;border-color:var(--domo)}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:11px 14px;font-size:12px;border-bottom:1px solid var(--border);font-weight:500;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pill-impl{background:rgba(130,10,209,.1);color:#820ad1}
+.pill-pilot{background:rgba(247,181,0,.15);color:#b87e00}
+.pill-support{background:rgba(0,180,100,.1);color:#00a857}
+.pill-done{background:rgba(0,136,204,.1);color:#0088cc}
+.bar-cell{display:flex;align-items:center;gap:7px}
+.mini-bar{flex:1;height:5px;border-radius:3px;background:var(--surface2);overflow:hidden;min-width:40px}
+.mini-fill{height:100%;border-radius:3px}
+.pct-label{font-size:11px;font-weight:700;min-width:32px;text-align:right}
+.actions-cell{display:flex;gap:5px}
+.empty-state{padding:44px;text-align:center;color:var(--text-muted);font-size:13px}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px)}
+.modal{background:var(--surface);border-radius:var(--radius);box-shadow:0 24px 64px rgba(0,0,0,.3);width:100%;max-width:620px;max-height:92vh;overflow-y:auto;animation:mIn .3s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.95) translateY(18px)}to{opacity:1;transform:none}}
+.modal-header{padding:22px 26px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:2}
+.modal-title{font-size:15px;font-weight:800}
+.modal-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-muted);transition:all .2s}
+.modal-close:hover{border-color:var(--red);color:var(--red)}
+.modal-body{padding:22px 26px}
+.modal-footer{padding:14px 26px 22px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--surface)}
+
+.mod-section-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.mod-section-label::before{content:'';width:3px;height:13px;border-radius:2px;background:var(--domo);display:block}
+.mp-row{border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);margin-bottom:8px;overflow:hidden;transition:border .2s}
+.mp-row.mp-on{border-color:rgba(130,10,209,.35);background:rgba(130,10,209,.04)}
+.mp-top{display:grid;grid-template-columns:28px 1fr auto 40px;align-items:center;gap:10px;padding:11px 14px}
+.mp-icon{font-size:18px;text-align:center}
+.mp-info{min-width:0}
+.mp-name{font-size:13px;font-weight:700}
+.mp-meta-label{font-size:10px;color:var(--text-muted);margin-top:1px}
+.mp-num-wrap{display:flex;align-items:center;gap:8px}
+.mp-num-input{width:90px;padding:7px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--text);outline:none;text-align:center;transition:border .2s}
+.mp-num-input:focus{border-color:var(--domo)}
+.mp-num-input:disabled{opacity:.3;cursor:not-allowed}
+.mp-unit{font-size:10px;color:var(--text-muted);white-space:nowrap}
+.mp-pct-badge{min-width:52px;text-align:center;padding:5px 8px;border-radius:8px;font-size:13px;font-weight:800;background:var(--surface3);color:var(--text-muted);transition:all .3s}
+.mp-pct-badge.c-green{background:rgba(0,180,100,.12);color:#00a857}
+.mp-pct-badge.c-orange{background:rgba(230,126,0,.12);color:#b86000}
+.mp-pct-badge.c-purple{background:rgba(130,10,209,.12);color:#820ad1}
+.mp-toggle{display:flex;align-items:center;justify-content:center}
+.mp-toggle input{width:18px;height:18px;accent-color:var(--domo);cursor:pointer}
+.mp-bar-row{padding:0 14px 10px;display:flex;align-items:center;gap:10px}
+.mp-bar-track{flex:1;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
+.mp-bar-fill{height:100%;border-radius:3px;transition:width .4s ease}
+.mp-bar-label{font-size:10px;font-weight:700;min-width:80px;text-align:right;color:var(--text-muted)}
+.mp-meta-row{padding:0 14px 10px;font-size:10px;color:var(--text-muted);display:flex;justify-content:space-between}
+.mp-meta-val{font-weight:700;color:var(--domo)}
+
+.progress-global-card{background:linear-gradient(135deg,#5a0899 0%,#820ad1 55%,#a020d0 100%);border-radius:var(--radius);padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;gap:36px;flex-wrap:wrap;box-shadow:0 8px 36px rgba(130,10,209,.3);position:relative;overflow:hidden}
+.progress-global-card::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05)}
+.pg-left{flex:1;min-width:220px}
+.pg-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px}
+.pg-value{font-size:52px;font-weight:800;color:#fff;line-height:1;margin-bottom:4px}
+.pg-sub{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:14px}
+.pg-bar-wrap{display:flex;align-items:center;gap:12px}
+.pg-bar{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.2);overflow:hidden}
+.pg-fill{height:100%;border-radius:4px;background:var(--gold);transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.pg-pct{font-size:14px;font-weight:800;color:var(--gold);min-width:42px}
+.pg-stats{display:flex;flex-direction:column;gap:12px;min-width:160px}
+.pg-stat{background:rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;backdrop-filter:blur(4px)}
+.pg-stat-val{font-size:22px;font-weight:800;color:#fff;line-height:1}
+.pg-stat-label{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px}
+.pg-ring-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+.pg-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:800;color:#fff;text-align:center}
+
+.prop-progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;margin-bottom:24px}
+.pp-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:all .25s}
+.pp-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.pp-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.pp-name{font-size:14px;font-weight:800;line-height:1.2}
+.pp-city{font-size:11px;color:var(--text-muted);margin-top:2px}
+.pp-pct-big{font-size:28px;font-weight:800;text-align:right;line-height:1}
+.pp-body{padding:14px 18px}
+.pp-mod-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.pp-mod-row{display:grid;grid-template-columns:20px 1fr auto auto;align-items:center;gap:7px}
+.pp-mod-icon{font-size:13px;text-align:center}
+.pp-mod-name{font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-mod-num{font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.pp-mod-pct{font-size:11px;font-weight:800;min-width:36px;text-align:right}
+.pp-mod-bar-wrap{grid-column:1/5;height:4px;border-radius:2px;background:var(--surface2);overflow:hidden;margin-top:-3px}
+.pp-mod-fill{height:100%;border-radius:2px}
+.pp-overall-bar{width:100%;height:6px;border-radius:3px;background:var(--surface2);overflow:hidden;margin:8px 0 4px}
+.pp-overall-fill{height:100%;border-radius:3px}
+.pp-footer{padding:10px 18px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pp-days{font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+.pp-edit-btn{padding:4px 10px;border-radius:7px;background:rgba(130,10,209,.08);color:var(--domo);border:1px solid rgba(130,10,209,.2);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.pp-edit-btn:hover{background:var(--domo);color:#fff}
+
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.settings-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:22px 24px}
+.settings-card.full{grid-column:1/-1}
+.settings-section{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.settings-section::before{content:'';width:4px;height:14px;border-radius:2px;background:var(--domo);display:block}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:13px;font-weight:600}
+.setting-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.setting-input{padding:6px 11px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;width:120px}
+
+.toast-wrap{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:7px}
+.toast{padding:11px 18px;border-radius:11px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-md);font-size:12px;font-weight:600;animation:tIn .3s ease;max-width:300px}
+.toast-success{border-color:rgba(0,180,100,.35);background:rgba(0,180,100,.05);color:#00a857}
+.toast-error{border-color:rgba(220,50,50,.35);background:rgba(220,50,50,.05);color:#e03030}
+@keyframes tIn{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
+.fade-in{animation:fIn .4s ease}
+@keyframes fIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+/* ══════════════════════════════════
+   STRATEGY DASHBOARD — "ABISMO"
+══════════════════════════════════ */
+.strategy-header{background:linear-gradient(135deg,#0d0221 0%,#1a0438 40%,#2d0a5e 70%,#3d1276 100%);border-radius:var(--radius);padding:32px 36px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:0 12px 48px rgba(30,4,80,.45)}
+.strategy-header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.strategy-header::after{content:'ABISMO';position:absolute;right:-20px;top:50%;transform:translateY(-50%) rotate(90deg);font-family:'Syne',sans-serif;font-size:120px;font-weight:800;color:rgba(255,255,255,.025);letter-spacing:10px;white-space:nowrap;pointer-events:none}
+.sh-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px}
+.sh-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(247,181,0,.15);border:1px solid rgba(247,181,0,.3);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;margin-bottom:10px}
+.sh-title{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:8px}
+.sh-sub{font-size:13px;color:rgba(255,255,255,.55);max-width:500px;line-height:1.6}
+.sh-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sh-btn{padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff}
+.sh-btn:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
+.sh-btn.active-view{background:var(--gold);border-color:var(--gold);color:#0d0221}
+.sh-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sh-metric{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;backdrop-filter:blur(8px)}
+.sh-metric-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;line-height:1}
+.sh-metric-lbl{font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;text-transform:uppercase;letter-spacing:.6px}
+.sh-metric-sub{font-size:11px;font-weight:700;margin-top:4px}
+.sh-metric-sub.good{color:#00e57c}
+.sh-metric-sub.warn{color:#ffcc00}
+.sh-metric-sub.bad{color:#ff5f5f}
+
+/* Property selector for strategy */
+.strategy-prop-selector{display:flex;align-items:center;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.strategy-prop-selector .filter-tabs{flex:1}
+.prop-tab{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all .2s;white-space:nowrap}
+.prop-tab:hover{border-color:var(--domo);color:var(--domo)}
+.prop-tab.active{background:var(--domo);color:#fff;border-color:var(--domo)}
+.prop-tab-all{background:var(--surface2)}
+
+/* Abismo card per property */
+.abismo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px;margin-bottom:24px}
+.abismo-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:all .3s}
+.abismo-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.abismo-card-header{padding:16px 20px 14px;background:linear-gradient(135deg,rgba(13,2,33,.95) 0%,rgba(45,10,94,.95) 100%);position:relative;overflow:hidden}
+.abismo-card-header::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(247,181,0,.08)}
+.ach-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:2px}
+.ach-city{font-size:11px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:4px}
+.ach-phase-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;margin-top:6px}
+.ach-progress-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px;gap:10px}
+.ach-overall{display:flex;flex-direction:column;gap:4px;flex:1}
+.ach-overall-label{font-size:9px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.7px}
+.ach-overall-bar{width:100%;height:6px;border-radius:3px;background:rgba(255,255,255,.15);overflow:hidden}
+.ach-overall-fill{height:100%;border-radius:3px;transition:width 1.2s ease}
+.ach-pct{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;line-height:1}
+.ach-gap-badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800}
+.ach-gap-badge.critical{background:rgba(255,95,95,.2);color:#ff5f5f;border:1px solid rgba(255,95,95,.3)}
+.ach-gap-badge.warning{background:rgba(255,204,0,.2);color:#ffcc00;border:1px solid rgba(255,204,0,.3)}
+.ach-gap-badge.good{background:rgba(0,229,124,.2);color:#00e57c;border:1px solid rgba(0,229,124,.3)}
+
+/* Module gaps inside abismo card */
+.abismo-card-body{padding:16px 20px}
+.abismo-mod-title{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.abismo-mod-list{display:flex;flex-direction:column;gap:8px}
+.abismo-mod-row{display:grid;grid-template-columns:22px 1fr 80px 55px;align-items:center;gap:8px}
+.abismo-mod-icon{font-size:14px;text-align:center}
+.abismo-mod-bars{display:flex;flex-direction:column;gap:3px}
+.abismo-mod-name{font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abismo-bar-wrap{position:relative;height:6px;border-radius:3px;overflow:hidden;background:var(--surface3)}
+.abismo-bar-actual{position:absolute;left:0;top:0;height:100%;border-radius:3px;transition:width 1s ease}
+.abismo-bar-target{position:absolute;top:0;width:2px;height:100%;background:#fff;opacity:.5;transition:left 1s ease}
+.abismo-mod-nums{display:flex;flex-direction:column;gap:2px;align-items:flex-end}
+.abismo-mod-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--text)}
+.abismo-mod-target{font-size:9px;color:var(--text-muted)}
+.abismo-mod-pct-col{font-size:13px;font-weight:800;text-align:right}
+.inactive-mod{opacity:.4;font-size:11px;color:var(--text-muted);padding:6px 0;text-align:center;background:var(--surface2);border-radius:8px;margin-top:8px}
+
+/* Gap summary footer */
+.abismo-card-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2)}
+.abismo-gap-total{display:flex;flex-direction:column;gap:2px}
+.abismo-gap-total-label{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px}
+.abismo-gap-total-val{font-size:16px;font-weight:800}
+.abismo-gap-total-val.critical{color:#e03030}
+.abismo-gap-total-val.warning{color:#e67e00}
+.abismo-gap-total-val.good{color:#00b460}
+.abismo-action-btn{padding:6px 14px;border-radius:8px;background:rgba(130,10,209,.1);color:var(--domo);border:1px solid rgba(130,10,209,.25);font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s}
+.abismo-action-btn:hover{background:var(--domo);color:#fff}
+
+/* Abismo Overview — global view */
+.abismo-overview{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:24px;margin-bottom:24px}
+.abismo-heat-grid{display:grid;gap:1px;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-top:14px}
+.abismo-heat-header{display:grid;background:var(--surface2);font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;padding:8px 12px}
+.abismo-heat-row{display:grid;align-items:center;padding:9px 12px;transition:background .15s}
+.abismo-heat-row:hover{background:var(--surface2)}
+.heat-cell{font-size:11px;font-weight:700;text-align:center;padding:4px 6px;border-radius:6px;cursor:default}
+.heat-0{background:rgba(224,48,48,.15);color:#e03030}
+.heat-1{background:rgba(230,126,0,.15);color:#e67e00}
+.heat-2{background:rgba(247,181,0,.15);color:#b87e00}
+.heat-3{background:rgba(0,180,100,.12);color:#00b460}
+.heat-na{background:var(--surface3);color:var(--text-muted)}
+.heat-prop-name{font-size:12px;font-weight:700}
+.heat-prop-city{font-size:10px;color:var(--text-muted)}
+.heat-overall{font-size:13px;font-weight:800}
+
+/* Strategy view toggle */
+.strategy-view-tabs{display:flex;gap:8px;margin-bottom:20px;padding:4px;background:var(--surface2);border-radius:12px;width:fit-content;border:1px solid var(--border)}
+.svt-btn{padding:7px 18px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all .2s}
+.svt-btn.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.1);border:1px solid var(--border)}
+
+/* Legend */
+.abismo-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)}
+.legend-dot{width:10px;height:10px;border-radius:3px}
+
+@media(max-width:900px){.prop-progress-grid{grid-template-columns:1fr}.progress-global-card{flex-direction:column;gap:20px}.pg-ring-wrap{align-self:center}.wc-grid{grid-template-columns:1fr 1fr}.abismo-grid{grid-template-columns:1fr}.sh-metrics{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.topbar{left:0}.main{margin-left:0}.kpi-grid{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}.sh-metrics{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body data-theme="light">
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-wrap">
+      <div class="logo-icon">🏘️</div>
+      <span class="logo-text">Domo<span>Now</span></span>
+    </div>
+  </div>
+  <div class="sidebar-greeting" id="greetingLabel">Buenos días</div>
+  <div class="greeting-name" id="greetingText">Admin</div>
+  <div class="sidebar-date" id="sidebarDate"></div>
+  <div class="sidebar-sep"></div>
+  <nav class="sidebar-nav">
+    <div class="nav-item active" data-sec="dashboard" onclick="showSection('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</div>
+    <div class="nav-item" data-sec="properties" onclick="showSection('properties',this)"><span class="nav-icon">🏢</span> Propiedades</div>
+    <div class="nav-item" data-sec="modules" onclick="showSection('modules',this)"><span class="nav-icon">🧩</span> Módulos</div>
+    <div class="nav-item" data-sec="progress" onclick="showSection('progress',this)"><span class="nav-icon">🎯</span> Avances</div>
+    <div class="nav-item" data-sec="charts" onclick="showSection('charts',this)"><span class="nav-icon">📈</span> Gráficas</div>
+    <div class="nav-item" data-sec="settings" onclick="showSection('settings',this)"><span class="nav-icon">⚙️</span> Configuración</div>
+    <div class="sidebar-sep"></div>
+    <div class="nav-item nav-strategy" data-sec="strategy" onclick="showSection('strategy',this)"><span class="nav-icon">🧭</span> Estrategia — Abismo</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="sidebar-version">DomoNow v3.0 · 2025</div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div class="topbar-title" id="topbarTitle">Panel de <span style="color:var(--domo)">Implementación</span></div>
+  <div class="topbar-actions">
+    <div class="topbar-clock" id="topbarClock">--:--:--</div>
+    <div class="btn-icon" onclick="toggleTheme()" id="themeBtn">🌙</div>
+    <div class="btn-icon" onclick="refreshData()" id="refreshBtn">↻</div>
+  </div>
+</header>
+
+<main class="main"><div class="content">
+
+<!-- CONNECT -->
+<div id="sec-connect">
+  <div class="connect-wrap">
+    <div class="connect-card fade-in">
+      <div class="connect-icon">🔗</div>
+      <div class="connect-title">Conectar con Supabase</div>
+      <div class="connect-sub">Ingresa las credenciales de tu proyecto para visualizar los datos en tiempo real.</div>
+      <div class="form-group"><label class="form-label">Project URL</label><input class="form-input" id="sbUrl" type="text" placeholder="https://xyzabc.supabase.co"/></div>
+      <div class="form-group"><label class="form-label">Anon Public Key</label><input class="form-input" id="sbKey" type="password" placeholder="eyJhbGciOiJIUzI1NiIs..."/></div>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn-primary" id="btnConnect" onclick="connectSupabase()" style="flex:1">Conectar →</button>
+        <button class="btn-outline" onclick="useDemoData()">🧪 Demo</button>
+      </div>
+      <div style="margin-top:18px;padding:14px;border-radius:10px;background:var(--surface2);font-size:11px;color:var(--text-muted);line-height:1.9">
+        <strong style="color:var(--text)">Tablas requeridas:</strong><br>
+        📋 <code>properties</code> — name, city, phase, days_elapsed, units, active_modules[], module_values (JSON), notes, entry_date<br>
+        🗓️ <code>activity_log</code> — property_id, module, count, week_start (DATE)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="sec-dashboard" style="display:none" class="fade-in">
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--kc:#820ad1;--kbg:rgba(130,10,209,.1)"><div class="kpi-icon">🏘️</div><div class="kpi-label">Total Propiedades</div><div class="kpi-value" id="kpiTotal">0</div><div class="kpi-sub">En plataforma</div></div>
+    <div class="kpi-card" style="--kc:#e67e00;--kbg:rgba(247,181,0,.12)"><div class="kpi-icon">⚙️</div><div class="kpi-label">En Implementación</div><div class="kpi-value" id="kpiImpl">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiImplDays">0</span> días</div></div>
+    <div class="kpi-card" style="--kc:#0088cc;--kbg:rgba(0,136,204,.1)"><div class="kpi-icon">🧪</div><div class="kpi-label">Piloto</div><div class="kpi-value" id="kpiPilot">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiPilotDays">0</span> días</div></div>
+    <div class="kpi-card" style="--kc:#00b460;--kbg:rgba(0,180,100,.1)"><div class="kpi-icon">🛡️</div><div class="kpi-label">Soporte Continuo</div><div class="kpi-value" id="kpiSupport">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiSupportDays">0</span> días</div></div>
+  </div>
+  <div class="week-compare">
+    <div class="wc-header"><div class="wc-title">Esta semana vs semana pasada</div><div style="font-size:11px;color:var(--text-muted)" id="wcDateRange"></div></div>
+    <div class="wc-grid" id="wcGrid"></div>
+  </div>
+  <div class="section-title">Progreso por Fase</div>
+  <div class="phases-grid" id="phasesGrid"></div>
+  <div class="charts-grid">
+    <div class="chart-card"><div class="chart-header"><div class="section-title">Propiedades por Fase</div></div><div class="chart-body"><canvas id="chartPhase"></canvas></div></div>
+    <div class="chart-card"><div class="chart-header"><div class="section-title">Adopción de Módulos</div></div><div class="chart-body"><canvas id="chartModules"></canvas></div></div>
+    <div class="chart-card chart-full"><div class="chart-header"><div class="section-title">Avance Real por Propiedad (%)</div></div><div class="chart-body chart-tall"><canvas id="chartProps"></canvas></div></div>
+  </div>
+</div>
+
+<!-- PROPERTIES -->
+<div id="sec-properties" style="display:none" class="fade-in">
+  <div class="table-card">
+    <div class="table-topbar">
+      <div class="section-title" style="margin-bottom:0">Propiedades</div>
+      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+        <input class="table-search" id="propSearch" placeholder="🔍 Buscar..." oninput="filterProperties()"/>
+        <div class="filter-tabs">
+          <div class="filter-tab active" onclick="setFilter('all',this)">Todas</div>
+          <div class="filter-tab" onclick="setFilter('implementation',this)">Implementación</div>
+          <div class="filter-tab" onclick="setFilter('pilot',this)">Piloto</div>
+          <div class="filter-tab" onclick="setFilter('support',this)">Soporte</div>
+          <div class="filter-tab" onclick="setFilter('done',this)">Completado</div>
+        </div>
+        <button class="btn-primary btn-sm" onclick="openAddModal()">+ Agregar</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Propiedad</th><th>Ciudad</th><th>Fase</th><th>Unidades</th><th>Módulos</th><th>Días</th><th>Avance</th><th>Acciones</th></tr></thead>
+        <tbody id="propsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODULES -->
+<div id="sec-modules" style="display:none" class="fade-in">
+  <div class="section-title">Métricas por Módulo</div>
+  <div class="module-meters" id="moduleMeterGrid"></div>
+  <div class="charts-grid">
+    <div class="chart-card chart-full"><div class="chart-header"><div class="section-title">% de Cumplimiento de Meta por Módulo (promedio todas las propiedades)</div></div><div class="chart-body" style="height:280px"><canvas id="chartModFull"></canvas></div></div>
+    <div class="chart-card chart-full"><div class="chart-header"><div class="section-title">Valores reales registrados por módulo y propiedad</div></div><div class="chart-body chart-tall"><canvas id="chartModPhase"></canvas></div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-topbar"><div class="section-title" style="margin-bottom:0">Resumen de módulos</div><div style="font-size:11px;color:var(--text-muted)" id="modTableUpdated"></div></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Módulo</th><th>Unidad</th><th>Meta (por propiedad)</th><th>Promedio actual</th><th>% Cumplimiento</th><th>Impl.</th><th>Piloto</th><th>Soporte</th><th>Completo</th></tr></thead>
+        <tbody id="modulesBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CHARTS -->
+<div id="sec-charts" style="display:none" class="fade-in">
+  <div class="charts-grid">
+    <div class="chart-card"><div class="chart-header"><div class="section-title">Distribución por Fase</div></div><div class="chart-body"><canvas id="chartPhase2"></canvas></div></div>
+    <div class="chart-card"><div class="chart-header"><div class="section-title">Radar de Cumplimiento de Módulos</div></div><div class="chart-body"><canvas id="chartRadar"></canvas></div></div>
+    <div class="chart-card chart-full"><div class="chart-header"><div class="section-title">Días en Fase por Propiedad</div></div><div class="chart-body chart-tall"><canvas id="chartDays"></canvas></div></div>
+    <div class="chart-card chart-full"><div class="chart-header"><div class="section-title">Avance Real Individual (%)</div></div><div class="chart-body chart-tall"><canvas id="chartProps2"></canvas></div></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div id="sec-progress" style="display:none" class="fade-in">
+  <div class="progress-global-card">
+    <div class="pg-left">
+      <div class="pg-label">Avance Ponderado Global</div>
+      <div class="pg-value" id="pgValue">0%</div>
+      <div class="pg-sub" id="pgSub">0 propiedades · 0 módulos activos</div>
+      <div class="pg-bar-wrap"><div class="pg-bar"><div class="pg-fill" id="pgFill" style="width:0%"></div></div><span class="pg-pct" id="pgPct">0%</span></div>
+    </div>
+    <div class="pg-stats" id="pgStats"></div>
+    <div class="pg-ring-wrap"><canvas id="pgRing" width="140" height="140"></canvas><div class="pg-ring-center" id="pgRingCenter">0%</div></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+    <div class="section-title" style="margin-bottom:0">Avance Individual por Propiedad</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div class="filter-tabs" id="progressFilterTabs">
+        <div class="filter-tab active" onclick="setPFilter('all',this)">Todas</div>
+        <div class="filter-tab" onclick="setPFilter('implementation',this)">Implementación</div>
+        <div class="filter-tab" onclick="setPFilter('pilot',this)">Piloto</div>
+        <div class="filter-tab" onclick="setPFilter('support',this)">Soporte</div>
+        <div class="filter-tab" onclick="setPFilter('done',this)">Completado</div>
+      </div>
+      <select class="lang-sel" id="progressSort" onchange="renderPropertyProgressCards()" style="font-size:12px">
+        <option value="pct_desc">Mayor avance</option>
+        <option value="pct_asc">Menor avance</option>
+        <option value="name">Nombre</option>
+        <option value="phase">Fase</option>
+      </select>
+    </div>
+  </div>
+  <div class="prop-progress-grid" id="propProgressGrid"></div>
+  <div class="chart-card">
+    <div class="chart-header"><div class="section-title">% Cumplimiento por Módulo — Todas las Propiedades</div></div>
+    <div class="chart-body" style="height:320px"><canvas id="chartModProgress"></canvas></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="sec-settings" style="display:none" class="fade-in">
+  <div class="settings-grid">
+    <div class="settings-card">
+      <div class="settings-section">General</div>
+      <div class="setting-row"><div><div class="setting-label">Tema</div></div><div class="btn-icon" onclick="toggleTheme()" id="themeBtn2" style="width:auto;padding:0 12px">🌙 Oscuro</div></div>
+      <div class="setting-row"><div><div class="setting-label">Auto-refresh (seg)</div><div class="setting-sub">Refresca automáticamente</div></div><input class="setting-input" type="number" id="setAutoRefresh" min="10" max="3600" value="60" style="width:80px" onchange="saveSettings()"/></div>
+      <div class="setting-row"><div><div class="setting-label">Tu nombre</div><div class="setting-sub">Aparece en el saludo</div></div><input class="setting-input" type="text" id="setUserName" placeholder="Admin" oninput="saveSettings();updateGreeting()"/></div>
+    </div>
+    <div class="settings-card">
+      <div class="settings-section">Metas de Módulos</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Base de cálculo: 80% de las unidades de cada propiedad</div>
+      <div id="targetSettings"></div>
+    </div>
+    <div class="settings-card full">
+      <div class="settings-section">Fechas de referencia semanal</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Inicio semana actual</label><input class="form-input" type="date" id="setCurWeekStart" onchange="saveSettings()"/></div>
+        <div class="form-group"><label class="form-label">Inicio semana anterior</label><input class="form-input" type="date" id="setPrevWeekStart" onchange="saveSettings()"/></div>
+      </div>
+      <button class="btn-primary btn-sm" onclick="autoSetDates()">Calcular automáticamente (último viernes)</button>
+    </div>
+    <div class="settings-card full">
+      <div class="settings-section">Conexión Supabase</div>
+      <div class="setting-row"><div><div class="setting-label">Project URL</div></div><div style="font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace" id="setShowUrl">No configurado</div></div>
+      <div class="setting-row"><div><div class="setting-label">Estado</div></div><div id="setConnStatus" style="font-size:12px;font-weight:600"></div></div>
+      <div style="margin-top:14px;display:flex;gap:10px">
+        <button class="btn-outline btn-sm" onclick="goConnect()">Reconfigurar</button>
+        <button class="btn-del btn-sm" onclick="disconnectSupabase()">Desconectar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ STRATEGY / ABISMO ══════════════════════════════ -->
+<div id="sec-strategy" style="display:none" class="fade-in">
+
+  <!-- Header -->
+  <div class="strategy-header">
+    <div class="sh-top">
+      <div>
+        <div class="sh-badge">🧭 Vista Estratégica · DomoNow</div>
+        <div class="sh-title">Dashboard de Abismo</div>
+        <div class="sh-sub">Distancia real entre el estado actual de cada propiedad y las metas predefinidas por módulo. Identifica brechas críticas y oportunidades de cierre.</div>
+      </div>
+      <div class="sh-controls">
+        <button class="sh-btn active-view" id="btnViewCards" onclick="setStrategyView('cards',this)">⬛ Por Propiedad</button>
+        <button class="sh-btn" id="btnViewHeat" onclick="setStrategyView('heat',this)">🌡️ Mapa de Calor</button>
+        <button class="sh-btn" id="btnViewChart" onclick="setStrategyView('chart',this)">📊 Gráficas</button>
+      </div>
+    </div>
+    <div class="sh-metrics" id="strategyGlobalMetrics"></div>
+  </div>
+
+  <!-- Property filter tabs -->
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:11px;font-weight:700;color:var(--text-muted);white-space:nowrap">FILTRAR:</span>
+      <div class="filter-tabs" id="strategyPhaseTabs">
+        <div class="filter-tab active" onclick="setStratPhase('all',this)">Todas</div>
+        <div class="filter-tab" onclick="setStratPhase('implementation',this)">Implementación</div>
+        <div class="filter-tab" onclick="setStratPhase('pilot',this)">Piloto</div>
+        <div class="filter-tab" onclick="setStratPhase('support',this)">Soporte</div>
+        <div class="filter-tab" onclick="setStratPhase('done',this)">Completado</div>
+      </div>
+    </div>
+    <div class="abismo-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#e03030"></div> Crítico &lt;50%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e67e00"></div> Alerta 50–79%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00b460"></div> Meta ≥80%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--surface3)"></div> Sin activar</div>
+    </div>
+  </div>
+
+  <!-- CARDS VIEW -->
+  <div id="stratViewCards">
+    <div class="abismo-grid" id="abismoGrid"></div>
+  </div>
+
+  <!-- HEAT MAP VIEW -->
+  <div id="stratViewHeat" style="display:none">
+    <div class="abismo-overview">
+      <div class="section-title">Mapa de Calor — % Cumplimiento por Módulo y Propiedad</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Cada celda muestra el % de cumplimiento de la meta. Gris = módulo no activo en esa propiedad.</div>
+      <div id="abismoHeatMap"></div>
+    </div>
+  </div>
+
+  <!-- CHART VIEW -->
+  <div id="stratViewChart" style="display:none">
+    <div class="charts-grid">
+      <div class="chart-card chart-full">
+        <div class="chart-header"><div class="section-title">Abismo por Propiedad — Avance vs Meta (100%)</div></div>
+        <div class="chart-body chart-tall"><canvas id="chartAbismoProps"></canvas></div>
+      </div>
+      <div class="chart-card chart-full">
+        <div class="chart-header"><div class="section-title">Cumplimiento por Módulo — Gap hacia la meta</div></div>
+        <div class="chart-body" style="height:320px"><canvas id="chartAbismoModules"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div class="section-title">Distribución de Avance Global</div></div>
+        <div class="chart-body"><canvas id="chartAbismoDist"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div class="section-title">Radar de Abismo — Módulos vs Meta</div></div>
+        <div class="chart-body"><canvas id="chartAbismoRadar"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- ══════════════════════════════ END STRATEGY ══════════════════════════════ -->
+
+</div></main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="propModal" style="display:none" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Agregar Propiedad</div>
+      <div class="modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editPropId"/>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Nombre *</label><input class="form-input" id="fName" placeholder="Ej: Conjunto Los Pinos"/></div>
+        <div class="form-group"><label class="form-label">Ciudad</label><input class="form-input" id="fCity" placeholder="Ej: Medellín"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Fase *</label>
+          <select class="form-select" id="fPhase">
+            <option value="implementation">En Implementación</option>
+            <option value="pilot">Piloto</option>
+            <option value="support">Soporte Continuo</option>
+            <option value="done">Completado</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Días en Fase</label><input class="form-input" id="fDays" type="number" min="0" value="0"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Total Unidades (apartamentos)</label>
+          <input class="form-input" id="fUnits" type="number" min="1" value="50" oninput="rebuildModuleChecks()"/>
+          <div class="form-hint">Las metas se calculan sobre el 80% de este número</div>
+        </div>
+        <div class="form-group"><label class="form-label">Fecha de Entrada</label><input class="form-input" id="fEntryDate" type="date"/></div>
+      </div>
+      <div class="form-group">
+        <div class="mod-section-label">Módulos activos — ingresa el valor real alcanzado</div>
+        <div id="modulesChecks"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notas</label><textarea class="form-textarea" id="fNotes" placeholder="Observaciones..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveProperty()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastContainer"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  MODULE DEFINITIONS
+// ══════════════════════════════════════════════════════
+const MODULES = [
+  {id:'acceso',label:'Acceso',icon:'🔑',unit:'aptos con acceso',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'muro',label:'Muro',icon:'💬',unit:'publicaciones/mes',metaLabel:u=>`Meta fija: 8 publicaciones al mes`,metaFn:u=>8},
+  {id:'alertas',label:'Alertas',icon:'🔔',unit:'alertas/mes',metaLabel:u=>`Meta: mínimo 2, ideal 5 alertas/mes`,metaFn:u=>2},
+  {id:'solicitudes',label:'Solicitudes',icon:'📋',unit:'aptos con solicitudes',metaLabel:u=>`Meta: ${Math.round(u*0.30)} aptos (30% de ${u})`,metaFn:u=>Math.round(u*0.30)},
+  {id:'zonas',label:'Zonas Comunes',icon:'⬜',unit:'reservas/mes',metaLabel:u=>`Meta: ${Math.round(u/6)} reservas (1/6 de ${u})`,metaFn:u=>Math.round(u/6)},
+  {id:'documentos',label:'Documentos',icon:'📄',unit:'aptos con acceso',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'financiero',label:'Financiero',icon:'💰',unit:'aptos activos',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'votaciones',label:'Votaciones',icon:'🗳️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)}
+];
+
+function calcMeta(mid,units){const m=MODULES.find(x=>x.id===mid);if(!m)return 0;return m.metaFn(units);}
+function calcPct(mid,value,units){const meta=calcMeta(mid,units);if(!meta||meta<=0)return 0;return Math.min(100,Math.round((value/meta)*100));}
+
+const PHASES={
+  implementation:{label:'En Implementación',color:'#820ad1',bg:'rgba(130,10,209,.1)',pill:'pill-impl'},
+  pilot:{label:'Piloto',color:'#e67e00',bg:'rgba(247,181,0,.12)',pill:'pill-pilot'},
+  support:{label:'Soporte Continuo',color:'#00b460',bg:'rgba(0,180,100,.1)',pill:'pill-support'},
+  done:{label:'Completado',color:'#0088cc',bg:'rgba(0,136,204,.1)',pill:'pill-done'}
+};
+
+// ══════ STATE ══════
+let sb=null,sbChannel=null,charts={};
+let activeFilter='all',searchQuery='',progressFilter='all';
+let strategyPhaseFilter='all',strategyView='cards';
+let theme=localStorage.getItem('dn_theme')||'light';
+let isConnected=false,autoRefreshTimer=null,currentSection='connect';
+let settings={autoRefresh:60,userName:'',curWeekStart:'',prevWeekStart:''};
+let state={properties:[],weekData:{current:{},previous:{}},lastUpdated:null};
+const $=id=>document.getElementById(id);
+
+// ══════ HELPERS ══════
+function getPropProgress(p){
+  const mods=p.modules||[];if(!mods.length)return 0;
+  const vals=p.module_values||{},units=p.units||50;
+  const sum=mods.reduce((s,mid)=>s+calcPct(mid,vals[mid]||0,units),0);
+  return Math.round(sum/mods.length);
+}
+function getGlobalProgress(){if(!state.properties.length)return 0;return Math.round(state.properties.reduce((s,p)=>s+getPropProgress(p),0)/state.properties.length);}
+function pctColor(pct){return pct>=80?'#00b460':pct>=50?'#e67e00':'#820ad1';}
+function pctBadgeClass(pct){return pct>=80?'c-green':pct>=50?'c-orange':'c-purple';}
+
+// ══════ DEMO DATA ══════
+function useDemoData(){
+  isConnected=true;
+  state.properties=[
+    {id:'1',name:'Torres del Parque',city:'Bogotá',phase:'implementation',days:45,units:120,modules:['acceso','muro','alertas'],module_values:{acceso:8,muro:5,alertas:3},notes:'Iniciando',entry_date:'2024-11-01'},
+    {id:'2',name:'Conjunto Los Andes',city:'Medellín',phase:'pilot',days:30,units:85,modules:['acceso','muro','solicitudes','zonas'],module_values:{acceso:7,muro:8,solicitudes:18,zonas:10},notes:'Piloto activo',entry_date:'2024-10-15'},
+    {id:'3',name:'Residencias Bolívar',city:'Cali',phase:'support',days:180,units:200,modules:['acceso','muro','alertas','solicitudes','zonas','documentos','financiero'],module_values:{acceso:16,muro:9,alertas:4,solicitudes:40,zonas:35,documentos:120,financiero:100},notes:'Consolidado',entry_date:'2024-05-01'},
+    {id:'4',name:'Park Reservado',city:'Barranquilla',phase:'done',days:365,units:60,modules:['acceso','muro','alertas','solicitudes','zonas','documentos','financiero','votaciones'],module_values:{acceso:5,muro:8,alertas:5,solicitudes:15,zonas:15,documentos:39,financiero:39,votaciones:39},notes:'Completo',entry_date:'2024-01-01'},
+    {id:'5',name:'Ciudad Verde',city:'Pereira',phase:'implementation',days:15,units:75,modules:['acceso'],module_values:{acceso:2},notes:'Inicio',entry_date:'2024-12-15'},
+    {id:'6',name:'Altos del Prado',city:'Bucaramanga',phase:'pilot',days:22,units:95,modules:['acceso','muro','alertas','solicitudes'],module_values:{acceso:6,muro:7,alertas:3,solicitudes:16},notes:'Buen avance',entry_date:'2024-12-01'}
+  ];
+  state.weekData={current:{alertas:4,solicitudes:28,muro:9,acceso:12},previous:{alertas:3,solicitudes:24,muro:7,acceso:10}};
+  goSection('dashboard');
+  showToast('🧪 Modo demo activo','success');
+}
+
+// ══════ NAVIGATION ══════
+function goSection(id){
+  document.querySelectorAll('[id^="sec-"]').forEach(s=>s.style.display='none');
+  $('sec-'+id).style.display='block';
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nav=document.querySelector(`.nav-item[data-sec="${id}"]`);
+  if(nav)nav.classList.add('active');
+  currentSection=id;
+  const titleEl=$('topbarTitle');
+  if(id==='strategy'){titleEl.innerHTML='Vista de <span style="color:var(--domo)">Estrategia — Abismo</span>';}
+  else{titleEl.innerHTML='Panel de <span style="color:var(--domo)">Implementación</span>';}
+  renderSection(id);
+}
+function showSection(id){if(!isConnected){showToast('Conecta primero o usa Demo','error');return;}goSection(id);}
+function goConnect(){document.querySelectorAll('[id^="sec-"]').forEach(s=>s.style.display='none');$('sec-connect').style.display='block';document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));currentSection='connect';}
+function renderSection(id){
+  if(id==='dashboard'){renderKPIs();renderWeekCompare();renderPhases();renderDashCharts();}
+  if(id==='properties')renderPropertiesTable();
+  if(id==='modules')renderModulesSection();
+  if(id==='progress')renderProgressSection();
+  if(id==='charts')renderChartsPage();
+  if(id==='settings')renderSettings();
+  if(id==='strategy')renderStrategySection();
+}
+
+// ══════ SUPABASE ══════
+async function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+
+async function connectSupabase(){
+  const url=$('sbUrl').value.trim(),key=$('sbKey').value.trim();
+  if(!url||!key){showToast('Ingresa URL y Key','error');return;}
+  const btn=$('btnConnect');btn.disabled=true;btn.textContent='⏳...';
+  try{
+    if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
+    sb=window.supabase.createClient(url,key);
+    const{error}=await sb.from('properties').select('id',{count:'exact',head:true});
+    if(error)throw error;
+    localStorage.setItem('dn_sb_url',url);localStorage.setItem('dn_sb_key',key);
+    isConnected=true;
+    showToast('✅ Conectado','success');
+    await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
+  }catch(e){showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Conectar →';}
+}
+
+async function fetchAllData(){
+  if(!sb)return;
+  try{
+    const{data:props,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
+    if(error)throw error;
+    state.properties=(props||[]).map(p=>({id:p.id,name:p.name||'',city:p.city||'',phase:p.phase||'implementation',days:p.days_elapsed||0,units:p.units||0,modules:Array.isArray(p.active_modules)?p.active_modules:[],module_values:(p.module_values&&typeof p.module_values==='object')?p.module_values:{},notes:p.notes||'',entry_date:p.entry_date||''}));
+    state.lastUpdated=new Date();
+    if(currentSection!=='connect')renderSection(currentSection);
+  }catch(e){showToast('Error al cargar datos','error');}
+}
+
+async function insertSupabase(prop){if(!sb)return;const{error}=await sb.from('properties').insert({name:prop.name,city:prop.city,phase:prop.phase,days_elapsed:prop.days,units:prop.units,active_modules:prop.modules,module_values:prop.module_values,notes:prop.notes,entry_date:new Date(prop.entry_date).toISOString()});if(error)showToast('Error: '+error.message,'error');}
+async function updateSupabase(id,prop){if(!sb)return;const{error}=await sb.from('properties').update({name:prop.name,city:prop.city,phase:prop.phase,days_elapsed:prop.days,units:prop.units,active_modules:prop.modules,module_values:prop.module_values,notes:prop.notes,entry_date:new Date(prop.entry_date).toISOString()}).eq('id',id);if(error)showToast('Error: '+error.message,'error');}
+async function deleteSupabase(id){if(!sb)return;const{error}=await sb.from('properties').delete().eq('id',id);if(error)showToast('Error: '+error.message,'error');}
+
+function startRealtime(){if(!sb)return;sbChannel=sb.channel('dn-rt').on('postgres_changes',{event:'*',schema:'public',table:'properties'},()=>fetchAllData()).subscribe();}
+function startAutoRefresh(){if(autoRefreshTimer)clearInterval(autoRefreshTimer);const sec=parseInt(settings.autoRefresh)||60;if(sb&&sec>0)autoRefreshTimer=setInterval(()=>fetchAllData(),sec*1000);}
+function disconnectSupabase(){if(sbChannel&&sb)sb.removeChannel(sbChannel);sb=null;isConnected=false;localStorage.removeItem('dn_sb_url');localStorage.removeItem('dn_sb_key');state.properties=[];goConnect();showToast('Desconectado','success');}
+
+// ══════ KPIs ══════
+function renderKPIs(){
+  const p=state.properties;
+  const byPhase=ph=>p.filter(x=>x.phase===ph);
+  const avg=ph=>{const a=byPhase(ph);return a.length?Math.round(a.reduce((s,x)=>s+(x.days||0),0)/a.length):0;};
+  $('kpiTotal').textContent=p.length;
+  $('kpiImpl').textContent=byPhase('implementation').length;$('kpiImplDays').textContent=avg('implementation');
+  $('kpiPilot').textContent=byPhase('pilot').length;$('kpiPilotDays').textContent=avg('pilot');
+  $('kpiSupport').textContent=byPhase('support').length;$('kpiSupportDays').textContent=avg('support');
+}
+
+function getLastFriday(offset=0){const d=new Date();const day=d.getDay();const diff=day>=5?day-5:day+2;d.setDate(d.getDate()-diff+offset);return d.toISOString().split('T')[0];}
+
+function renderWeekCompare(){
+  const cws=settings.curWeekStart||getLastFriday(-7),pws=settings.prevWeekStart||getLastFriday(-14);
+  $('wcDateRange').textContent='Actual: '+cws+' | Anterior: '+pws;
+  const sel=['alertas','solicitudes','muro','acceso'];
+  $('wcGrid').innerHTML=sel.map(mid=>{
+    const m=MODULES.find(x=>x.id===mid);
+    const cur=state.weekData.current[mid]||0,prev=state.weekData.previous[mid]||0;
+    const diff=cur-prev,pct=prev>0?Math.round((diff/prev)*100):0;
+    const cls=diff>0?'up':diff<0?'down':'eq',arrow=diff>0?'▲':diff<0?'▼':'—';
+    return `<div class="wc-item"><div class="wc-mod">${m.icon} ${m.label}</div><div style="display:flex;align-items:flex-end;gap:10px;margin-top:6px"><div class="wc-cur">${cur}</div><div class="wc-prev">Ant: ${prev}</div><div class="wc-delta ${cls}">${arrow} ${Math.abs(pct)}%</div></div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">${m.unit}</div></div>`;
+  }).join('');
+}
+
+function renderPhases(){
+  const total=state.properties.length||1;
+  $('phasesGrid').innerHTML=Object.entries(PHASES).map(([k,cfg])=>{
+    const cnt=state.properties.filter(p=>p.phase===k).length;
+    const pct=Math.round((cnt/total)*100);
+    const avg=cnt?Math.round(state.properties.filter(p=>p.phase===k).reduce((s,p)=>s+(p.days||0),0)/cnt):0;
+    return `<div class="phase-card"><div class="phase-header"><div style="display:flex;align-items:center"><div class="phase-dot" style="background:${cfg.color}"></div><div class="phase-name">${cfg.label}</div></div><div class="phase-count" style="background:${cfg.bg};color:${cfg.color}">${cnt}</div></div><div class="phase-body"><div class="phase-pct" style="color:${cfg.color}">${pct}%</div><div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${cfg.color}"></div></div><div class="phase-days">⏱ ${avg} días prom.</div></div></div>`;
+  }).join('');
+}
+
+function getFilteredProps(){
+  let list=[...state.properties];
+  if(activeFilter!=='all')list=list.filter(p=>p.phase===activeFilter);
+  if(searchQuery){const q=searchQuery.toLowerCase();list=list.filter(p=>p.name.toLowerCase().includes(q)||(p.city||'').toLowerCase().includes(q));}
+  return list;
+}
+function filterProperties(){searchQuery=$('propSearch').value;renderPropertiesTable();}
+function setFilter(f,e){activeFilter=f;document.querySelectorAll('#sec-properties .filter-tab').forEach(t=>t.classList.remove('active'));e.classList.add('active');renderPropertiesTable();}
+
+function renderPropertiesTable(){
+  const tbody=$('propsBody'),list=getFilteredProps();
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state">📭 Sin propiedades. ¡Agrega la primera!</div></td></tr>`;return;}
+  tbody.innerHTML=list.map(p=>{
+    const cfg=PHASES[p.phase]||PHASES.implementation;
+    const overall=getPropProgress(p);
+    const clr=pctColor(overall);
+    return `<tr><td><strong>${p.name}</strong>${p.entry_date?`<div style="font-size:10px;color:var(--text-muted)">📅 ${p.entry_date}</div>`:''}</td><td>${p.city||'—'}</td><td><span class="pill ${cfg.pill}">${cfg.label}</span></td><td style="font-family:'JetBrains Mono',monospace">${p.units||0}</td><td><strong>${(p.modules||[]).length}</strong>/${MODULES.length}</td><td style="font-family:'JetBrains Mono',monospace">${p.days||0}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${overall}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${overall}%</span></div></td><td><div class="actions-cell"><button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Editar</button><button class="btn-del" onclick="deleteProp('${p.id}')">🗑️</button></div></td></tr>`;
+  }).join('');
+}
+
+function renderModulesSection(){renderModuleMeters();renderModulesTable();renderModuleCharts();$('modTableUpdated').textContent=new Date().toLocaleTimeString();}
+
+function renderModuleMeters(){
+  const total=state.properties.length||1;
+  $('moduleMeterGrid').innerHTML=MODULES.map(m=>{
+    const active=state.properties.filter(p=>(p.modules||[]).includes(m.id));
+    const adoptPct=Math.round((active.length/total)*100);
+    const avgPct=active.length?Math.round(active.reduce((s,p)=>s+calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/active.length):0;
+    const clr=pctColor(avgPct);
+    const avgVal=active.length?Math.round(active.reduce((s,p)=>s+((p.module_values||{})[m.id]||0),0)/active.length):0;
+    return `<div class="mod-meter"><div class="mm-header"><div class="mm-name"><span class="mm-icon">${m.icon}</span>${m.label}</div><div class="mm-pct" style="color:${clr}">${avgPct}%</div></div><div class="mm-bar"><div class="mm-fill" style="width:${avgPct}%;background:${clr}"></div></div><div class="mm-meta"><span>${active.length}/${total} propiedades activas · Val. prom: <strong>${avgVal} ${m.unit}</strong></span><span style="color:${clr}">Adopción: ${adoptPct}%</span></div></div>`;
+  }).join('');
+}
+
+function renderModulesTable(){
+  $('modulesBody').innerHTML=MODULES.map(m=>{
+    const withMod=ph=>state.properties.filter(p=>p.phase===ph&&(p.modules||[]).includes(m.id)).length;
+    const active=state.properties.filter(p=>(p.modules||[]).includes(m.id));
+    const avgPct=active.length?Math.round(active.reduce((s,p)=>s+calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/active.length):0;
+    const avgVal=active.length?Math.round(active.reduce((s,p)=>s+((p.module_values||{})[m.id]||0),0)/active.length):0;
+    const clr=pctColor(avgPct);
+    const refMeta=calcMeta(m.id,80);
+    return `<tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${m.icon}</span><strong>${m.label}</strong></div></td><td><span style="font-size:10px;color:var(--text-muted)">${m.unit}</span></td><td><span style="font-size:11px;font-weight:700;color:var(--domo)">${refMeta} <span style="font-weight:400;color:var(--text-muted)">(ref. 80 unid.)</span></span></td><td><strong style="font-family:'JetBrains Mono',monospace">${avgVal}</strong> ${m.unit}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${avgPct}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${avgPct}%</span></div></td><td><span class="pill pill-impl">${withMod('implementation')}</span></td><td><span class="pill pill-pilot">${withMod('pilot')}</span></td><td><span class="pill pill-support">${withMod('support')}</span></td><td><span class="pill pill-done">${withMod('done')}</span></td></tr>`;
+  }).join('');
+}
+
+function renderModuleCharts(){
+  const props=state.properties;
+  const avgPcts=MODULES.map(m=>{const active=props.filter(p=>(p.modules||[]).includes(m.id));return active.length?Math.round(active.reduce((s,p)=>s+calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/active.length):0;});
+  makeChart('chartModFull','bar',MODULES.map(m=>m.label),[{label:'% Cumplimiento meta',data:avgPcts,backgroundColor:avgPcts.map(v=>v>=80?'#00b460':v>=50?'#e67e00':'#820ad1'),borderRadius:6,borderSkipped:false}]);
+  const colors=['#820ad1','#e67e00','#00b460','#0088cc','#F7B500','#a34dde','#00ccaa','#ff6b6b'];
+  makeChart('chartModPhase','bar',props.map(p=>p.name.length>16?p.name.substring(0,16)+'…':p.name),MODULES.map((m,i)=>({label:m.icon+' '+m.label,data:props.map(p=>(p.modules||[]).includes(m.id)?((p.module_values||{})[m.id]||0):null),backgroundColor:colors[i%8],borderRadius:3,borderSkipped:false,barThickness:8})),{},{indexAxis:'y',plugins:{legend:{position:'bottom',labels:{font:{family:'Outfit',size:10},boxWidth:10}}}});
+}
+
+// ══════ MODAL ══════
+function openAddModal(){
+  $('modalTitle').textContent='Agregar Propiedad';$('editPropId').value='';
+  $('fName').value='';$('fCity').value='';$('fPhase').value='implementation';
+  $('fDays').value='0';$('fUnits').value='50';$('fNotes').value='';
+  $('fEntryDate').value=new Date().toISOString().split('T')[0];
+  buildModuleChecks([],{});$('propModal').style.display='flex';
+}
+function openEditModal(id){
+  const p=state.properties.find(x=>String(x.id)===String(id));if(!p)return;
+  $('modalTitle').textContent='Editar Propiedad';$('editPropId').value=id;
+  $('fName').value=p.name||'';$('fCity').value=p.city||'';$('fPhase').value=p.phase||'implementation';
+  $('fDays').value=p.days||0;$('fUnits').value=p.units||0;$('fEntryDate').value=p.entry_date||'';$('fNotes').value=p.notes||'';
+  buildModuleChecks(p.modules||[],p.module_values||{});$('propModal').style.display='flex';
+}
+function rebuildModuleChecks(){
+  const units=parseInt($('fUnits').value)||50;
+  const currentActive=MODULES.filter(m=>document.getElementById('mp-chk-'+m.id)?.checked).map(m=>m.id);
+  const currentVals={};
+  MODULES.forEach(m=>{const el=document.getElementById('mp-num-'+m.id);if(el&&!el.disabled)currentVals[m.id]=parseInt(el.value)||0;});
+  buildModuleChecks(currentActive,currentVals);
+}
+function buildModuleChecks(activeModules,moduleValues){
+  const units=parseInt($('fUnits').value)||50;
+  $('modulesChecks').innerHTML=MODULES.map(m=>{
+    const isActive=activeModules.includes(m.id);
+    const val=(moduleValues[m.id]!==undefined)?moduleValues[m.id]:0;
+    const meta=m.metaFn(units);
+    const pct=isActive?calcPct(m.id,val,units):0;
+    const badgeClass=isActive?pctBadgeClass(pct):'';
+    const barW=isActive?Math.min(100,pct):0;
+    const barColor=pctColor(pct);
+    return `<div class="mp-row${isActive?' mp-on':''}" id="mp-row-${m.id}"><div class="mp-top"><div class="mp-icon">${m.icon}</div><div class="mp-info"><div class="mp-name">${m.label}</div><div class="mp-meta-label" id="mp-ml-${m.id}">${m.metaLabel(units)}</div></div><div class="mp-num-wrap"><input class="mp-num-input" type="number" min="0" id="mp-num-${m.id}" value="${isActive?val:''}" placeholder="0" ${!isActive?'disabled':''} oninput="onModuleInput('${m.id}',this.value)"/><span class="mp-unit">${m.unit}</span><div class="mp-pct-badge ${badgeClass}" id="mp-badge-${m.id}">${isActive?pct+'%':'—'}</div></div><div class="mp-toggle"><input type="checkbox" id="mp-chk-${m.id}" ${isActive?'checked':''} onchange="toggleModuleCheck('${m.id}',this)"/></div></div><div class="mp-bar-row" id="mp-barrow-${m.id}" ${!isActive?'style="display:none"':''}><div class="mp-bar-track"><div class="mp-bar-fill" id="mp-bar-${m.id}" style="width:${barW}%;background:${barColor}"></div></div><div class="mp-bar-label" id="mp-barlbl-${m.id}">${isActive?val+' / '+meta+' '+m.unit:'—'}</div></div></div>`;
+  }).join('');
+}
+function onModuleInput(mid,rawVal){
+  const units=parseInt($('fUnits').value)||50;
+  const val=Math.max(0,parseInt(rawVal)||0);
+  const meta=calcMeta(mid,units);
+  const pct=calcPct(mid,val,units);
+  const clr=pctColor(pct);
+  const badge=$('mp-badge-'+mid),bar=$('mp-bar-'+mid),lbl=$('mp-barlbl-'+mid);
+  if(badge){badge.textContent=pct+'%';badge.className='mp-pct-badge '+pctBadgeClass(pct);}
+  if(bar){bar.style.width=Math.min(100,pct)+'%';bar.style.background=clr;}
+  if(lbl){lbl.textContent=val+' / '+meta+' '+MODULES.find(m=>m.id===mid).unit;}
+}
+function toggleModuleCheck(id,inp){
+  const numEl=$('mp-num-'+id),row=$('mp-row-'+id),barRow=$('mp-barrow-'+id),badge=$('mp-badge-'+id);
+  if(!numEl||!row)return;
+  if(inp.checked){numEl.disabled=false;if(!numEl.value)numEl.value='0';row.classList.add('mp-on');if(barRow)barRow.style.display='flex';onModuleInput(id,numEl.value);}
+  else{numEl.disabled=true;numEl.value='';row.classList.remove('mp-on');if(barRow)barRow.style.display='none';if(badge){badge.textContent='—';badge.className='mp-pct-badge';}const bar=$('mp-bar-'+id);if(bar){bar.style.width='0%';}const lbl=$('mp-barlbl-'+id);if(lbl)lbl.textContent='—';}
+}
+function closeModal(){$('propModal').style.display='none';}
+function closeModalOutside(e){if(e.target===$('propModal'))closeModal();}
+
+async function saveProperty(){
+  const name=$('fName').value.trim();
+  if(!name){showToast('El nombre es requerido','error');return;}
+  const modules=[],module_values={};
+  MODULES.forEach(m=>{const chk=$('mp-chk-'+m.id),num=$('mp-num-'+m.id);if(chk&&chk.checked){modules.push(m.id);module_values[m.id]=Math.max(0,parseInt(num.value)||0);}});
+  const prop={name,city:$('fCity').value.trim(),phase:$('fPhase').value,days:parseInt($('fDays').value)||0,units:parseInt($('fUnits').value)||0,entry_date:$('fEntryDate').value,notes:$('fNotes').value.trim(),modules,module_values};
+  const editId=$('editPropId').value;
+  closeModal();
+  if(editId){
+    if(sb){await updateSupabase(editId,prop);await fetchAllData();}
+    else{const idx=state.properties.findIndex(x=>String(x.id)===String(editId));if(idx>=0)state.properties[idx]={...state.properties[idx],...prop};}
+  }else{
+    if(sb){await insertSupabase(prop);await fetchAllData();}
+    else{state.properties.unshift({...prop,id:'demo-'+Date.now()});}
+  }
+  showToast('✅ Guardado','success');
+  renderSection(currentSection);
+}
+
+async function deleteProp(id){
+  if(!confirm('¿Eliminar esta propiedad?'))return;
+  if(sb){await deleteSupabase(id);await fetchAllData();}
+  else{state.properties=state.properties.filter(x=>String(x.id)!==String(id));renderSection(currentSection);}
+  showToast('🗑️ Eliminado','success');
+}
+
+// ══════ PROGRESS SECTION ══════
+function setPFilter(f,elem){progressFilter=f;document.querySelectorAll('#progressFilterTabs .filter-tab').forEach(t=>t.classList.remove('active'));elem.classList.add('active');renderPropertyProgressCards();renderModuleProgressChart();}
+function renderProgressSection(){renderGlobalProgress();renderPropertyProgressCards();renderModuleProgressChart();}
+function renderGlobalProgress(){
+  const props=state.properties,g=getGlobalProgress();
+  $('pgValue').textContent=g+'%';$('pgPct').textContent=g+'%';$('pgFill').style.width=g+'%';$('pgRingCenter').textContent=g+'%';
+  const totalMods=props.reduce((s,p)=>s+(p.modules||[]).length,0);
+  $('pgSub').textContent=props.length+' propiedades · '+totalMods+' módulos activos';
+  $('pgStats').innerHTML=Object.entries(PHASES).map(([k,cfg])=>{
+    const arr=props.filter(p=>p.phase===k);
+    const avg=arr.length?Math.round(arr.reduce((s,p)=>s+getPropProgress(p),0)/arr.length):0;
+    return `<div class="pg-stat"><div class="pg-stat-val" style="color:${cfg.color}">${avg}%</div><div class="pg-stat-label">${cfg.label} (${arr.length})</div></div>`;
+  }).join('');
+  const canvas=$('pgRing'),ctx=canvas.getContext('2d');
+  canvas.width=140;canvas.height=140;ctx.clearRect(0,0,140,140);
+  const cx=70,cy=70,r=54,lw=12;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=lw;ctx.stroke();
+  if(g>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+(g/100)*Math.PI*2);ctx.strokeStyle='#F7B500';ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();}
+}
+function renderPropertyProgressCards(){
+  const sortVal=$('progressSort')?$('progressSort').value:'pct_desc';
+  let props=[...state.properties];
+  if(progressFilter!=='all')props=props.filter(p=>p.phase===progressFilter);
+  props.sort((a,b)=>{if(sortVal==='pct_desc')return getPropProgress(b)-getPropProgress(a);if(sortVal==='pct_asc')return getPropProgress(a)-getPropProgress(b);if(sortVal==='name')return a.name.localeCompare(b.name);if(sortVal==='phase'){const o={implementation:0,pilot:1,support:2,done:3};return(o[a.phase]||0)-(o[b.phase]||0);}return 0;});
+  if(!props.length){$('propProgressGrid').innerHTML=`<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--text-muted);font-size:13px">📭 Sin propiedades en esta fase.</div>`;return;}
+  $('propProgressGrid').innerHTML=props.map(p=>{
+    const cfg=PHASES[p.phase]||PHASES.implementation;
+    const mv=p.module_values||{};const units=p.units||50;
+    const overall=getPropProgress(p);const clr=pctColor(overall);
+    const activeMods=p.modules||[];const inactiveMods=MODULES.filter(m=>!activeMods.includes(m.id));
+    const modRows=MODULES.filter(m=>activeMods.includes(m.id)).map(m=>{const val=mv[m.id]||0;const meta=m.metaFn(units);const pct=calcPct(m.id,val,units);const mc=pctColor(pct);return `<div class="pp-mod-row"><div class="pp-mod-icon">${m.icon}</div><div class="pp-mod-name">${m.label}</div><div class="pp-mod-num">${val}/${meta}</div><div class="pp-mod-pct" style="color:${mc}">${pct}%</div></div><div class="pp-mod-bar-wrap"><div class="pp-mod-fill" style="width:${Math.min(100,pct)}%;background:${mc}"></div></div>`;}).join('');
+    return `<div class="pp-card"><div class="pp-header"><div><div class="pp-name">${p.name}</div><div class="pp-city">📍 ${p.city||'—'} · ${units} unid.</div>${p.entry_date?`<div style="font-size:10px;color:var(--text-muted);margin-top:2px">📅 ${p.entry_date}</div>`:''}</div><div style="text-align:right"><div class="pp-pct-big" style="color:${clr}">${overall}%</div><span class="pill ${cfg.pill}" style="margin-top:4px;display:inline-flex">${cfg.label}</span></div></div><div class="pp-body"><div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:4px"><span>Avance ponderado</span><span style="font-weight:700;color:${clr}">${overall}%</span></div><div class="pp-overall-bar"><div class="pp-overall-fill" style="width:${overall}%;background:${clr}"></div></div></div>${activeMods.length?`<div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Módulos activos (${activeMods.length}/${MODULES.length})</div><div class="pp-mod-list">${modRows}</div>`:`<div style="font-size:12px;color:var(--text-muted);padding:10px 0;text-align:center">Sin módulos activos</div>`}${inactiveMods.length?`<div style="font-size:10px;color:var(--text-muted);margin-top:8px">Pendientes: ${inactiveMods.map(m=>m.icon+' '+m.label).join(', ')}</div>`:''}</div><div class="pp-footer"><div class="pp-days">⏱ ${p.days||0} días</div><button class="pp-edit-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button></div></div>`;
+  }).join('');
+}
+function renderModuleProgressChart(){
+  const props=state.properties;if(!props.length)return;
+  const colors=['#820ad1','#e67e00','#00b460','#0088cc','#F7B500','#a34dde','#00ccaa','#ff6b6b'];
+  makeChart('chartModProgress','bar',props.map(p=>p.name.length>18?p.name.substring(0,18)+'…':p.name),MODULES.map((m,i)=>({label:m.icon+' '+m.label,data:props.map(p=>(p.modules||[]).includes(m.id)?calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50):null),backgroundColor:colors[i%8],borderRadius:4,borderSkipped:false,barThickness:10})),{},{indexAxis:'y',scales:{x:{stacked:false,max:100},y:{stacked:false}},plugins:{legend:{position:'bottom',labels:{font:{family:'Outfit',size:10},boxWidth:10}}}});
+}
+
+// ══════════════════════════════════════════════════════
+//  ★ STRATEGY / ABISMO SECTION ★
+// ══════════════════════════════════════════════════════
+
+function setStrategyView(view, el) {
+  strategyView = view;
+  ['cards','heat','chart'].forEach(v => {
+    const el2 = $('btnView'+v.charAt(0).toUpperCase()+v.slice(1));
+    if(el2) el2.classList.remove('active-view');
+    const vEl = $('stratView'+v.charAt(0).toUpperCase()+v.slice(1));
+    if(vEl) vEl.style.display = 'none';
+  });
+  el.classList.add('active-view');
+  $('stratView'+view.charAt(0).toUpperCase()+view.slice(1)).style.display = 'block';
+  if(view === 'heat') renderAbismoHeatMap();
+  if(view === 'chart') renderAbismoCharts();
+}
+
+function setStratPhase(f, el) {
+  strategyPhaseFilter = f;
+  document.querySelectorAll('#strategyPhaseTabs .filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAbismoCards();
+  if(strategyView === 'heat') renderAbismoHeatMap();
+  if(strategyView === 'chart') renderAbismoCharts();
+}
+
+function getStrategyProps() {
+  let props = [...state.properties];
+  if(strategyPhaseFilter !== 'all') props = props.filter(p => p.phase === strategyPhaseFilter);
+  return props;
+}
+
+// Calcula el "abismo" (gap) de una propiedad: cuánto falta hasta la meta en cada módulo
+function calcAbismo(p) {
+  const units = p.units || 50;
+  const mv = p.module_values || {};
+  const activeMods = p.modules || [];
+  const modData = MODULES.map(m => {
+    const isActive = activeMods.includes(m.id);
+    const val = isActive ? (mv[m.id] || 0) : 0;
+    const meta = m.metaFn(units);
+    const pct = isActive ? calcPct(m.id, val, units) : null;
+    const gap = isActive ? Math.max(0, meta - val) : null;
+    const gapPct = isActive ? Math.max(0, 100 - (pct || 0)) : null;
+    return { mid: m.id, isActive, val, meta, pct, gap, gapPct };
+  });
+  const activeMd = modData.filter(d => d.isActive);
+  const avgPct = activeMd.length ? Math.round(activeMd.reduce((s,d) => s + d.pct, 0) / activeMd.length) : 0;
+  const avgGapPct = activeMd.length ? Math.round(activeMd.reduce((s,d) => s + d.gapPct, 0) / activeMd.length) : 100;
+  return { modData, avgPct, avgGapPct };
+}
+
+function gapLevel(pct) {
+  if(pct >= 80) return 'good';
+  if(pct >= 50) return 'warning';
+  return 'critical';
+}
+function gapLevelLabel(pct) {
+  if(pct >= 80) return '✅ En Meta';
+  if(pct >= 50) return '⚠️ Alerta';
+  return '🔴 Crítico';
+}
+
+function renderStrategySection() {
+  renderStrategyGlobalMetrics();
+  renderAbismoCards();
+  // Pre-render heat and chart for when user switches
+  setTimeout(() => { renderAbismoHeatMap(); renderAbismoCharts(); }, 50);
+}
+
+function renderStrategyGlobalMetrics() {
+  const props = state.properties;
+  if(!props.length) { $('strategyGlobalMetrics').innerHTML = ''; return; }
+  const totalProps = props.length;
+  const globalAvg = getGlobalProgress();
+  const globalGap = 100 - globalAvg;
+  const critical = props.filter(p => getPropProgress(p) < 50).length;
+  const onTarget = props.filter(p => getPropProgress(p) >= 80).length;
+  const totalActiveMods = props.reduce((s,p) => s + (p.modules||[]).length, 0);
+  const avgModsPerProp = totalProps ? Math.round(totalActiveMods / totalProps * 10) / 10 : 0;
+  const lvlMain = gapLevel(globalAvg);
+  $('strategyGlobalMetrics').innerHTML = `
+    <div class="sh-metric">
+      <div class="sh-metric-val">${globalAvg}%</div>
+      <div class="sh-metric-lbl">Avance Global</div>
+      <div class="sh-metric-sub ${lvlMain}">${gapLevelLabel(globalAvg)}</div>
+    </div>
+    <div class="sh-metric">
+      <div class="sh-metric-val" style="color:#ff5f5f">${globalGap}%</div>
+      <div class="sh-metric-lbl">Abismo Global</div>
+      <div class="sh-metric-sub warn">${globalGap > 30 ? '⚡ Brecha significativa' : globalGap > 10 ? '🔶 Cierre cercano' : '🟢 Brecha mínima'}</div>
+    </div>
+    <div class="sh-metric">
+      <div class="sh-metric-val" style="color:#ff5f5f">${critical}</div>
+      <div class="sh-metric-lbl">Propiedades Críticas</div>
+      <div class="sh-metric-sub bad">${critical ? 'Requieren atención urgente' : '🟢 Sin críticas'}</div>
+    </div>
+    <div class="sh-metric">
+      <div class="sh-metric-val" style="color:#00e57c">${onTarget}</div>
+      <div class="sh-metric-lbl">En Meta (≥80%)</div>
+      <div class="sh-metric-sub good">${Math.round(onTarget/totalProps*100)}% del portafolio</div>
+    </div>
+  `;
+}
+
+function renderAbismoCards() {
+  const props = getStrategyProps();
+  if(!props.length) {
+    $('abismoGrid').innerHTML = `<div style="grid-column:1/-1;padding:44px;text-align:center;color:var(--text-muted);font-size:13px">📭 No hay propiedades en esta fase.</div>`;
+    return;
+  }
+  // Sort by gap descending (most critical first)
+  const sorted = [...props].sort((a,b) => getPropProgress(a) - getPropProgress(b));
+  $('abismoGrid').innerHTML = sorted.map(p => buildAbismoCard(p)).join('');
+}
+
+function buildAbismoCard(p) {
+  const cfg = PHASES[p.phase] || PHASES.implementation;
+  const { modData, avgPct, avgGapPct } = calcAbismo(p);
+  const units = p.units || 50;
+  const lvl = gapLevel(avgPct);
+  const barColor = avgPct >= 80 ? '#00e57c' : avgPct >= 50 ? '#ffcc00' : '#ff5f5f';
+  const gapBadge = lvl === 'good' ? 'good' : lvl === 'warning' ? 'warning' : 'critical';
+  const gapLabel = gapLevelLabel(avgPct);
+
+  const modRows = modData.map(d => {
+    const m = MODULES.find(x => x.id === d.mid);
+    if(!d.isActive) return `
+      <div class="abismo-mod-row" style="opacity:.3">
+        <div class="abismo-mod-icon">${m.icon}</div>
+        <div class="abismo-mod-bars">
+          <div class="abismo-mod-name" style="color:var(--text-muted)">${m.label}</div>
+          <div class="abismo-bar-wrap" style="margin-top:4px"><div style="font-size:9px;color:var(--text-muted)">sin activar</div></div>
+        </div>
+        <div class="abismo-mod-nums"><div class="abismo-mod-val" style="color:var(--text-muted)">—</div><div class="abismo-mod-target">meta: ${d.meta}</div></div>
+        <div class="abismo-mod-pct-col" style="color:var(--text-muted);font-size:11px">N/A</div>
+      </div>`;
+    const mc = d.pct >= 80 ? '#00b460' : d.pct >= 50 ? '#e67e00' : '#e03030';
+    const barPct = Math.min(100, d.pct);
+    const targetPct = 100; // target is always 100% of the bar
+    return `
+      <div class="abismo-mod-row">
+        <div class="abismo-mod-icon">${m.icon}</div>
+        <div class="abismo-mod-bars">
+          <div class="abismo-mod-name">${m.label}</div>
+          <div class="abismo-bar-wrap" style="margin-top:4px">
+            <div class="abismo-bar-actual" style="width:${barPct}%;background:${mc}"></div>
+            <div class="abismo-bar-target" style="left:calc(${targetPct}% - 2px)"></div>
+          </div>
+        </div>
+        <div class="abismo-mod-nums">
+          <div class="abismo-mod-val">${d.val}</div>
+          <div class="abismo-mod-target">/ ${d.meta} ${m.unit.split('/')[0]}</div>
+        </div>
+        <div class="abismo-mod-pct-col" style="color:${mc}">${d.pct}%</div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="abismo-card">
+      <div class="abismo-card-header">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+          <div>
+            <div class="ach-name">${p.name}</div>
+            <div class="ach-city">📍 ${p.city || '—'} · ${units} unidades</div>
+            <div class="ach-phase-badge" style="background:${cfg.bg};color:${cfg.color};border:1px solid ${cfg.color}40">${cfg.label}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="ach-pct">${avgPct}%</div>
+            <div class="ach-gap-badge ${gapBadge}" style="margin-top:6px;display:inline-block">${gapLabel}</div>
+          </div>
+        </div>
+        <div class="ach-progress-row">
+          <div class="ach-overall">
+            <div class="ach-overall-label">Avance ponderado</div>
+            <div class="ach-overall-bar"><div class="ach-overall-fill" style="width:${avgPct}%;background:${barColor}"></div></div>
+            <div style="display:flex;justify-content:space-between;margin-top:3px">
+              <span style="font-size:9px;color:rgba(255,255,255,.4)">0%</span>
+              <span style="font-size:9px;color:rgba(255,255,255,.55)">Abismo: <span style="color:#ff9a9a;font-weight:700">${avgGapPct}%</span></span>
+              <span style="font-size:9px;color:rgba(255,255,255,.4)">100%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="abismo-card-body">
+        <div class="abismo-mod-title">
+          <span>Cumplimiento por módulo</span>
+          <span style="font-weight:400">${(p.modules||[]).length}/${MODULES.length} activos</span>
+        </div>
+        <div class="abismo-mod-list">${modRows}</div>
+      </div>
+      <div class="abismo-card-footer">
+        <div class="abismo-gap-total">
+          <div class="abismo-gap-total-label">Brecha promedio</div>
+          <div class="abismo-gap-total-val ${gapBadge}">${avgGapPct}% hacia meta</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:11px;color:var(--text-muted)">⏱ ${p.days||0} días</span>
+          <button class="abismo-action-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderAbismoHeatMap() {
+  const props = getStrategyProps();
+  if(!props.length) { $('abismoHeatMap').innerHTML = '<div class="empty-state">Sin propiedades.</div>'; return; }
+
+  const cols = MODULES.length;
+  const colFr = `160px repeat(${cols}, 1fr) 70px`;
+
+  let html = `<div class="abismo-heat-grid">`;
+  // Header
+  html += `<div class="abismo-heat-header" style="grid-template-columns:${colFr}">
+    <div>Propiedad</div>
+    ${MODULES.map(m => `<div style="text-align:center;font-size:9px">${m.icon}<br>${m.label}</div>`).join('')}
+    <div style="text-align:center">Global</div>
+  </div>`;
+
+  props.forEach(p => {
+    const { modData, avgPct } = calcAbismo(p);
+    const cfg = PHASES[p.phase] || PHASES.implementation;
+    const overallLvl = gapLevel(avgPct);
+    const overallColor = avgPct >= 80 ? '#00b460' : avgPct >= 50 ? '#e67e00' : '#e03030';
+    html += `<div class="abismo-heat-row" style="grid-template-columns:${colFr}">
+      <div>
+        <div class="heat-prop-name">${p.name.length > 20 ? p.name.substring(0,20)+'…' : p.name}</div>
+        <div class="heat-prop-city" style="color:${cfg.color}">${cfg.label}</div>
+      </div>
+      ${modData.map(d => {
+        if(!d.isActive) return `<div style="text-align:center"><div class="heat-cell heat-na">—</div></div>`;
+        const lvlNum = d.pct >= 80 ? 3 : d.pct >= 60 ? 2 : d.pct >= 40 ? 1 : 0;
+        return `<div style="text-align:center"><div class="heat-cell heat-${lvlNum}" title="${d.val}/${d.meta}">${d.pct}%</div></div>`;
+      }).join('')}
+      <div style="text-align:center"><div class="heat-overall" style="color:${overallColor}">${avgPct}%</div></div>
+    </div>`;
+  });
+
+  html += `</div>`;
+  $('abismoHeatMap').innerHTML = html;
+}
+
+function renderAbismoCharts() {
+  const props = getStrategyProps();
+  if(!props.length) return;
+
+  // Chart 1: Avance vs meta por propiedad (gap chart)
+  const sorted = [...props].sort((a,b) => getPropProgress(a) - getPropProgress(b));
+  const propNames = sorted.map(p => p.name.length > 18 ? p.name.substring(0,18)+'…' : p.name);
+  const propPcts = sorted.map(p => getPropProgress(p));
+  const propGaps = propPcts.map(v => 100 - v);
+  makeChart('chartAbismoProps', 'bar', propNames, [
+    {label:'Avance actual (%)', data:propPcts, backgroundColor:propPcts.map(v => v>=80?'rgba(0,180,100,.7)':v>=50?'rgba(230,126,0,.7)':'rgba(224,48,48,.7)'), borderRadius:4, borderSkipped:false, barThickness:18},
+    {label:'Abismo restante (%)', data:propGaps, backgroundColor:'rgba(100,100,120,.15)', borderRadius:4, borderSkipped:false, barThickness:18}
+  ], {}, {indexAxis:'y', scales:{x:{stacked:true, max:100}, y:{stacked:true}}, plugins:{legend:{position:'bottom',labels:{font:{family:'Outfit',size:11},boxWidth:12}}}});
+
+  // Chart 2: Cumplimiento por módulo promedio (todas las props filtradas)
+  const modAvgPcts = MODULES.map(m => {
+    const active = props.filter(p => (p.modules||[]).includes(m.id));
+    return active.length ? Math.round(active.reduce((s,p) => s + calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/active.length) : 0;
+  });
+  const modGaps = modAvgPcts.map(v => Math.max(0, 100 - v));
+  makeChart('chartAbismoModules', 'bar', MODULES.map(m => m.icon+' '+m.label), [
+    {label:'Cumplimiento (%)', data:modAvgPcts, backgroundColor:modAvgPcts.map(v=>v>=80?'rgba(0,180,100,.8)':v>=50?'rgba(230,126,0,.8)':'rgba(224,48,48,.8)'), borderRadius:5, borderSkipped:false},
+    {label:'Abismo (%)', data:modGaps, backgroundColor:'rgba(100,100,120,.12)', borderRadius:5, borderSkipped:false}
+  ], {}, {scales:{x:{stacked:true},y:{stacked:true, max:100}}, plugins:{legend:{position:'bottom',labels:{font:{family:'Outfit',size:11},boxWidth:12}}}});
+
+  // Chart 3: Distribución del avance
+  const dist = [{label:'≥80% (Meta)',count:0,color:'#00b460'},{label:'50–79% (Alerta)',count:0,color:'#e67e00'},{label:'<50% (Crítico)',count:0,color:'#e03030'}];
+  props.forEach(p => {const v=getPropProgress(p);if(v>=80)dist[0].count++;else if(v>=50)dist[1].count++;else dist[2].count++;});
+  makeChart('chartAbismoDist', 'doughnut', dist.map(d=>d.label), [{data:dist.map(d=>d.count),backgroundColor:dist.map(d=>d.color),borderWidth:0,hoverOffset:8}]);
+
+  // Chart 4: Radar abismo
+  makeChart('chartAbismoRadar', 'radar', MODULES.map(m=>m.label), [
+    {label:'Cumplimiento promedio',data:modAvgPcts,backgroundColor:'rgba(130,10,209,.15)',borderColor:'#820ad1',pointBackgroundColor:'#820ad1',borderWidth:2,pointRadius:4},
+    {label:'Meta (100%)',data:MODULES.map(()=>100),backgroundColor:'rgba(0,180,100,.05)',borderColor:'rgba(0,180,100,.5)',pointBackgroundColor:'rgba(0,180,100,.5)',borderWidth:1,borderDash:[4,4],pointRadius:2}
+  ]);
+}
+
+// ══════ CHARTS ══════
+function destroyChart(id){if(charts[id]){try{charts[id].destroy();}catch(e){}delete charts[id];}}
+function makeChart(id,type,labels,datasets,extra={},extraOpts={}){
+  const canvas=document.getElementById(id);if(!canvas)return;
+  destroyChart(id);
+  const dk=theme==='dark';
+  const gc=dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.05)';
+  const tc=dk?'#9287b8':'#7c6fa0';
+  const tb=dk?'#1e1838':'#fff';
+  const scaleBase={grid:{color:gc},ticks:{color:tc,font:{family:'Outfit',size:10}},border:{color:gc}};
+  let scales={};
+  if(type!=='doughnut'&&type!=='pie'&&type!=='radar'){scales={x:{...scaleBase,...(extraOpts.scales?.x||{})},y:{...scaleBase,...(extraOpts.scales?.y||{})}};}
+  const pluginsOpt = extraOpts.plugins ? {legend:{labels:{color:tc,font:{family:'Outfit',size:11},boxWidth:12}},...extraOpts.plugins} : {legend:{labels:{color:tc,font:{family:'Outfit',size:11},boxWidth:12}},tooltip:{backgroundColor:tb,titleColor:dk?'#ede9ff':'#16122a',bodyColor:tc,borderColor:dk?'#2d2448':'#e0d9f5',borderWidth:1}};
+  const axisOpt = extraOpts.indexAxis ? {indexAxis:extraOpts.indexAxis} : {};
+  charts[id]=new Chart(canvas,{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:pluginsOpt,scales,...axisOpt,...extra}});
+}
+
+function renderDashCharts(){
+  const props=state.properties;if(!props.length)return;
+  makeChart('chartPhase','doughnut',Object.values(PHASES).map(c=>c.label),[{data:Object.keys(PHASES).map(k=>props.filter(p=>p.phase===k).length),backgroundColor:Object.values(PHASES).map(c=>c.color),borderWidth:0,hoverOffset:8}]);
+  makeChart('chartModules','bar',MODULES.map(m=>m.label),[{label:'Propiedades',data:MODULES.map(m=>props.filter(p=>(p.modules||[]).includes(m.id)).length),backgroundColor:['#820ad1','#e67e00','#00b460','#0088cc','#F7B500','#a34dde','#00ccaa','#ff6b6b'],borderRadius:6,borderSkipped:false}]);
+  const sorted=[...props].sort((a,b)=>getPropProgress(b)-getPropProgress(a));
+  makeChart('chartProps','bar',sorted.map(p=>p.name.length>20?p.name.substring(0,20)+'…':p.name),[{label:'Avance real (%)',data:sorted.map(p=>getPropProgress(p)),backgroundColor:sorted.map(p=>PHASES[p.phase]?.color||'#820ad1'),borderRadius:6,borderSkipped:false}],{},{indexAxis:'y'});
+}
+
+function renderChartsPage(){
+  const props=state.properties;if(!props.length)return;
+  makeChart('chartPhase2','doughnut',Object.values(PHASES).map(c=>c.label),[{data:Object.keys(PHASES).map(k=>props.filter(p=>p.phase===k).length),backgroundColor:Object.values(PHASES).map(c=>c.color),borderWidth:0,hoverOffset:8}]);
+  const avgPcts=MODULES.map(m=>{const active=props.filter(p=>(p.modules||[]).includes(m.id));return active.length?Math.round(active.reduce((s,p)=>s+calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/active.length):0;});
+  makeChart('chartRadar','radar',MODULES.map(m=>m.label),[{label:'% Cumplimiento promedio',data:avgPcts,backgroundColor:'rgba(130,10,209,.15)',borderColor:'#820ad1',pointBackgroundColor:'#820ad1',borderWidth:2,pointRadius:4}]);
+  makeChart('chartDays','bar',props.map(p=>p.name.length>16?p.name.substring(0,16)+'…':p.name),[{label:'Días',data:props.map(p=>p.days||0),backgroundColor:props.map(p=>PHASES[p.phase]?.color||'#820ad1'),borderRadius:6,borderSkipped:false}]);
+  const sorted=[...props].sort((a,b)=>getPropProgress(b)-getPropProgress(a));
+  makeChart('chartProps2','bar',sorted.map(p=>p.name.length>20?p.name.substring(0,20)+'…':p.name),[{label:'Avance real (%)',data:sorted.map(p=>getPropProgress(p)),backgroundColor:sorted.map(p=>PHASES[p.phase]?.color||'#820ad1'),borderRadius:6,borderSkipped:false}],{},{indexAxis:'y'});
+}
+
+// ══════ SETTINGS ══════
+function renderSettings(){
+  $('setAutoRefresh').value=settings.autoRefresh||60;$('setUserName').value=settings.userName||'';
+  $('setCurWeekStart').value=settings.curWeekStart||getLastFriday(-7);$('setPrevWeekStart').value=settings.prevWeekStart||getLastFriday(-14);
+  const url=localStorage.getItem('dn_sb_url')||'';
+  $('setShowUrl').textContent=url?url.substring(0,50)+'…':'No configurado';
+  $('setConnStatus').textContent=isConnected?'Conectado ✓':'No conectado';$('setConnStatus').style.color=isConnected?'#00b460':'#e03030';
+  $('themeBtn2').textContent=theme==='dark'?'☀️ Claro':'🌙 Oscuro';
+  $('targetSettings').innerHTML=MODULES.map(m=>{const ref80=m.metaFn(80);return `<div class="setting-row"><div><div class="setting-label">${m.icon} ${m.label}</div><div class="setting-sub">${m.unit} · ${m.metaLabel(80)}</div></div><span style="font-size:12px;font-weight:800;color:var(--domo)">${ref80}</span></div>`;}).join('');
+}
+function autoSetDates(){settings.curWeekStart=getLastFriday(-7);settings.prevWeekStart=getLastFriday(-14);const cw=$('setCurWeekStart'),pw=$('setPrevWeekStart');if(cw)cw.value=settings.curWeekStart;if(pw)pw.value=settings.prevWeekStart;saveSettings();}
+function saveSettings(){const ar=$('setAutoRefresh'),un=$('setUserName'),cw=$('setCurWeekStart'),pw=$('setPrevWeekStart');if(ar)settings.autoRefresh=parseInt(ar.value)||60;if(un)settings.userName=un.value;if(cw)settings.curWeekStart=cw.value;if(pw)settings.prevWeekStart=pw.value;localStorage.setItem('dn_settings',JSON.stringify(settings));startAutoRefresh();updateGreeting();}
+function loadSettings(){const s=localStorage.getItem('dn_settings');if(s){try{settings={...settings,...JSON.parse(s)};}catch(e){}}}
+
+// ══════ GREETING & CLOCK ══════
+function updateGreeting(){const h=new Date().getHours();const g=h>=6&&h<12?'Buenos días':h>=12&&h<20?'Buenas tardes':'Buenas noches';$('greetingLabel').textContent=g;$('greetingText').textContent=settings.userName||'Admin';}
+function updateClock(){const now=new Date();$('topbarClock').textContent=now.toLocaleTimeString('es-CO');const yyyy=now.getFullYear(),mm=String(now.getMonth()+1).padStart(2,'0'),dd=String(now.getDate()).padStart(2,'0');$('sidebarDate').textContent=`${yyyy}-${mm}-${dd}`;if(now.getSeconds()===0)updateGreeting();}
+
+// ══════ THEME ══════
+function toggleTheme(){theme=theme==='light'?'dark':'light';document.body.dataset.theme=theme;localStorage.setItem('dn_theme',theme);$('themeBtn').textContent=theme==='dark'?'☀️':'🌙';if($('themeBtn2'))$('themeBtn2').textContent=theme==='dark'?'☀️ Claro':'🌙 Oscuro';Object.keys(charts).forEach(id=>destroyChart(id));if(currentSection!=='connect')renderSection(currentSection);}
+
+// ══════ REFRESH ══════
+function refreshData(){if(!isConnected){showToast('Conecta primero o usa Demo','error');return;}const btn=$('refreshBtn');btn.style.transition='transform .7s';btn.style.transform='rotate(360deg)';const p=sb?fetchAllData():Promise.resolve();p.then(()=>{setTimeout(()=>btn.style.transform='',800);showToast('↻ Actualizado','success');if(currentSection!=='connect')renderSection(currentSection);});}
+
+// ══════ TOAST ══════
+function showToast(msg,type=''){const c=$('toastContainer'),e=document.createElement('div');e.className='toast'+(type?' toast-'+type:'');e.textContent=msg;c.appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transform='translateX(36px)';setTimeout(()=>e.remove(),350);},3000);}
+
+// ══════ INIT ══════
+document.addEventListener('DOMContentLoaded',async()=>{
+  loadSettings();document.body.dataset.theme=theme;$('themeBtn').textContent=theme==='dark'?'☀️':'🌙';
+  updateGreeting();setInterval(updateClock,1000);updateClock();autoSetDates();
+  const savedUrl=localStorage.getItem('dn_sb_url'),savedKey=localStorage.getItem('dn_sb_key');
+  if(savedUrl&&savedKey){
+    $('sbUrl').value=savedUrl;$('sbKey').value=savedKey;
+    try{
+      if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
+      sb=window.supabase.createClient(savedUrl,savedKey);
+      const{error}=await sb.from('properties').select('id',{count:'exact',head:true});
+      if(error)throw error;
+      isConnected=true;await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
+    }catch(e){localStorage.removeItem('dn_sb_url');localStorage.removeItem('dn_sb_key');}
+  }
+});
+</script>
+</body>
+</html>

@@ -712,8 +712,6 @@ tr:hover td{background:var(--surface2)}
     <div class="sidebar-sep" style="margin:4px 0 2px"></div>
     <div class="nav-item nav-strategy" data-sec="strategy" onclick="showSection('strategy',this)"><span class="nav-icon">🧭</span> Estrategia — Abismo</div>
     <div class="nav-item nav-sub" data-sec="abismo-propiedad" onclick="showSection('abismo-propiedad',this)"><span class="nav-icon">⬛</span> Por Propiedad</div>
-    <div class="nav-item nav-sub" data-sec="abismo-calor" onclick="showSection('abismo-calor',this)"><span class="nav-icon">🌡️</span> Mapa de Calor</div>
-    <div class="nav-item nav-sub" data-sec="abismo-graficas" onclick="showSection('abismo-graficas',this)"><span class="nav-icon">📊</span> Gráficas</div>
     <div class="nav-item nav-sub" data-sec="abismo-porpropiedad" onclick="showSection('abismo-porpropiedad',this)"><span class="nav-icon">🏢</span> Abismo x Prop.</div>
   </nav>
   <div class="sidebar-bottom">
@@ -924,12 +922,6 @@ tr:hover td{background:var(--surface2)}
     <button class="strat-tab-btn" id="btnViewCards" onclick="setStrategyView('cards',this)">
       <span>⬛</span> Por Propiedad
     </button>
-    <button class="strat-tab-btn" id="btnViewHeat" onclick="setStrategyView('heat',this)">
-      <span>🌡️</span> Mapa de Calor
-    </button>
-    <button class="strat-tab-btn" id="btnViewChart" onclick="setStrategyView('chart',this)">
-      <span>📊</span> Gráficas
-    </button>
     <button class="strat-tab-btn" id="btnViewProp" onclick="setStrategyView('prop',this)">
       <span>🏢</span> Abismo por Propiedad
     </button>
@@ -959,15 +951,21 @@ tr:hover td{background:var(--surface2)}
   <div id="stratViewOverview">
     <!-- KPI mini-cards resumen -->
     <div class="overview-kpi-row" id="overviewKpiRow"></div>
-    <!-- Resumen visual: fases + módulo radar -->
+    <!-- Radar de Módulos — prominente, ancho completo -->
+    <div class="prop-chasm-chart-card" style="margin-bottom:20px">
+      <div class="pcc-header">
+        <div class="pcc-title" style="font-size:clamp(13px,1.1vw,16px);font-weight:800">📡 Radar de Módulos — Promedio Global</div>
+        <div class="pcc-sub" id="overviewRadarSub"></div>
+      </div>
+      <div style="height:clamp(280px,28vw,420px);padding:clamp(12px,1.2vw,20px)">
+        <canvas id="chartOverviewRadar"></canvas>
+      </div>
+    </div>
+    <!-- Fila de gráficas secundarias -->
     <div class="overview-charts-grid">
       <div class="prop-chasm-chart-card">
         <div class="pcc-header"><div class="pcc-title">Propiedades por Fase</div></div>
         <div style="height:220px;padding:16px"><canvas id="chartOverviewPhase"></canvas></div>
-      </div>
-      <div class="prop-chasm-chart-card">
-        <div class="pcc-header"><div class="pcc-title">Radar de Módulos — Promedio Global</div></div>
-        <div style="height:220px;padding:16px"><canvas id="chartOverviewRadar"></canvas></div>
       </div>
       <div class="prop-chasm-chart-card">
         <div class="pcc-header"><div class="pcc-title">Avance por Propiedad</div></div>
@@ -992,6 +990,23 @@ tr:hover td{background:var(--surface2)}
       </div>
     </div>
   </div>
+
+  <!-- CARDS VIEW (módulos) -->
+  <div id="stratViewCards" style="display:none">
+    <div class="abismo-grid" id="abismoGrid"></div>
+  </div>
+
+  <!-- HEAT MAP VIEW -->
+  <div id="stratViewHeat" style="display:none">
+    <div class="abismo-overview">
+      <div class="section-title">Mapa de Calor — % Cumplimiento por Módulo y Propiedad</div>
+      <div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-bottom:10px">Cada celda muestra el % de cumplimiento de la meta. Gris = módulo no activo.</div>
+      <div id="abismoHeatMap"></div>
+    </div>
+  </div>
+
+  <!-- CHART VIEW -->
+
 
   <!-- CARDS VIEW (módulos) -->
   <div id="stratViewCards" style="display:none">
@@ -1397,53 +1412,6 @@ tr:hover td{background:var(--surface2)}
   <div class="abismo-grid" id="abismoGrid2"></div>
 </div>
 
-<div id="sec-abismo-calor" style="display:none" class="fade-in">
-  <div class="strategy-header">
-    <div class="sh-top">
-      <div style="flex:1;min-width:0;position:relative;z-index:1">
-        <div class="sh-badge">🧭 Vista Estratégica · DomoNow</div>
-        <div class="sh-title">Abismo — Mapa de Calor</div>
-        <div class="sh-sub">Cumplimiento de metas por módulo y propiedad.</div>
-      </div>
-    </div>
-  </div>
-  <div class="abismo-overview">
-    <div class="section-title">Mapa de Calor — % Cumplimiento por Módulo y Propiedad</div>
-    <div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-bottom:10px">Gris = módulo no activo.</div>
-    <div id="abismoHeatMap2"></div>
-  </div>
-</div>
-
-<div id="sec-abismo-graficas" style="display:none" class="fade-in">
-  <div class="strategy-header">
-    <div class="sh-top">
-      <div style="flex:1;min-width:0;position:relative;z-index:1">
-        <div class="sh-badge">🧭 Vista Estratégica · DomoNow</div>
-        <div class="sh-title">Abismo — Gráficas</div>
-        <div class="sh-sub">Visualizaciones de avance y brecha por propiedad y módulo.</div>
-      </div>
-    </div>
-  </div>
-  <div class="charts-grid">
-    <div class="chart-card chart-full">
-      <div class="chart-header"><div class="section-title">Avance vs Meta por Propiedad</div></div>
-      <div class="chart-body chart-tall"><canvas id="chartAbismoProps2"></canvas></div>
-    </div>
-    <div class="chart-card chart-full">
-      <div class="chart-header"><div class="section-title">Cumplimiento por Módulo</div></div>
-      <div class="chart-body" style="height:320px"><canvas id="chartAbismoModules2"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-header"><div class="section-title">Distribución Global</div></div>
-      <div class="chart-body"><canvas id="chartAbismoDist2"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-header"><div class="section-title">Radar de Módulos</div></div>
-      <div class="chart-body"><canvas id="chartAbismoRadar2"></canvas></div>
-    </div>
-  </div>
-</div>
-
 <div id="sec-abismo-porpropiedad" style="display:none" class="fade-in">
   <div class="strategy-header">
     <div class="sh-top">
@@ -1699,8 +1667,7 @@ function goSection(id){
   if(id==='strategy'){titleEl.innerHTML='Vista de <span style="color:var(--domo)">Estrategia — Abismo</span>';strategyView='overview';}
   if(id==='tasks'){titleEl.innerHTML='Gestión de <span style="color:var(--domo)">Tareas por Propiedad</span>';}
   if(id==='abismo-propiedad'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Por Propiedad</span>';strategyView='cards';}
-  if(id==='abismo-calor'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Mapa de Calor</span>';strategyView='heat';}
-  if(id==='abismo-graficas'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Gráficas</span>';strategyView='chart';}
+
   if(id==='abismo-porpropiedad'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Por Propiedad</span>';strategyView='prop';}
   else{titleEl.innerHTML='Panel de <span style="color:var(--domo)">Implementación</span>';}
   renderSection(id);
@@ -1717,8 +1684,7 @@ function renderSection(id){
   if(id==='strategy')renderStrategySection();
   if(id==='tasks')renderTasksSection();
   if(id==='abismo-propiedad'){strategyView='cards';renderStrategyFromNav('cards');}
-  if(id==='abismo-calor'){strategyView='heat';renderStrategyFromNav('heat');}
-  if(id==='abismo-graficas'){strategyView='chart';renderStrategyFromNav('chart');}
+
   if(id==='abismo-porpropiedad'){strategyView='prop';renderStrategyFromNav('prop');}
 }
 
@@ -1985,8 +1951,7 @@ function setStrategyView(view, el) {
   });
   el.classList.add('active-view');
   $('stratView'+view.charAt(0).toUpperCase()+view.slice(1)).style.display = 'block';
-  if(view === 'heat') renderAbismoHeatMap();
-  if(view === 'chart') renderAbismoCharts();
+
 }
 
 function setStratPhase(f, el) {
@@ -1994,8 +1959,6 @@ function setStratPhase(f, el) {
   document.querySelectorAll('#strategyPhaseTabs .filter-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   renderAbismoCards();
-  if(strategyView === 'heat') renderAbismoHeatMap();
-  if(strategyView === 'chart') renderAbismoCharts();
 }
 
 function getStrategyProps() {
@@ -2052,8 +2015,6 @@ function renderStrategySection() {
   }
   if(strategyView === 'overview') renderStrategyOverview();
   if(strategyView === 'cards') renderAbismoCards();
-  if(strategyView === 'heat') renderAbismoHeatMap();
-  if(strategyView === 'chart') renderAbismoCharts();
   if(strategyView === 'prop') renderPropChasmView();
 }
 
@@ -2171,18 +2132,33 @@ function renderStrategyOverview() {
     });
   }
 
-  // Radar modules
+  // Radar modules — full-width prominent
   destroyChart('chartOverviewRadar');
   const c2=$('chartOverviewRadar');
   if(c2){
     const modPcts=MODULES.map(m=>{const a=props.filter(p=>(p.modules||[]).includes(m.id));return a.length?Math.round(a.reduce((s,p)=>s+calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/a.length):0;});
+    const sub=$('overviewRadarSub');
+    if(sub) sub.textContent = props.length + ' propiedades · ' + MODULES.length + ' módulos';
     charts['chartOverviewRadar']=new Chart(c2.getContext('2d'),{
       type:'radar',
-      data:{labels:MODULES.map(m=>m.icon+' '+m.label),datasets:[
-        {label:'Cumplimiento',data:modPcts,backgroundColor:'rgba(130,10,209,.15)',borderColor:'#820ad1',pointBackgroundColor:'#820ad1',borderWidth:2,pointRadius:3},
-        {label:'Meta',data:MODULES.map(()=>100),backgroundColor:'rgba(0,180,100,.04)',borderColor:'rgba(0,180,100,.4)',borderWidth:1,pointRadius:2}
-      ]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}
+      data:{
+        labels:MODULES.map(m=>m.icon+'  '+m.label),
+        datasets:[
+          {label:'Promedio',data:modPcts,backgroundColor:'rgba(130,10,209,.18)',borderColor:'#820ad1',pointBackgroundColor:'#820ad1',pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5,pointRadius:5,fill:true},
+          {label:'Meta',data:MODULES.map(()=>100),backgroundColor:'rgba(0,180,100,.05)',borderColor:'rgba(0,180,100,.5)',borderWidth:1.5,pointRadius:3,borderDash:[5,4],fill:true}
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'top',labels:{color:tc,font:{family:'Montserrat',size:11,weight:'700'},boxWidth:12,padding:20}}},
+        scales:{r:{
+          angleLines:{color:gc},
+          grid:{color:gc},
+          pointLabels:{color:tc,font:{family:'Montserrat',size:11,weight:'600'}},
+          ticks:{color:tc,font:{family:'Montserrat',size:9},backdropColor:'transparent',stepSize:20},
+          min:0,max:100
+        }}
+      }
     });
   }
 
@@ -2407,11 +2383,10 @@ function setStrategyView(view, el) {
   if(target) target.style.display = 'block';
   // Show/hide filter bar only for card/heat/chart
   const filtersBar = $('stratFiltersBar');
-  if(filtersBar) filtersBar.style.display = ['cards','heat','chart'].includes(view) ? 'flex' : 'none';
+  if(filtersBar) filtersBar.style.display = view==='cards' ? 'flex' : 'none';
   // Render
   if(view === 'overview') renderStrategyOverview();
-  if(view === 'heat') renderAbismoHeatMap();
-  if(view === 'chart') renderAbismoCharts();
+
   if(view === 'prop') renderPropChasmView();
 }
 
@@ -2420,8 +2395,6 @@ function setStratPhase(f, el) {
   document.querySelectorAll('#strategyPhaseTabs .filter-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   renderAbismoCards();
-  if(strategyView === 'heat') renderAbismoHeatMap();
-  if(strategyView === 'chart') renderAbismoCharts();
 }
 
 // ══════ PROP SUBTABS ══════

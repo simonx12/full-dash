@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DomoNow – Dashboard de Implementación</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 :root {
@@ -23,34 +23,38 @@
   --shadow:0 2px 14px rgba(0,0,0,.4);--shadow-md:0 6px 30px rgba(0,0,0,.5);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden}
+html{font-size:clamp(13px,1vw + 6px,16px)}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;overflow-x:hidden}
 
 .sidebar{position:fixed;top:0;left:0;width:230px;height:100vh;background:linear-gradient(170deg,#5a0899 0%,#820ad1 55%,#a020d0 100%);display:flex;flex-direction:column;z-index:100;box-shadow:6px 0 30px rgba(130,10,209,.25)}
 .sidebar-logo{padding:26px 22px 20px;border-bottom:1px solid rgba(255,255,255,.12)}
 .logo-wrap{display:flex;align-items:center;gap:10px}
-.logo-icon{width:38px;height:38px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
-.logo-text{font-size:19px;font-weight:800;color:#fff;letter-spacing:-.3px}.logo-text span{color:var(--gold)}
-.sidebar-greeting{padding:14px 20px 6px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px}
-.greeting-name{font-size:14px;font-weight:700;color:#fff;padding:0 20px 16px}
-.sidebar-date{padding:0 20px 14px;font-size:11px;color:rgba(255,255,255,.55);font-family:'JetBrains Mono',monospace}
+.logo-icon{width:38px;height:38px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:clamp(13px,1.5vw,20px)}
+.logo-text{font-size:clamp(14px,1.3vw,19px);font-weight:800;color:#fff;letter-spacing:-.3px}.logo-text span{color:var(--gold)}
+.sidebar-greeting{padding:14px 20px 6px;font-size:clamp(9px,.85vw,11px);font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px}
+.greeting-name{font-size:clamp(11px,1vw,14px);font-weight:700;color:#fff;padding:0 20px 16px}
+.sidebar-date{padding:0 20px 14px;font-size:clamp(9px,.85vw,11px);color:rgba(255,255,255,.55);font-family:JetBrains Mono,monospace}
 .sidebar-sep{height:1px;background:rgba(255,255,255,.1);margin:0 20px 10px}
 .sidebar-nav{flex:1;padding:6px 12px;display:flex;flex-direction:column;gap:3px;overflow-y:auto}
-.nav-item{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:10px;color:rgba(255,255,255,.7);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:1px solid transparent;user-select:none}
+.nav-item{display:flex;align-items:center;gap:clamp(6px,.6vw,9px);padding:clamp(7px,.65vw,9px) clamp(10px,.95vw,13px);border-radius:10px;color:rgba(255,255,255,.7);font-size:clamp(10px,.9vw,13px);font-weight:500;cursor:pointer;transition:all .2s;border:1px solid transparent;user-select:none}
 .nav-item:hover{background:rgba(255,255,255,.12);color:#fff}
 .nav-item.active{background:rgba(247,181,0,.18);border-color:rgba(247,181,0,.35);color:var(--gold);font-weight:700}
+.nav-sub{padding:7px 13px 7px 28px !important;font-size:clamp(9px,.85vw,11px) !important;color:rgba(255,255,255,.55) !important;border-left:2px solid rgba(130,10,209,.4);margin-left:10px;border-radius:0 8px 8px 0 !important}
+.nav-sub:hover{color:rgba(255,255,255,.9) !important;border-left-color:var(--domo)}
+.nav-sub.active{color:var(--gold) !important;border-left-color:var(--gold)}
 .nav-strategy{background:rgba(255,255,255,.06);border:1px dashed rgba(255,255,255,.2)!important;margin-top:4px}
 .nav-strategy.active{background:rgba(247,181,0,.18)!important;border-color:rgba(247,181,0,.35)!important}
-.nav-icon{font-size:16px;width:22px;text-align:center}
+.nav-icon{font-size:clamp(11px,1.2vw,16px);width:22px;text-align:center}
 .sidebar-bottom{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1)}
-.sidebar-version{font-size:10px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace}
+.sidebar-version{font-size:clamp(8px,.8vw,10px);color:rgba(255,255,255,.3);font-family:JetBrains Mono,monospace}
 
 .topbar{position:fixed;top:0;left:230px;right:0;height:62px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 26px;z-index:99;box-shadow:var(--shadow)}
-.topbar-title{font-size:15px;font-weight:700}
+.topbar-title{font-size:clamp(12px,1.1vw,15px);font-weight:700}
 .topbar-actions{display:flex;align-items:center;gap:8px}
-.btn-icon{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:15px;color:var(--text-muted)}
+.btn-icon{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:clamp(11px,1.1vw,15px);color:var(--text-muted)}
 .btn-icon:hover{border-color:var(--domo);color:var(--domo)}
-.lang-sel{padding:5px 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:var(--text);outline:none}
-.topbar-clock{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);padding:5px 12px;border-radius:9px}
+.lang-sel{padding:5px 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,12px);font-weight:600;cursor:pointer;color:var(--text);outline:none}
+.topbar-clock{font-family:JetBrains Mono,monospace;font-size:clamp(10px,.9vw,12px);color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);padding:5px 12px;border-radius:9px}
 
 .main{margin-left:230px;padding-top:62px;min-height:100vh}
 .content{padding:26px}
@@ -58,47 +62,47 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .connect-wrap{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 62px);padding:30px}
 .connect-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-md);padding:44px;max-width:580px;width:100%}
 .connect-icon{font-size:52px;margin-bottom:14px;text-align:center}
-.connect-title{font-size:22px;font-weight:800;text-align:center;margin-bottom:6px}
-.connect-sub{font-size:13px;color:var(--text-muted);text-align:center;line-height:1.6;margin-bottom:28px}
+.connect-title{font-size:clamp(13px,1.6vw,22px);font-weight:800;text-align:center;margin-bottom:6px}
+.connect-sub{font-size:clamp(10px,.95vw,13px);color:var(--text-muted);text-align:center;line-height:1.6;margin-bottom:28px}
 
 .form-group{margin-bottom:16px}
-.form-label{display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px}
-.form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border .2s}
+.form-label{display:block;font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px}
+.form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);font-family:'Montserrat',sans-serif;font-size:clamp(10px,.95vw,13px);color:var(--text);outline:none;transition:border .2s}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--domo);background:var(--surface)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .form-textarea{resize:vertical;min-height:70px}
-.form-hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+.form-hint{font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-top:4px}
 
-.btn-primary{padding:11px 22px;border-radius:10px;background:var(--domo);color:#fff;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary{padding:11px 22px;border-radius:10px;background:var(--domo);color:#fff;border:none;font-family:'Montserrat',sans-serif;font-size:clamp(10px,.95vw,13px);font-weight:700;cursor:pointer;transition:all .2s}
 .btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-outline{padding:11px 22px;border-radius:10px;background:transparent;color:var(--domo);border:1.5px solid var(--domo);font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-outline{padding:11px 22px;border-radius:10px;background:transparent;color:var(--domo);border:1.5px solid var(--domo);font-family:'Montserrat',sans-serif;font-size:clamp(10px,.95vw,13px);font-weight:700;cursor:pointer;transition:all .2s}
 .btn-outline:hover{background:var(--domo);color:#fff}
-.btn-sm{padding:7px 14px;font-size:12px}
-.btn-edit{padding:5px 11px;border-radius:7px;background:rgba(130,10,209,.08);color:var(--domo);border:1px solid rgba(130,10,209,.2);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-sm{padding:7px 14px;font-size:clamp(10px,.9vw,12px)}
+.btn-edit{padding:5px 11px;border-radius:7px;background:rgba(130,10,209,.08);color:var(--domo);border:1px solid rgba(130,10,209,.2);font-family:'Montserrat',sans-serif;font-size:clamp(9px,.85vw,11px);font-weight:600;cursor:pointer;transition:all .2s}
 .btn-edit:hover{background:var(--domo);color:#fff}
-.btn-del{padding:5px 11px;border-radius:7px;background:rgba(220,50,50,.07);color:#e03030;border:1px solid rgba(220,50,50,.18);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-del{padding:5px 11px;border-radius:7px;background:rgba(220,50,50,.07);color:#e03030;border:1px solid rgba(220,50,50,.18);font-family:'Montserrat',sans-serif;font-size:clamp(9px,.85vw,11px);font-weight:600;cursor:pointer;transition:all .2s}
 .btn-del:hover{background:#e03030;color:#fff}
 
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
 .kpi-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:all .25s}
 .kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc)}
-.kpi-label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px}
-.kpi-value{font-size:30px;font-weight:800;line-height:1;margin-bottom:5px}
-.kpi-sub{font-size:11px;color:var(--text-muted)}
-.kpi-icon{position:absolute;right:16px;top:16px;width:38px;height:38px;border-radius:9px;background:var(--kbg);display:flex;align-items:center;justify-content:center;font-size:18px}
+.kpi-label{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px}
+.kpi-value{font-size:clamp(18px,2.2vw,30px);font-weight:800;line-height:1;margin-bottom:5px}
+.kpi-sub{font-size:clamp(9px,.85vw,11px);color:var(--text-muted)}
+.kpi-icon{position:absolute;right:16px;top:16px;width:38px;height:38px;border-radius:9px;background:var(--kbg);display:flex;align-items:center;justify-content:center;font-size:clamp(12px,1.3vw,18px)}
 
 .week-compare{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px}
 .wc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
-.wc-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.wc-title{font-size:clamp(10px,.95vw,13px);font-weight:700;display:flex;align-items:center;gap:8px}
 .wc-title::before{content:'';width:4px;height:16px;border-radius:2px;background:var(--domo);display:block}
 .wc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .wc-item{background:var(--surface2);border-radius:12px;padding:14px 16px;border:1px solid var(--border)}
-.wc-mod{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
-.wc-cur{font-size:24px;font-weight:800;color:var(--domo)}
-.wc-prev{font-size:13px;color:var(--text-muted)}
-.wc-delta{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px}
+.wc-mod{font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.wc-cur{font-size:clamp(14px,1.8vw,24px);font-weight:800;color:var(--domo)}
+.wc-prev{font-size:clamp(10px,.95vw,13px);color:var(--text-muted)}
+.wc-delta{font-size:clamp(9px,.85vw,11px);font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px}
 .wc-delta.up{background:rgba(0,180,100,.12);color:#00b460}
 .wc-delta.down{background:rgba(224,48,48,.1);color:#e03030}
 .wc-delta.eq{background:var(--surface3);color:var(--text-muted)}
@@ -108,26 +112,26 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .phase-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
 .phase-header{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
 .phase-dot{width:9px;height:9px;border-radius:50%}
-.phase-name{font-size:12px;font-weight:700;margin-left:7px}
-.phase-count{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.phase-name{font-size:clamp(10px,.9vw,12px);font-weight:700;margin-left:7px}
+.phase-count{font-size:clamp(9px,.85vw,11px);font-weight:700;padding:3px 10px;border-radius:20px}
 .phase-body{padding:14px 16px}
-.phase-pct{font-size:22px;font-weight:800}
+.phase-pct{font-size:clamp(13px,1.6vw,22px);font-weight:800}
 .progress-track{width:100%;height:5px;border-radius:3px;background:var(--surface2);margin:7px 0;overflow:hidden}
 .progress-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-.phase-days{font-size:11px;color:var(--text-muted)}
+.phase-days{font-size:clamp(9px,.85vw,11px);color:var(--text-muted)}
 
-.section-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;margin-bottom:14px}
+.section-title{font-size:clamp(10px,.95vw,13px);font-weight:700;display:flex;align-items:center;gap:7px;margin-bottom:14px}
 .section-title::before{content:'';width:4px;height:16px;border-radius:2px;background:var(--domo);display:block}
 
 .module-meters{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px}
 .mod-meter{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:16px 18px;box-shadow:var(--shadow)}
 .mm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.mm-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
-.mm-icon{font-size:18px}
-.mm-pct{font-size:18px;font-weight:800}
+.mm-name{display:flex;align-items:center;gap:8px;font-size:clamp(10px,.95vw,13px);font-weight:700}
+.mm-icon{font-size:clamp(12px,1.3vw,18px)}
+.mm-pct{font-size:clamp(12px,1.3vw,18px);font-weight:800}
 .mm-bar{flex:1;height:7px;border-radius:4px;background:var(--surface2);overflow:hidden}
 .mm-fill{height:100%;border-radius:4px;transition:width 1s ease}
-.mm-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:6px}
+.mm-meta{display:flex;justify-content:space-between;font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:6px}
 
 .charts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}
 .chart-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
@@ -139,18 +143,18 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 
 .table-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px}
 .table-topbar{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.table-search{padding:8px 13px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:12px;color:var(--text);outline:none;width:200px;transition:border .2s}
+.table-search{padding:8px 13px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,12px);color:var(--text);outline:none;width:200px;transition:border .2s}
 .table-search:focus{border-color:var(--domo)}
 .filter-tabs{display:flex;gap:5px;flex-wrap:wrap}
-.filter-tab{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all .2s}
+.filter-tab{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);font-family:'Montserrat',sans-serif;font-size:clamp(9px,.85vw,11px);font-weight:600;cursor:pointer;color:var(--text-muted);transition:all .2s}
 .filter-tab:hover{border-color:var(--domo);color:var(--domo)}
 .filter-tab.active{background:var(--domo);color:#fff;border-color:var(--domo)}
 table{width:100%;border-collapse:collapse}
-th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap}
-td{padding:11px 14px;font-size:12px;border-bottom:1px solid var(--border);font-weight:500;vertical-align:middle}
+th{padding:10px 14px;text-align:left;font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:11px 14px;font-size:clamp(10px,.9vw,12px);border-bottom:1px solid var(--border);font-weight:500;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--surface2)}
-.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;font-size:clamp(8px,.8vw,10px);font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
 .pill-impl{background:rgba(130,10,209,.1);color:#820ad1}
 .pill-pilot{background:rgba(247,181,0,.15);color:#b87e00}
 .pill-support{background:rgba(0,180,100,.1);color:#00a857}
@@ -158,35 +162,35 @@ tr:hover td{background:var(--surface2)}
 .bar-cell{display:flex;align-items:center;gap:7px}
 .mini-bar{flex:1;height:5px;border-radius:3px;background:var(--surface2);overflow:hidden;min-width:40px}
 .mini-fill{height:100%;border-radius:3px}
-.pct-label{font-size:11px;font-weight:700;min-width:32px;text-align:right}
+.pct-label{font-size:clamp(9px,.85vw,11px);font-weight:700;min-width:32px;text-align:right}
 .actions-cell{display:flex;gap:5px}
-.empty-state{padding:44px;text-align:center;color:var(--text-muted);font-size:13px}
+.empty-state{padding:44px;text-align:center;color:var(--text-muted);font-size:clamp(10px,.95vw,13px)}
 
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px)}
 .modal{background:var(--surface);border-radius:var(--radius);box-shadow:0 24px 64px rgba(0,0,0,.3);width:100%;max-width:620px;max-height:92vh;overflow-y:auto;animation:mIn .3s ease}
 @keyframes mIn{from{opacity:0;transform:scale(.95) translateY(18px)}to{opacity:1;transform:none}}
 .modal-header{padding:22px 26px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:2}
-.modal-title{font-size:15px;font-weight:800}
-.modal-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-muted);transition:all .2s}
+.modal-title{font-size:clamp(11px,1.1vw,15px);font-weight:800}
+.modal-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:clamp(11px,1vw,14px);color:var(--text-muted);transition:all .2s}
 .modal-close:hover{border-color:var(--red);color:var(--red)}
 .modal-body{padding:22px 26px}
 .modal-footer{padding:14px 26px 22px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--surface)}
 
-.mod-section-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.mod-section-label{font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
 .mod-section-label::before{content:'';width:3px;height:13px;border-radius:2px;background:var(--domo);display:block}
 .mp-row{border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);margin-bottom:8px;overflow:hidden;transition:border .2s}
 .mp-row.mp-on{border-color:rgba(130,10,209,.35);background:rgba(130,10,209,.04)}
 .mp-top{display:grid;grid-template-columns:28px 1fr auto 40px;align-items:center;gap:10px;padding:11px 14px}
-.mp-icon{font-size:18px;text-align:center}
+.mp-icon{font-size:clamp(12px,1.3vw,18px);text-align:center}
 .mp-info{min-width:0}
-.mp-name{font-size:13px;font-weight:700}
-.mp-meta-label{font-size:10px;color:var(--text-muted);margin-top:1px}
+.mp-name{font-size:clamp(10px,.95vw,13px);font-weight:700}
+.mp-meta-label{font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:1px}
 .mp-num-wrap{display:flex;align-items:center;gap:8px}
-.mp-num-input{width:90px;padding:7px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--text);outline:none;text-align:center;transition:border .2s}
+.mp-num-input{width:90px;padding:7px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-family:JetBrains Mono,monospace;font-size:clamp(11px,1.1vw,15px);font-weight:700;color:var(--text);outline:none;text-align:center;transition:border .2s}
 .mp-num-input:focus{border-color:var(--domo)}
 .mp-num-input:disabled{opacity:.3;cursor:not-allowed}
-.mp-unit{font-size:10px;color:var(--text-muted);white-space:nowrap}
-.mp-pct-badge{min-width:52px;text-align:center;padding:5px 8px;border-radius:8px;font-size:13px;font-weight:800;background:var(--surface3);color:var(--text-muted);transition:all .3s}
+.mp-unit{font-size:clamp(8px,.8vw,10px);color:var(--text-muted);white-space:nowrap}
+.mp-pct-badge{min-width:52px;text-align:center;padding:5px 8px;border-radius:8px;font-size:clamp(10px,.95vw,13px);font-weight:800;background:var(--surface3);color:var(--text-muted);transition:all .3s}
 .mp-pct-badge.c-green{background:rgba(0,180,100,.12);color:#00a857}
 .mp-pct-badge.c-orange{background:rgba(230,126,0,.12);color:#b86000}
 .mp-pct-badge.c-purple{background:rgba(130,10,209,.12);color:#820ad1}
@@ -195,63 +199,63 @@ tr:hover td{background:var(--surface2)}
 .mp-bar-row{padding:0 14px 10px;display:flex;align-items:center;gap:10px}
 .mp-bar-track{flex:1;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
 .mp-bar-fill{height:100%;border-radius:3px;transition:width .4s ease}
-.mp-bar-label{font-size:10px;font-weight:700;min-width:80px;text-align:right;color:var(--text-muted)}
-.mp-meta-row{padding:0 14px 10px;font-size:10px;color:var(--text-muted);display:flex;justify-content:space-between}
+.mp-bar-label{font-size:clamp(8px,.8vw,10px);font-weight:700;min-width:80px;text-align:right;color:var(--text-muted)}
+.mp-meta-row{padding:0 14px 10px;font-size:clamp(8px,.8vw,10px);color:var(--text-muted);display:flex;justify-content:space-between}
 .mp-meta-val{font-weight:700;color:var(--domo)}
 
 .progress-global-card{background:linear-gradient(135deg,#5a0899 0%,#820ad1 55%,#a020d0 100%);border-radius:var(--radius);padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;gap:36px;flex-wrap:wrap;box-shadow:0 8px 36px rgba(130,10,209,.3);position:relative;overflow:hidden}
 .progress-global-card::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05)}
 .pg-left{flex:1;min-width:220px}
-.pg-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px}
+.pg-label{font-size:clamp(9px,.85vw,11px);font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px}
 .pg-value{font-size:52px;font-weight:800;color:#fff;line-height:1;margin-bottom:4px}
-.pg-sub{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:14px}
+.pg-sub{font-size:clamp(10px,.9vw,12px);color:rgba(255,255,255,.55);margin-bottom:14px}
 .pg-bar-wrap{display:flex;align-items:center;gap:12px}
 .pg-bar{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.2);overflow:hidden}
 .pg-fill{height:100%;border-radius:4px;background:var(--gold);transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-.pg-pct{font-size:14px;font-weight:800;color:var(--gold);min-width:42px}
+.pg-pct{font-size:clamp(11px,1vw,14px);font-weight:800;color:var(--gold);min-width:42px}
 .pg-stats{display:flex;flex-direction:column;gap:12px;min-width:160px}
 .pg-stat{background:rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;backdrop-filter:blur(4px)}
-.pg-stat-val{font-size:22px;font-weight:800;color:#fff;line-height:1}
-.pg-stat-label{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px}
+.pg-stat-val{font-size:clamp(13px,1.6vw,22px);font-weight:800;color:#fff;line-height:1}
+.pg-stat-label{font-size:clamp(8px,.8vw,10px);color:rgba(255,255,255,.6);margin-top:2px}
 .pg-ring-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
-.pg-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:800;color:#fff;text-align:center}
+.pg-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(13px,1.6vw,22px);font-weight:800;color:#fff;text-align:center}
 
 .prop-progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;margin-bottom:24px}
 .pp-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:all .25s}
 .pp-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
 .pp-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.pp-name{font-size:14px;font-weight:800;line-height:1.2}
-.pp-city{font-size:11px;color:var(--text-muted);margin-top:2px}
-.pp-pct-big{font-size:28px;font-weight:800;text-align:right;line-height:1}
+.pp-name{font-size:clamp(11px,1vw,14px);font-weight:800;line-height:1.2}
+.pp-city{font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-top:2px}
+.pp-pct-big{font-size:clamp(16px,2vw,28px);font-weight:800;text-align:right;line-height:1}
 .pp-body{padding:14px 18px}
 .pp-mod-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
 .pp-mod-row{display:grid;grid-template-columns:20px 1fr auto auto;align-items:center;gap:7px}
-.pp-mod-icon{font-size:13px;text-align:center}
-.pp-mod-name{font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pp-mod-num{font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap}
-.pp-mod-pct{font-size:11px;font-weight:800;min-width:36px;text-align:right}
+.pp-mod-icon{font-size:clamp(10px,.95vw,13px);text-align:center}
+.pp-mod-name{font-size:clamp(9px,.85vw,11px);font-weight:600;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-mod-num{font-size:clamp(8px,.8vw,10px);color:var(--text-muted);font-family:JetBrains Mono,monospace;white-space:nowrap}
+.pp-mod-pct{font-size:clamp(9px,.85vw,11px);font-weight:800;min-width:36px;text-align:right}
 .pp-mod-bar-wrap{grid-column:1/5;height:4px;border-radius:2px;background:var(--surface2);overflow:hidden;margin-top:-3px}
 .pp-mod-fill{height:100%;border-radius:2px}
 .pp-overall-bar{width:100%;height:6px;border-radius:3px;background:var(--surface2);overflow:hidden;margin:8px 0 4px}
 .pp-overall-fill{height:100%;border-radius:3px}
 .pp-footer{padding:10px 18px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.pp-days{font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
-.pp-edit-btn{padding:4px 10px;border-radius:7px;background:rgba(130,10,209,.08);color:var(--domo);border:1px solid rgba(130,10,209,.2);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.pp-days{font-size:clamp(9px,.85vw,11px);color:var(--text-muted);font-family:JetBrains Mono,monospace}
+.pp-edit-btn{padding:4px 10px;border-radius:7px;background:rgba(130,10,209,.08);color:var(--domo);border:1px solid rgba(130,10,209,.2);font-family:'Montserrat',sans-serif;font-size:clamp(9px,.85vw,11px);font-weight:600;cursor:pointer;transition:all .2s}
 .pp-edit-btn:hover{background:var(--domo);color:#fff}
 
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
 .settings-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:22px 24px}
 .settings-card.full{grid-column:1/-1}
-.settings-section{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.settings-section{font-size:clamp(10px,.9vw,12px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;display:flex;align-items:center;gap:7px}
 .settings-section::before{content:'';width:4px;height:14px;border-radius:2px;background:var(--domo);display:block}
 .setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
 .setting-row:last-child{border-bottom:none}
-.setting-label{font-size:13px;font-weight:600}
-.setting-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
-.setting-input{padding:6px 11px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;width:120px}
+.setting-label{font-size:clamp(10px,.95vw,13px);font-weight:600}
+.setting-sub{font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-top:2px}
+.setting-input{padding:6px 11px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-family:'Montserrat',sans-serif;font-size:clamp(10px,.95vw,13px);color:var(--text);outline:none;width:120px}
 
 .toast-wrap{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:7px}
-.toast{padding:11px 18px;border-radius:11px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-md);font-size:12px;font-weight:600;animation:tIn .3s ease;max-width:300px}
+.toast{padding:11px 18px;border-radius:11px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-md);font-size:clamp(10px,.9vw,12px);font-weight:600;animation:tIn .3s ease;max-width:300px}
 .toast-success{border-color:rgba(0,180,100,.35);background:rgba(0,180,100,.05);color:#00a857}
 .toast-error{border-color:rgba(220,50,50,.35);background:rgba(220,50,50,.05);color:#e03030}
 @keyframes tIn{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
@@ -263,20 +267,20 @@ tr:hover td{background:var(--surface2)}
 ══════════════════════════════════ */
 .strategy-header{background:linear-gradient(135deg,#0d0221 0%,#1a0438 40%,#2d0a5e 70%,#3d1276 100%);border-radius:var(--radius);padding:32px 36px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:0 12px 48px rgba(30,4,80,.45)}
 .strategy-header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
-.strategy-header::after{content:'ABISMO';position:absolute;right:-20px;top:50%;transform:translateY(-50%) rotate(90deg);font-family:'Syne',sans-serif;font-size:120px;font-weight:800;color:rgba(255,255,255,.025);letter-spacing:10px;white-space:nowrap;pointer-events:none}
+.strategy-header::after{content:'ABISMO';position:absolute;right:-20px;top:50%;transform:translateY(-50%) rotate(90deg);font-family:'Montserrat',sans-serif;font-size:120px;font-weight:800;color:rgba(255,255,255,.025);letter-spacing:10px;white-space:nowrap;pointer-events:none}
 .sh-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px}
-.sh-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(247,181,0,.15);border:1px solid rgba(247,181,0,.3);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.5px;margin-bottom:10px}
-.sh-title{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:8px}
-.sh-sub{font-size:13px;color:rgba(255,255,255,.55);max-width:500px;line-height:1.6}
+.sh-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(247,181,0,.15);border:1px solid rgba(247,181,0,.3);padding:clamp(3px,.3vw,5px) clamp(10px,.9vw,14px);border-radius:20px;font-size:clamp(9px,.75vw,11px);font-weight:700;color:var(--gold);letter-spacing:.5px;margin-bottom:clamp(6px,.6vw,10px)}
+.sh-title{font-family:'Montserrat',sans-serif;font-size:clamp(16px,2vw,28px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:clamp(4px,.4vw,8px)}
+.sh-sub{font-size:clamp(10px,.85vw,12px);color:rgba(255,255,255,.55);max-width:clamp(300px,40vw,500px);line-height:1.6}
 .sh-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.sh-btn{padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff}
+.sh-btn{padding:9px 18px;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,12px);font-weight:700;cursor:pointer;transition:all .2s;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff}
 .sh-btn:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
 .sh-btn.active-view{background:var(--gold);border-color:var(--gold);color:#0d0221}
 .sh-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.sh-metric{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;backdrop-filter:blur(8px)}
-.sh-metric-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;line-height:1}
-.sh-metric-lbl{font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;text-transform:uppercase;letter-spacing:.6px}
-.sh-metric-sub{font-size:11px;font-weight:700;margin-top:4px}
+.sh-metric{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:clamp(10px,.9vw,14px) clamp(12px,1.1vw,16px);backdrop-filter:blur(8px)}
+.sh-metric-val{font-family:'Montserrat',sans-serif;font-size:clamp(14px,1.6vw,24px);font-weight:700;color:#fff;line-height:1}
+.sh-metric-lbl{font-size:clamp(8px,.7vw,10px);color:rgba(255,255,255,.5);margin-top:4px;text-transform:uppercase;letter-spacing:.6px}
+.sh-metric-sub{font-size:clamp(8px,.75vw,10px);font-weight:700;margin-top:4px}
 .sh-metric-sub.good{color:#00e57c}
 .sh-metric-sub.warn{color:#ffcc00}
 .sh-metric-sub.bad{color:#ff5f5f}
@@ -284,7 +288,7 @@ tr:hover td{background:var(--surface2)}
 /* Property selector for strategy */
 .strategy-prop-selector{display:flex;align-items:center;gap:10px;margin-bottom:22px;flex-wrap:wrap}
 .strategy-prop-selector .filter-tabs{flex:1}
-.prop-tab{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all .2s;white-space:nowrap}
+.prop-tab{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-family:'Montserrat',sans-serif;font-size:clamp(9px,.85vw,11px);font-weight:600;cursor:pointer;color:var(--text-muted);transition:all .2s;white-space:nowrap}
 .prop-tab:hover{border-color:var(--domo);color:var(--domo)}
 .prop-tab.active{background:var(--domo);color:#fff;border-color:var(--domo)}
 .prop-tab-all{background:var(--surface2)}
@@ -295,76 +299,392 @@ tr:hover td{background:var(--surface2)}
 .abismo-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
 .abismo-card-header{padding:16px 20px 14px;background:linear-gradient(135deg,rgba(13,2,33,.95) 0%,rgba(45,10,94,.95) 100%);position:relative;overflow:hidden}
 .abismo-card-header::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(247,181,0,.08)}
-.ach-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:2px}
-.ach-city{font-size:11px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:4px}
-.ach-phase-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;margin-top:6px}
+.ach-name{font-family:'Montserrat',sans-serif;font-size:clamp(11px,1.1vw,15px);font-weight:700;color:#fff;margin-bottom:2px}
+.ach-city{font-size:clamp(9px,.85vw,11px);color:rgba(255,255,255,.5);display:flex;align-items:center;gap:4px}
+.ach-phase-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:clamp(8px,.8vw,10px);font-weight:700;margin-top:6px}
 .ach-progress-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px;gap:10px}
 .ach-overall{display:flex;flex-direction:column;gap:4px;flex:1}
-.ach-overall-label{font-size:9px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.7px}
+.ach-overall-label{font-size:clamp(8px,.75vw,9px);color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.7px}
 .ach-overall-bar{width:100%;height:6px;border-radius:3px;background:rgba(255,255,255,.15);overflow:hidden}
 .ach-overall-fill{height:100%;border-radius:3px;transition:width 1.2s ease}
-.ach-pct{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;line-height:1}
-.ach-gap-badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800}
+.ach-pct{font-family:'Montserrat',sans-serif;font-size:clamp(20px,2.5vw,32px);font-weight:700;color:#fff;line-height:1}
+.ach-gap-badge{padding:4px 10px;border-radius:20px;font-size:clamp(8px,.8vw,10px);font-weight:800}
 .ach-gap-badge.critical{background:rgba(255,95,95,.2);color:#ff5f5f;border:1px solid rgba(255,95,95,.3)}
 .ach-gap-badge.warning{background:rgba(255,204,0,.2);color:#ffcc00;border:1px solid rgba(255,204,0,.3)}
 .ach-gap-badge.good{background:rgba(0,229,124,.2);color:#00e57c;border:1px solid rgba(0,229,124,.3)}
 
 /* Module gaps inside abismo card */
 .abismo-card-body{padding:16px 20px}
-.abismo-mod-title{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.abismo-mod-title{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
 .abismo-mod-list{display:flex;flex-direction:column;gap:8px}
 .abismo-mod-row{display:grid;grid-template-columns:22px 1fr 80px 55px;align-items:center;gap:8px}
-.abismo-mod-icon{font-size:14px;text-align:center}
+.abismo-mod-icon{font-size:clamp(11px,1vw,14px);text-align:center}
 .abismo-mod-bars{display:flex;flex-direction:column;gap:3px}
-.abismo-mod-name{font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abismo-mod-name{font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .abismo-bar-wrap{position:relative;height:6px;border-radius:3px;overflow:hidden;background:var(--surface3)}
 .abismo-bar-actual{position:absolute;left:0;top:0;height:100%;border-radius:3px;transition:width 1s ease}
 .abismo-bar-target{position:absolute;top:0;width:2px;height:100%;background:#fff;opacity:.5;transition:left 1s ease}
 .abismo-mod-nums{display:flex;flex-direction:column;gap:2px;align-items:flex-end}
-.abismo-mod-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--text)}
-.abismo-mod-target{font-size:9px;color:var(--text-muted)}
-.abismo-mod-pct-col{font-size:13px;font-weight:800;text-align:right}
-.inactive-mod{opacity:.4;font-size:11px;color:var(--text-muted);padding:6px 0;text-align:center;background:var(--surface2);border-radius:8px;margin-top:8px}
+.abismo-mod-val{font-family:JetBrains Mono,monospace;font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text)}
+.abismo-mod-target{font-size:clamp(8px,.75vw,9px);color:var(--text-muted)}
+.abismo-mod-pct-col{font-size:clamp(10px,.95vw,13px);font-weight:800;text-align:right}
+.inactive-mod{opacity:.4;font-size:clamp(9px,.85vw,11px);color:var(--text-muted);padding:6px 0;text-align:center;background:var(--surface2);border-radius:8px;margin-top:8px}
 
 /* Gap summary footer */
 .abismo-card-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2)}
 .abismo-gap-total{display:flex;flex-direction:column;gap:2px}
-.abismo-gap-total-label{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px}
-.abismo-gap-total-val{font-size:16px;font-weight:800}
+.abismo-gap-total-label{font-size:clamp(8px,.75vw,9px);color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px}
+.abismo-gap-total-val{font-size:clamp(11px,1.2vw,16px);font-weight:800}
 .abismo-gap-total-val.critical{color:#e03030}
 .abismo-gap-total-val.warning{color:#e67e00}
 .abismo-gap-total-val.good{color:#00b460}
-.abismo-action-btn{padding:6px 14px;border-radius:8px;background:rgba(130,10,209,.1);color:var(--domo);border:1px solid rgba(130,10,209,.25);font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s}
+.abismo-action-btn{padding:6px 14px;border-radius:8px;background:rgba(130,10,209,.1);color:var(--domo);border:1px solid rgba(130,10,209,.25);font-family:'Montserrat',sans-serif;font-size:clamp(9px,.85vw,11px);font-weight:700;cursor:pointer;transition:all .2s}
 .abismo-action-btn:hover{background:var(--domo);color:#fff}
 
 /* Abismo Overview — global view */
 .abismo-overview{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:24px;margin-bottom:24px}
 .abismo-heat-grid{display:grid;gap:1px;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-top:14px}
-.abismo-heat-header{display:grid;background:var(--surface2);font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;padding:8px 12px}
+.abismo-heat-header{display:grid;background:var(--surface2);font-size:clamp(8px,.75vw,9px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;padding:8px 12px}
 .abismo-heat-row{display:grid;align-items:center;padding:9px 12px;transition:background .15s}
 .abismo-heat-row:hover{background:var(--surface2)}
-.heat-cell{font-size:11px;font-weight:700;text-align:center;padding:4px 6px;border-radius:6px;cursor:default}
+.heat-cell{font-size:clamp(9px,.85vw,11px);font-weight:700;text-align:center;padding:4px 6px;border-radius:6px;cursor:default}
 .heat-0{background:rgba(224,48,48,.15);color:#e03030}
 .heat-1{background:rgba(230,126,0,.15);color:#e67e00}
 .heat-2{background:rgba(247,181,0,.15);color:#b87e00}
 .heat-3{background:rgba(0,180,100,.12);color:#00b460}
 .heat-na{background:var(--surface3);color:var(--text-muted)}
-.heat-prop-name{font-size:12px;font-weight:700}
-.heat-prop-city{font-size:10px;color:var(--text-muted)}
-.heat-overall{font-size:13px;font-weight:800}
+.heat-prop-name{font-size:clamp(10px,.9vw,12px);font-weight:700}
+.heat-prop-city{font-size:clamp(8px,.8vw,10px);color:var(--text-muted)}
+.heat-overall{font-size:clamp(10px,.95vw,13px);font-weight:800}
 
 /* Strategy view toggle */
 .strategy-view-tabs{display:flex;gap:8px;margin-bottom:20px;padding:4px;background:var(--surface2);border-radius:12px;width:fit-content;border:1px solid var(--border)}
-.svt-btn{padding:7px 18px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all .2s}
+.svt-btn{padding:7px 18px;border-radius:9px;font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,12px);font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all .2s}
 .svt-btn.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.1);border:1px solid var(--border)}
 
 /* Legend */
 .abismo-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:clamp(9px,.85vw,11px);color:var(--text-muted)}
 .legend-dot{width:10px;height:10px;border-radius:3px}
 
 @media(max-width:900px){.prop-progress-grid{grid-template-columns:1fr}.progress-global-card{flex-direction:column;gap:20px}.pg-ring-wrap{align-self:center}.wc-grid{grid-template-columns:1fr 1fr}.abismo-grid{grid-template-columns:1fr}.sh-metrics{grid-template-columns:1fr 1fr}}
+/* ══ TASKS SECTION ══ */
+.tasks-section-label{font-size:clamp(9px,.85vw,11px);font-weight:800;color:var(--domo);text-transform:uppercase;letter-spacing:.9px;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+
+.tasks-header{background:linear-gradient(135deg,#0d0221,#1a0438,#2d0a5e);border-radius:var(--radius);padding:24px 32px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(30,4,80,.4)}
+.tasks-eyebrow{font-size:clamp(8px,.8vw,10px);font-weight:700;color:rgba(247,181,0,.85);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.tasks-title{font-size:clamp(14px,1.6vw,22px);font-weight:800;color:#fff;font-family:'Montserrat',sans-serif;margin-bottom:clamp(3px,.3vw,4px)}
+.tasks-sub{font-size:clamp(9px,.8vw,11px);color:rgba(255,255,255,.55);line-height:1.5;max-width:clamp(280px,40vw,480px)}
+.tasks-header{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.tasks-global-pct{text-align:right;flex-shrink:0}
+.tgp-label{font-size:clamp(8px,.75vw,9px);font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.tgp-val{font-size:clamp(22px,2.8vw,36px);font-weight:900;color:var(--gold);font-family:'Montserrat',sans-serif;line-height:1}
+
+/* ── layout ── */
+.tasks-layout{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
+.tasks-prop-list{display:flex;flex-direction:column;gap:8px;position:sticky;top:80px}
+.tasks-panel{min-height:400px}
+.tasks-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;background:var(--surface);border-radius:var(--radius);border:2px dashed var(--border)}
+
+/* ── property card in list ── */
+.tpl-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;cursor:pointer;transition:all .2s}
+.tpl-card:hover{border-color:rgba(130,10,209,.4);box-shadow:0 4px 16px rgba(130,10,209,.1)}
+.tpl-card.tpl-active{border-color:var(--domo);background:rgba(130,10,209,.07);box-shadow:0 4px 20px rgba(130,10,209,.18)}
+.tpl-name{font-size:clamp(10px,.95vw,13px);font-weight:700;color:var(--text);margin-bottom:3px}
+.tpl-meta{font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:8px}
+.tpl-bar-wrap{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.tpl-bar-fill{height:100%;border-radius:2px;transition:width .8s ease}
+.tpl-pct{font-size:clamp(8px,.8vw,10px);font-weight:700;margin-top:4px}
+.tpl-task-count{font-size:clamp(8px,.75vw,9px);font-weight:700;background:rgba(130,10,209,.12);color:var(--domo);padding:2px 7px;border-radius:10px;display:inline-block;margin-top:4px}
+
+/* ── adoption mini card ── */
+.tasks-adoption-card{background:#fff;border-radius:18px;padding:20px 24px;box-shadow:0 4px 20px rgba(0,0,0,.07);border:1px solid rgba(0,0,0,.06);margin-bottom:18px}
+[data-theme="dark"] .tasks-adoption-card{background:var(--surface);border-color:var(--border)}
+.tac-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px}
+.tac-eyebrow{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--domo);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.tac-propname{font-size:clamp(11px,1.2vw,16px);font-weight:800;color:var(--text);font-family:'Montserrat',sans-serif}
+.tac-chasm-badge{text-align:right;flex-shrink:0}
+.tac-cb-label{font-size:clamp(8px,.75vw,9px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:2px}
+.tac-cb-pct{font-size:clamp(15px,1.9vw,26px);font-weight:900;color:var(--domo);font-family:'Montserrat',sans-serif;line-height:1}
+.tac-bars{display:flex;align-items:flex-end;justify-content:center;gap:6px;height:180px;padding:0 4px;margin-bottom:16px;position:relative}
+.tac-bars::before{content:'';position:absolute;bottom:22px;left:0;right:0;height:1px;background:rgba(0,0,0,.06)}
+[data-theme="dark"] .tac-bars::before{background:rgba(255,255,255,.06)}
+.tac-seg{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;flex:1;gap:0}
+.tac-bar{width:100%;border-radius:10px 10px 0 0;opacity:1;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:height .8s cubic-bezier(.4,0,.2,1)}
+.tac-label{font-size:clamp(7px,.7vw,8px);font-weight:800;text-transform:uppercase;letter-spacing:.4px;text-align:center;margin-top:8px;white-space:nowrap}
+.tac-gap-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;padding-bottom:24px;min-width:40px}
+.tac-gap-track{width:8px;height:110px;border-radius:4px;background:rgba(224,48,48,.12);overflow:hidden;border:1.5px solid rgba(224,48,48,.28)}
+.tac-gap-fill{width:100%;transition:height 1s ease;border-radius:3px}
+.tac-gap-word{font-size:clamp(7px,.7vw,8px);font-weight:800;color:#e03030;text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.4px}
+.tac-gap-pct{font-size:clamp(8px,.8vw,10px);font-weight:800;color:var(--domo)}
+
+/* ── stacked progress bar ── */
+.tac-progress-wrap{border-top:1px solid var(--border);padding-top:12px;margin-top:4px}
+.tac-bar-track{width:100%;height:10px;border-radius:5px;background:var(--surface2);overflow:hidden;display:flex;margin-bottom:4px}
+.tac-bar-mods{height:100%;background:linear-gradient(90deg,#820ad1,#a34dde);transition:width .8s ease}
+.tac-bar-tasks{height:100%;background:linear-gradient(90deg,#00b460,#00e57c);transition:width .8s ease}
+
+/* ── add task form ── */
+.task-add-form{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:18px}
+.taf-title{font-size:clamp(10px,.95vw,13px);font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.taf-title::before{content:'';width:3px;height:14px;background:var(--domo);border-radius:2px;display:block}
+.taf-row{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.taf-field{display:flex;flex-direction:column;gap:5px;min-width:120px}
+.taf-label{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px}
+.taf-cats{display:flex;gap:5px;flex-wrap:wrap}
+.taf-cat{padding:5px 10px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border);font-family:'Montserrat',sans-serif;font-size:clamp(8px,.8vw,10px);font-weight:700;cursor:pointer;color:var(--text-muted);transition:all .18s}
+.taf-cat:hover{border-color:var(--domo);color:var(--domo)}
+.taf-cat-active{background:rgba(130,10,209,.1);border-color:var(--domo) !important;color:var(--domo) !important}
+.taf-add-btn{white-space:nowrap;padding:10px 20px !important;align-self:flex-end;font-family:'Montserrat',sans-serif !important;font-size:clamp(10px,.9vw,12px) !important}
+
+/* ── task item card ── */
+.task-item-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;transition:all .2s}
+.task-item-card:hover{box-shadow:var(--shadow-md)}
+.task-item-card.tic-done{border-color:rgba(0,180,100,.3);background:rgba(0,180,100,.03)}
+.tic-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.tic-cat-badge{font-size:clamp(8px,.75vw,9px);font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(130,10,209,.1);color:var(--domo);text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.tic-text{flex:1;font-size:clamp(10px,.95vw,13px);font-weight:600;color:var(--text);line-height:1.4}
+.tic-weight{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);white-space:nowrap;padding:3px 8px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)}
+.tic-del{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:clamp(11px,1vw,14px);padding:0 4px;transition:color .2s;flex-shrink:0}
+.tic-del:hover{color:#e03030}
+.tic-progress-row{display:flex;align-items:center;gap:10px}
+.tic-prog-label{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);min-width:56px;text-transform:uppercase;letter-spacing:.5px}
+.tic-bar-wrap{flex:1;height:6px;border-radius:3px;background:var(--surface2);overflow:hidden}
+.tic-bar-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.tic-pct{font-size:clamp(9px,.85vw,11px);font-weight:800;min-width:36px;text-align:right}
+.tic-slider{width:90px;accent-color:var(--domo)}
+.tic-contrib{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);min-width:50px;text-align:right}
+
 @media(max-width:768px){.sidebar{transform:translateX(-100%)}.topbar{left:0}.main{margin-left:0}.kpi-grid{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}.sh-metrics{grid-template-columns:1fr 1fr}}
+
+/* ══ STRATEGY HEADER FIXES ══ */
+.strategy-header{padding:24px 32px !important}
+.sh-top{align-items:center !important}
+/* sh overrides removed — unified below */
+.sh-controls{gap:6px !important}
+.sh-btn{font-size:clamp(9px,.85vw,11px) !important;padding:7px 14px !important}
+.strategy-header::after{font-size:clamp(40px,5vw,70px) !important;z-index:0 !important}
+
+/* ══ PROP SUBTABS ══ */
+.prop-subtab{padding:8px 20px;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,12px);font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all .2s}
+.prop-subtab-active{background:var(--surface);color:var(--domo);box-shadow:0 2px 8px rgba(0,0,0,.1);border:1px solid var(--border) !important}
+
+/* ══ PROP CHASM CHART CARD ══ */
+.prop-chasm-chart-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.pcc-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pcc-title{font-size:clamp(10px,.9vw,12px);font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px}
+.pcc-title::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--domo);display:block}
+.pcc-sub{font-size:clamp(9px,.85vw,11px);color:var(--text-muted)}
+
+/* ══ CHASM METER ══ */
+.chasm-meter-wrap{width:100%;max-width:340px;margin:0 auto}
+.chasm-meter-track{width:100%;height:10px;border-radius:5px;background:rgba(224,48,48,.2);overflow:hidden;margin-bottom:4px}
+.chasm-meter-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#820ad1,#00b460);transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.chasm-meter-labels{display:flex;justify-content:space-between;align-items:center}
+.chasm-pct-label{font-size:clamp(10px,.95vw,13px);font-weight:800;color:var(--domo)}
+
+/* ══ CURVE PLACEHOLDER ══ */
+.curve-placeholder{color:var(--text-muted);font-size:clamp(10px,.9vw,12px);text-align:center;width:100%;align-self:center}
+.adoption-curve-wrap{padding:20px}
+
+/* ══ ROAD CATEGORY BTNS ══ */
+.road-cat-btn{padding:7px 10px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border);font-family:'Montserrat',sans-serif;font-size:clamp(8px,.8vw,10px);font-weight:700;cursor:pointer;color:var(--text-muted);transition:all .2s}
+.road-cat-btn:hover{border-color:var(--domo);color:var(--domo)}
+.road-cat-active{background:rgba(130,10,209,.1);border-color:var(--domo) !important;color:var(--domo) !important}
+
+/* ══ CHASM VISUAL (abismo animado) ══ */
+.chasm-visual-wrap{display:flex;align-items:flex-end;gap:0;padding:16px 20px;height:110px}
+.chasm-visual-left,.chasm-visual-right{flex:2;display:flex;flex-direction:column;align-items:center;gap:4px}
+.cv-label{font-size:clamp(8px,.75vw,9px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;text-align:center}
+.cv-bar{width:100%;border-radius:8px 8px 0 0}
+.cv-bar-left{height:60px;background:linear-gradient(180deg,#a34dde,#820ad1)}
+.cv-bar-right{height:90px;background:linear-gradient(180deg,#c77dff,#820ad1)}
+.chasm-gap-column{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px}
+.cg-label{font-size:clamp(8px,.75vw,9px);font-weight:800;color:#e03030;text-transform:uppercase;letter-spacing:.5px}
+.cg-track{width:16px;height:70px;border-radius:8px;background:rgba(224,48,48,.15);overflow:hidden;display:flex;flex-direction:column;border:1.5px solid rgba(224,48,48,.3)}
+.cg-fill{width:100%;background:linear-gradient(180deg,#820ad1,#00b460);transition:height 1.2s cubic-bezier(.4,0,.2,1)}
+.cg-remaining{flex:1;background:rgba(224,48,48,.25)}
+.cg-pct{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--domo)}
+
+/* ══ TASK BRIDGE BARS ══ */
+.task-bridge-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
+.task-bridge-row:last-child{border-bottom:none}
+.tbr-name{flex:1;font-size:clamp(9px,.85vw,11px);font-weight:600;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbr-weight{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);min-width:30px;text-align:right}
+.tbr-bar-wrap{width:80px;height:5px;border-radius:3px;background:var(--surface3);overflow:hidden}
+.tbr-bar-fill{height:100%;border-radius:3px;background:var(--domo);transition:width .8s ease}
+.tbr-pct{font-size:clamp(8px,.8vw,10px);font-weight:800;min-width:36px;text-align:right}
+
+/* ══ ROAD TASK CARDS ══ */
+.road-task-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;transition:all .2s}
+.road-task-card:hover{box-shadow:var(--shadow-md)}
+.road-task-card.rtc-done{border-color:rgba(0,180,100,.3);background:rgba(0,180,100,.03)}
+.rtc-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.rtc-cat{font-size:clamp(8px,.75vw,9px);font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(130,10,209,.1);color:var(--domo);text-transform:uppercase}
+.rtc-text{flex:1;font-size:clamp(10px,.9vw,12px);font-weight:600;color:var(--text)}
+.rtc-weight{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted)}
+.rtc-progress-row{display:flex;align-items:center;gap:8px}
+.rtc-bar-wrap{flex:1;height:6px;border-radius:3px;background:var(--surface2);overflow:hidden}
+.rtc-bar-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.rtc-pct-lbl{font-size:clamp(9px,.85vw,11px);font-weight:800;min-width:36px;text-align:right}
+.chasm-seal-pct{font-size:clamp(11px,1.2vw,16px);font-weight:800;color:var(--domo)}
+
+/* ══ PROP CHASM KPIS ══ */
+.pck-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pck-item{background:var(--surface2);border-radius:10px;padding:12px 14px;border:1px solid var(--border)}
+.pck-val{font-size:clamp(13px,1.6vw,22px);font-weight:800;line-height:1;margin-bottom:3px}
+.pck-label{font-size:clamp(8px,.75vw,9px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px}
+
+/* ══ STRAT TAB NAV ══ */
+.strat-tab-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;padding:6px;background:var(--surface);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.strat-tab-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,12px);font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all .22s;white-space:nowrap}
+.strat-tab-btn span{font-size:clamp(11px,1vw,14px)}
+.strat-tab-btn:hover{background:var(--surface2);color:var(--text)}
+.strat-tab-active{background:linear-gradient(135deg,#820ad1,#a34dde) !important;color:#fff !important;box-shadow:0 3px 14px rgba(130,10,209,.35) !important}
+
+/* ══ OVERVIEW ══ */
+.overview-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.ov-kpi{background:var(--surface);border-radius:14px;border:1px solid var(--border);padding:16px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:all .22s}
+.ov-kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.ov-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ok)}
+.ov-kpi-val{font-size:clamp(16px,2vw,28px);font-weight:800;line-height:1;margin-bottom:4px;font-family:'Montserrat',sans-serif}
+.ov-kpi-label{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px}
+.ov-kpi-sub{font-size:clamp(9px,.85vw,11px);font-weight:600;margin-top:4px}
+.overview-charts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+
+/* ══ PROP SUB-TABS BAR ══ */
+.prop-subtabs-bar{display:flex;gap:0;margin-bottom:24px;background:var(--surface2);border-radius:14px;padding:4px;width:fit-content;border:1px solid var(--border)}
+.prop-subtab{display:flex;align-items:center;gap:7px;padding:9px 22px;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,12px);font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all .2s}
+.pst-icon{font-size:clamp(11px,1vw,14px)}
+.prop-subtab:hover{color:var(--domo)}
+.prop-subtab-active{background:var(--surface) !important;color:var(--domo) !important;box-shadow:0 2px 10px rgba(130,10,209,.15);border:1px solid rgba(130,10,209,.2) !important}
+
+/* ══ PROP SELECTOR BAR ══ */
+/* ══ PROPERTY SELECTOR ══ */
+.prop-selector-bar{margin-bottom:24px}
+.prop-selector-label{font-size:clamp(9px,.8vw,11px);font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:8px}
+.prop-dropdown-wrap{display:flex;align-items:center;gap:10px}
+.prop-dropdown{appearance:none;-webkit-appearance:none;width:100%;max-width:400px;padding:clamp(10px,.9vw,14px) clamp(14px,1.2vw,20px);border-radius:12px;border:2px solid var(--domo);background:var(--surface);font-family:'Montserrat',sans-serif;font-size:clamp(12px,1vw,15px);font-weight:700;color:var(--text);cursor:pointer;outline:none;transition:all .2s;box-shadow:0 2px 12px rgba(130,10,209,.12);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23820ad1' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+.prop-dropdown:focus{border-color:var(--domo);box-shadow:0 0 0 3px rgba(130,10,209,.15)}
+.prop-dropdown:hover{border-color:#a34dde;box-shadow:0 4px 16px rgba(130,10,209,.2)}
+[data-theme="dark"] .prop-dropdown{background-color:var(--surface);color:var(--text)}
+.prop-dropdown option{font-family:'Montserrat',sans-serif;font-weight:600;padding:8px}
+.prop-dd-badge{display:flex;align-items:center;gap:6px;padding:clamp(8px,.7vw,11px) clamp(12px,1vw,16px);border-radius:10px;background:rgba(130,10,209,.08);border:1.5px solid rgba(130,10,209,.2);font-size:clamp(10px,.85vw,12px);font-weight:700;white-space:nowrap;flex-shrink:0}
+.prop-dd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.prop-dd-pct{color:var(--domo)}
+.prop-nav-btn{width:clamp(32px,2.4vw,38px);height:clamp(32px,2.4vw,38px);border-radius:50%;border:2px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:clamp(14px,1.2vw,18px);color:var(--text-muted);transition:all .2s;font-weight:700;flex-shrink:0}
+.prop-nav-btn:hover{border-color:var(--domo);color:#fff;background:var(--domo)}
+
+/* ══ PROP SUB-TABS BAR ══ */
+.prop-subtabs-bar{display:flex;gap:0;margin-bottom:24px;background:var(--surface2);border-radius:14px;padding:4px;width:fit-content;border:1px solid var(--border)}
+.prop-subtab{display:flex;align-items:center;gap:7px;padding:9px 22px;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,12px);font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all .2s}
+.pst-icon{font-size:clamp(11px,1vw,14px)}
+.prop-subtab:hover{color:var(--domo)}
+.prop-subtab-active{background:var(--surface) !important;color:var(--domo) !important;box-shadow:0 2px 10px rgba(130,10,209,.15);border:1px solid rgba(130,10,209,.2) !important}
+
+/* ══ PROP SELECTOR BAR ══ */
+/* ══ PROPERTY SELECTOR ══ */
+.prop-selector-bar{margin-bottom:24px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:clamp(12px,1.2vw,18px) clamp(14px,1.4vw,20px);box-shadow:var(--shadow)}
+.prop-selector-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+.prop-selector-label{font-size:clamp(9px,.8vw,11px);font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px}
+.prop-nav-arrows{display:flex;align-items:center;gap:6px}
+.prop-nav-btn{width:clamp(28px,2.2vw,34px);height:clamp(28px,2.2vw,34px);border-radius:50%;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:clamp(13px,1.1vw,16px);color:var(--text-muted);transition:all .2s;font-weight:700;line-height:1}
+.prop-nav-btn:hover{border-color:var(--domo);color:#fff;background:var(--domo)}
+.prop-nav-count{font-size:clamp(10px,.85vw,12px);font-weight:700;color:var(--text-muted);min-width:36px;text-align:center}
+.prop-pills{display:flex;flex-wrap:wrap;gap:8px}
+.prop-pill{display:flex;align-items:center;gap:8px;padding:clamp(8px,.7vw,11px) clamp(12px,1vw,18px);border-radius:50px;border:1.5px solid var(--border);background:var(--surface2);font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,13px);font-weight:700;cursor:pointer;color:var(--text-muted);transition:all .22s;white-space:nowrap;user-select:none}
+.prop-pill:hover{border-color:var(--domo);color:var(--domo);background:rgba(130,10,209,.06);transform:translateY(-2px);box-shadow:0 4px 14px rgba(130,10,209,.15)}
+.prop-pill.pp-active{background:linear-gradient(135deg,#820ad1,#a34dde);border-color:#820ad1;color:#fff;box-shadow:0 4px 18px rgba(130,10,209,.35);transform:translateY(-2px)}
+.prop-pill:hover .prop-pill-dot,.prop-pill.pp-active .prop-pill-dot{transform:scale(1.2)}
+.prop-pill-dot{width:clamp(7px,.6vw,9px);height:clamp(7px,.6vw,9px);border-radius:50%;flex-shrink:0;transition:transform .2s}
+.prop-pill-name{max-width:clamp(80px,8vw,140px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prop-pill-pct{font-size:clamp(8px,.7vw,10px);opacity:.8;font-weight:700;background:rgba(0,0,0,.12);padding:1px 5px;border-radius:6px}
+.prop-pill.pp-active .prop-pill-pct{background:rgba(255,255,255,.2)}
+
+/* ══ ADOPTION MAIN CARD ══ */
+.adoption-main-card{background:#fff;border-radius:22px;padding:28px 32px;box-shadow:0 4px 24px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06);margin-bottom:20px;overflow:hidden;position:relative}
+[data-theme="dark"] .adoption-main-card{background:var(--surface);border-color:var(--border)}
+.amc-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px}
+.amc-eyebrow{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--domo);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
+.amc-title{font-size:clamp(13px,1.4vw,18px);font-weight:800;color:var(--text);font-family:'Montserrat',sans-serif}
+.amc-success-badge{text-align:right;flex-shrink:0}
+.amc-success-label{font-size:clamp(8px,.75vw,9px);font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
+.amc-success-pct{font-size:clamp(16px,2vw,28px);font-weight:900;color:var(--domo);font-family:'Montserrat',sans-serif;line-height:1}
+
+/* ══ ADOPTION BARS ══ */
+.adoption-bars-wrap{position:relative;margin-bottom:16px}
+.adoption-bars{display:flex;align-items:flex-end;justify-content:center;gap:8px;height:240px;padding:0 8px;position:relative}
+.adoption-bars::before{content:'';position:absolute;bottom:20px;left:0;right:0;height:1px;background:rgba(0,0,0,.06)}
+[data-theme="dark"] .adoption-bars::before{background:rgba(255,255,255,.06)}
+.ab-seg{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:0;cursor:pointer;transition:all .3s;flex:1}
+.ab-seg:hover .ab-bar{opacity:1;transform:scaleX(1.03)}
+.ab-bar{width:100%;border-radius:12px 12px 0 0;transition:all .3s;opacity:1;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.ab-label{margin-top:10px;font-size:clamp(8px,.75vw,9px);font-weight:800;text-transform:uppercase;letter-spacing:.5px;text-align:center;white-space:nowrap}
+.ab-gap{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;padding-bottom:24px;min-width:48px}
+.ab-gap-track{width:10px;height:140px;border-radius:5px;background:rgba(224,48,48,.12);overflow:hidden;border:1.5px solid rgba(224,48,48,.25);position:relative}
+.ab-gap-fill{position:absolute;bottom:0;width:100%;border-radius:4px;transition:height 1.2s cubic-bezier(.4,0,.2,1)}
+.ab-gap-info{text-align:center}
+.ab-gap-word{font-size:clamp(7px,.7vw,8px);font-weight:800;color:#e03030;text-transform:uppercase;letter-spacing:.3px;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);line-height:1}
+.ab-gap-pct{font-size:clamp(9px,.85vw,11px);font-weight:800;color:var(--domo)}
+
+/* ══ CHASM METER BAR ══ */
+.amc-chasm-bar{display:flex;align-items:center;gap:10px;padding:12px 0 4px}
+.acb-label-left,.acb-label-right{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);min-width:28px}
+.acb-label-right{text-align:right}
+.acb-track{flex:1;height:8px;border-radius:4px;background:rgba(130,10,209,.1);overflow:hidden;border:1px solid rgba(130,10,209,.15)}
+.acb-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#820ad1,#00b460);transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.acb-pct{font-size:clamp(10px,.9vw,12px);font-weight:800;color:var(--domo);min-width:80px;text-align:center}
+
+/* ══ HITOS CARD (dark, estilo index5) ══ */
+.hitos-card{background:linear-gradient(135deg,#1a1030 0%,#0f0820 50%,#1a0438 100%);border-radius:22px;padding:28px;margin-bottom:20px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.hitos-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.hitos-title{display:flex;align-items:center;gap:10px;font-size:clamp(12px,1.2vw,16px);font-weight:800;color:#fff;font-family:'Montserrat',sans-serif;font-style:italic;text-transform:uppercase}
+.hitos-icon{font-size:clamp(12px,1.3vw,18px)}
+.hitos-prop-badge{font-size:clamp(9px,.85vw,11px);font-weight:600;color:rgba(255,255,255,.45);background:rgba(255,255,255,.08);padding:4px 12px;border-radius:20px}
+.hitos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.hito-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:16px 18px;border-radius:16px;transition:all .2s;cursor:default}
+.hito-card:hover{background:rgba(255,255,255,.09)}
+.hito-cat{display:inline-block;padding:3px 10px;background:rgba(130,10,209,.3);color:#c77dff;border-radius:20px;font-size:clamp(7px,.7vw,8px);font-weight:800;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.hito-text{font-size:clamp(10px,.95vw,13px);font-weight:600;color:#f0ecff;line-height:1.4;margin-bottom:10px}
+.hito-bar-wrap{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.hito-bar-fill{height:100%;border-radius:2px;transition:width 1s ease}
+.hito-footer{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.hito-pct{font-size:clamp(8px,.8vw,10px);font-weight:700}
+.hito-status{font-size:clamp(8px,.75vw,9px);font-weight:700;padding:2px 8px;border-radius:10px}
+.hito-done{background:rgba(0,180,100,.2);color:#00e57c}
+.hito-pending{background:rgba(130,10,209,.2);color:#c77dff}
+
+/* ══ PROP EST BOTTOM GRID ══ */
+.prop-est-bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+
+/* ══ ROADMAP LAYOUT ══ */
+.roadmap-layout{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+.roadmap-main{}
+.roadmap-sidebar{}
+
+/* ══ ROAD CHASM VISUAL ══ */
+.road-chasm-visual{display:flex;align-items:flex-end;justify-content:center;gap:6px;padding:16px 24px 8px;height:130px}
+.rcv-side{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;flex:2}
+.rcv-bar{width:100%;border-radius:8px 8px 0 0}
+.rcv-label{font-size:clamp(8px,.75vw,9px);font-weight:700;color:var(--domo);text-transform:uppercase;letter-spacing:.4px;margin-top:6px;text-align:center}
+.rcv-gap{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;flex:1;min-width:56px}
+.rcv-gap-label{font-size:clamp(7px,.7vw,8px);font-weight:800;color:#e03030;text-transform:uppercase;letter-spacing:.5px}
+.rcv-gap-track{width:14px;height:80px;border-radius:7px;overflow:hidden;border:1.5px solid rgba(224,48,48,.3);display:flex;flex-direction:column}
+.rcv-gap-sealed{width:100%;background:linear-gradient(180deg,#820ad1,#00b460);transition:height 1s ease}
+.rcv-gap-open{flex:1;background:rgba(224,48,48,.18)}
+.rcv-gap-pct{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--domo)}
+
+/* ══ ROAD FIELD LABEL ══ */
+.road-field-label{font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.road-cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .prop-est-bottom-grid{grid-template-columns:1fr}
+  .roadmap-layout{grid-template-columns:1fr}
+  .adoption-bars{height:180px}
+}
+
 </style>
 </head>
 <body data-theme="light">
@@ -388,7 +708,13 @@ tr:hover td{background:var(--surface2)}
     <div class="nav-item" data-sec="charts" onclick="showSection('charts',this)"><span class="nav-icon">📈</span> Gráficas</div>
     <div class="nav-item" data-sec="settings" onclick="showSection('settings',this)"><span class="nav-icon">⚙️</span> Configuración</div>
     <div class="sidebar-sep"></div>
+    <div class="nav-item" data-sec="tasks" onclick="showSection('tasks',this)"><span class="nav-icon">✅</span> Tareas</div>
+    <div class="sidebar-sep" style="margin:4px 0 2px"></div>
     <div class="nav-item nav-strategy" data-sec="strategy" onclick="showSection('strategy',this)"><span class="nav-icon">🧭</span> Estrategia — Abismo</div>
+    <div class="nav-item nav-sub" data-sec="abismo-propiedad" onclick="showSection('abismo-propiedad',this)"><span class="nav-icon">⬛</span> Por Propiedad</div>
+    <div class="nav-item nav-sub" data-sec="abismo-calor" onclick="showSection('abismo-calor',this)"><span class="nav-icon">🌡️</span> Mapa de Calor</div>
+    <div class="nav-item nav-sub" data-sec="abismo-graficas" onclick="showSection('abismo-graficas',this)"><span class="nav-icon">📊</span> Gráficas</div>
+    <div class="nav-item nav-sub" data-sec="abismo-porpropiedad" onclick="showSection('abismo-porpropiedad',this)"><span class="nav-icon">🏢</span> Abismo x Prop.</div>
   </nav>
   <div class="sidebar-bottom">
     <div class="sidebar-version">DomoNow v3.0 · 2025</div>
@@ -419,7 +745,7 @@ tr:hover td{background:var(--surface2)}
         <button class="btn-primary" id="btnConnect" onclick="connectSupabase()" style="flex:1">Conectar →</button>
         <button class="btn-outline" onclick="useDemoData()">🧪 Demo</button>
       </div>
-      <div style="margin-top:18px;padding:14px;border-radius:10px;background:var(--surface2);font-size:11px;color:var(--text-muted);line-height:1.9">
+      <div style="margin-top:18px;padding:14px;border-radius:10px;background:var(--surface2);font-size:clamp(9px,.85vw,11px);color:var(--text-muted);line-height:1.9">
         <strong style="color:var(--text)">Tablas requeridas:</strong><br>
         📋 <code>properties</code> — name, city, phase, days_elapsed, units, active_modules[], module_values (JSON), notes, entry_date<br>
         🗓️ <code>activity_log</code> — property_id, module, count, week_start (DATE)
@@ -437,7 +763,7 @@ tr:hover td{background:var(--surface2)}
     <div class="kpi-card" style="--kc:#00b460;--kbg:rgba(0,180,100,.1)"><div class="kpi-icon">🛡️</div><div class="kpi-label">Soporte Continuo</div><div class="kpi-value" id="kpiSupport">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiSupportDays">0</span> días</div></div>
   </div>
   <div class="week-compare">
-    <div class="wc-header"><div class="wc-title">Esta semana vs semana pasada</div><div style="font-size:11px;color:var(--text-muted)" id="wcDateRange"></div></div>
+    <div class="wc-header"><div class="wc-title">Esta semana vs semana pasada</div><div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted)" id="wcDateRange"></div></div>
     <div class="wc-grid" id="wcGrid"></div>
   </div>
   <div class="section-title">Progreso por Fase</div>
@@ -484,7 +810,7 @@ tr:hover td{background:var(--surface2)}
     <div class="chart-card chart-full"><div class="chart-header"><div class="section-title">Valores reales registrados por módulo y propiedad</div></div><div class="chart-body chart-tall"><canvas id="chartModPhase"></canvas></div></div>
   </div>
   <div class="table-card">
-    <div class="table-topbar"><div class="section-title" style="margin-bottom:0">Resumen de módulos</div><div style="font-size:11px;color:var(--text-muted)" id="modTableUpdated"></div></div>
+    <div class="table-topbar"><div class="section-title" style="margin-bottom:0">Resumen de módulos</div><div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted)" id="modTableUpdated"></div></div>
     <div style="overflow-x:auto">
       <table>
         <thead><tr><th>Módulo</th><th>Unidad</th><th>Meta (por propiedad)</th><th>Promedio actual</th><th>% Cumplimiento</th><th>Impl.</th><th>Piloto</th><th>Soporte</th><th>Completo</th></tr></thead>
@@ -526,7 +852,7 @@ tr:hover td{background:var(--surface2)}
         <div class="filter-tab" onclick="setPFilter('support',this)">Soporte</div>
         <div class="filter-tab" onclick="setPFilter('done',this)">Completado</div>
       </div>
-      <select class="lang-sel" id="progressSort" onchange="renderPropertyProgressCards()" style="font-size:12px">
+      <select class="lang-sel" id="progressSort" onchange="renderPropertyProgressCards()" style="font-size:clamp(10px,.9vw,12px)">
         <option value="pct_desc">Mayor avance</option>
         <option value="pct_asc">Menor avance</option>
         <option value="name">Nombre</option>
@@ -552,7 +878,7 @@ tr:hover td{background:var(--surface2)}
     </div>
     <div class="settings-card">
       <div class="settings-section">Metas de Módulos</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Base de cálculo: 80% de las unidades de cada propiedad</div>
+      <div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-bottom:12px">Base de cálculo: 80% de las unidades de cada propiedad</div>
       <div id="targetSettings"></div>
     </div>
     <div class="settings-card full">
@@ -565,8 +891,8 @@ tr:hover td{background:var(--surface2)}
     </div>
     <div class="settings-card full">
       <div class="settings-section">Conexión Supabase</div>
-      <div class="setting-row"><div><div class="setting-label">Project URL</div></div><div style="font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace" id="setShowUrl">No configurado</div></div>
-      <div class="setting-row"><div><div class="setting-label">Estado</div></div><div id="setConnStatus" style="font-size:12px;font-weight:600"></div></div>
+      <div class="setting-row"><div><div class="setting-label">Project URL</div></div><div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted);font-family:JetBrains Mono,monospace" id="setShowUrl">No configurado</div></div>
+      <div class="setting-row"><div><div class="setting-label">Estado</div></div><div id="setConnStatus" style="font-size:clamp(10px,.9vw,12px);font-weight:600"></div></div>
       <div style="margin-top:14px;display:flex;gap:10px">
         <button class="btn-outline btn-sm" onclick="goConnect()">Reconfigurar</button>
         <button class="btn-del btn-sm" onclick="disconnectSupabase()">Desconectar</button>
@@ -578,27 +904,41 @@ tr:hover td{background:var(--surface2)}
 <!-- ══════════════════════════════ STRATEGY / ABISMO ══════════════════════════════ -->
 <div id="sec-strategy" style="display:none" class="fade-in">
 
-  <!-- Header -->
+  <!-- ══ HEADER: resumen general compacto ══ -->
   <div class="strategy-header">
     <div class="sh-top">
-      <div>
+      <div style="flex:1;min-width:0;position:relative;z-index:1">
         <div class="sh-badge">🧭 Vista Estratégica · DomoNow</div>
         <div class="sh-title">Dashboard de Abismo</div>
-        <div class="sh-sub">Distancia real entre el estado actual de cada propiedad y las metas predefinidas por módulo. Identifica brechas críticas y oportunidades de cierre.</div>
-      </div>
-      <div class="sh-controls">
-        <button class="sh-btn active-view" id="btnViewCards" onclick="setStrategyView('cards',this)">⬛ Por Propiedad</button>
-        <button class="sh-btn" id="btnViewHeat" onclick="setStrategyView('heat',this)">🌡️ Mapa de Calor</button>
-        <button class="sh-btn" id="btnViewChart" onclick="setStrategyView('chart',this)">📊 Gráficas</button>
+        <div class="sh-sub">Distancia entre el estado actual y las metas por módulo. Identifica brechas críticas y oportunidades de cierre.</div>
       </div>
     </div>
     <div class="sh-metrics" id="strategyGlobalMetrics"></div>
   </div>
 
-  <!-- Property filter tabs -->
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+  <!-- ══ TAB NAV: pills horizontales bajo el header ══ -->
+  <div class="strat-tab-nav">
+    <button class="strat-tab-btn strat-tab-active" id="btnViewOverview" onclick="setStrategyView('overview',this)">
+      <span>🌐</span> General
+    </button>
+    <button class="strat-tab-btn" id="btnViewCards" onclick="setStrategyView('cards',this)">
+      <span>⬛</span> Por Propiedad
+    </button>
+    <button class="strat-tab-btn" id="btnViewHeat" onclick="setStrategyView('heat',this)">
+      <span>🌡️</span> Mapa de Calor
+    </button>
+    <button class="strat-tab-btn" id="btnViewChart" onclick="setStrategyView('chart',this)">
+      <span>📊</span> Gráficas
+    </button>
+    <button class="strat-tab-btn" id="btnViewProp" onclick="setStrategyView('prop',this)">
+      <span>🏢</span> Abismo por Propiedad
+    </button>
+  </div>
+
+  <!-- ══ FILTROS (solo visibles en Cards/Heat/Chart) ══ -->
+  <div id="stratFiltersBar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <span style="font-size:11px;font-weight:700;color:var(--text-muted);white-space:nowrap">FILTRAR:</span>
+      <span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);white-space:nowrap">FILTRAR:</span>
       <div class="filter-tabs" id="strategyPhaseTabs">
         <div class="filter-tab active" onclick="setStratPhase('all',this)">Todas</div>
         <div class="filter-tab" onclick="setStratPhase('implementation',this)">Implementación</div>
@@ -615,8 +955,46 @@ tr:hover td{background:var(--surface2)}
     </div>
   </div>
 
-  <!-- CARDS VIEW -->
-  <div id="stratViewCards">
+  <!-- ══ OVERVIEW: vista general ══ -->
+  <div id="stratViewOverview">
+    <!-- KPI mini-cards resumen -->
+    <div class="overview-kpi-row" id="overviewKpiRow"></div>
+    <!-- Resumen visual: fases + módulo radar -->
+    <div class="overview-charts-grid">
+      <div class="prop-chasm-chart-card">
+        <div class="pcc-header"><div class="pcc-title">Propiedades por Fase</div></div>
+        <div style="height:220px;padding:16px"><canvas id="chartOverviewPhase"></canvas></div>
+      </div>
+      <div class="prop-chasm-chart-card">
+        <div class="pcc-header"><div class="pcc-title">Radar de Módulos — Promedio Global</div></div>
+        <div style="height:220px;padding:16px"><canvas id="chartOverviewRadar"></canvas></div>
+      </div>
+      <div class="prop-chasm-chart-card">
+        <div class="pcc-header"><div class="pcc-title">Avance por Propiedad</div></div>
+        <div style="height:220px;padding:16px"><canvas id="chartOverviewProps"></canvas></div>
+      </div>
+      <div class="prop-chasm-chart-card">
+        <div class="pcc-header"><div class="pcc-title">Distribución de Estado</div></div>
+        <div style="height:220px;padding:16px"><canvas id="chartOverviewDist"></canvas></div>
+      </div>
+    </div>
+    <!-- Tabla resumen rápida -->
+    <div class="prop-chasm-chart-card" style="margin-top:20px">
+      <div class="pcc-header">
+        <div class="pcc-title">Resumen Global de Propiedades</div>
+        <div class="pcc-sub" id="overviewTableSub"></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr id="overviewTableHead"></tr></thead>
+          <tbody id="overviewTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDS VIEW (módulos) -->
+  <div id="stratViewCards" style="display:none">
     <div class="abismo-grid" id="abismoGrid"></div>
   </div>
 
@@ -624,7 +1002,7 @@ tr:hover td{background:var(--surface2)}
   <div id="stratViewHeat" style="display:none">
     <div class="abismo-overview">
       <div class="section-title">Mapa de Calor — % Cumplimiento por Módulo y Propiedad</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Cada celda muestra el % de cumplimiento de la meta. Gris = módulo no activo en esa propiedad.</div>
+      <div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-bottom:10px">Cada celda muestra el % de cumplimiento de la meta. Gris = módulo no activo.</div>
       <div id="abismoHeatMap"></div>
     </div>
   </div>
@@ -651,8 +1029,549 @@ tr:hover td{background:var(--surface2)}
     </div>
   </div>
 
+  <!-- PROPERTY CHASM VIEW (nueva pestaña: abismo por propiedad con tareas) -->
+  <div id="stratViewProp" style="display:none">
+
+    <!-- Sub-tabs pill selector -->
+    <div class="prop-subtabs-bar">
+      <button id="propSubTabEst" class="prop-subtab prop-subtab-active" onclick="setPropSubTab('estrategia')">
+        <span class="pst-icon">🧭</span> Estrategia
+      </button>
+      <button id="propSubTabRoad" class="prop-subtab" onclick="setPropSubTab('roadmap')">
+        <span class="pst-icon">🗺️</span> Roadmap
+      </button>
+    </div>
+
+    <!-- ══ SUB-TAB: ESTRATEGIA ══ -->
+    <div id="propSubStrategia">
+
+      <!-- Selector de propiedad -->
+      <div class="prop-selector-bar">
+        <span class="prop-selector-label">🏢 Propiedad</span>
+        <div class="prop-dropdown-wrap">
+          <button class="prop-nav-btn" onclick="navPropStep('propDropdown',-1)" title="Anterior">‹</button>
+          <select class="prop-dropdown" id="propDropdown" onchange="selectPropChasm(this.value)"></select>
+          <button class="prop-nav-btn" onclick="navPropStep('propDropdown',1)" title="Siguiente">›</button>
+          <div class="prop-dd-badge" id="propDdBadge"><span class="prop-dd-dot" style="background:#94a3b8"></span><span class="prop-dd-pct">—</span></div>
+        </div>
+      </div>
+
+      <!-- CURVA DE ADOPCIÓN (estilo index5 con brand kit) -->
+      <div class="adoption-main-card" id="adoptionMainCard">
+        <!-- Header de la card -->
+        <div class="amc-header">
+          <div>
+            <div class="amc-eyebrow">🧭 Vista Estratégica · DomoNow</div>
+            <div class="amc-title" id="propChasmTitle">Curva de Adopción — Abismo</div>
+          </div>
+          <!-- Indicador de éxito del cruce -->
+          <div class="amc-success-badge">
+            <div class="amc-success-label">Éxito del Cruce</div>
+            <div class="amc-success-pct" id="adoptionSuccessPct">0%</div>
+          </div>
+        </div>
+
+        <!-- Curva de barras -->
+        <div class="adoption-bars-wrap">
+          <div class="adoption-bars" id="adoptionCurve">
+            <div class="curve-placeholder">Selecciona una propiedad</div>
+          </div>
+        </div>
+
+        <!-- Barra de cierre del abismo -->
+        <div class="amc-chasm-bar" id="chasmMeter" style="display:none">
+          <div class="acb-label-left">0%</div>
+          <div class="acb-track">
+            <div class="acb-fill" id="chasmMeterFill" style="width:0%"></div>
+          </div>
+          <div class="acb-pct" id="chasmPctLabel">—</div>
+          <div class="acb-label-right">100%</div>
+        </div>
+      </div>
+
+      <!-- Hitos de la estrategia (estilo dark card del index5) -->
+      <div class="hitos-card">
+        <div class="hitos-header">
+          <div class="hitos-title">
+            <span class="hitos-icon">🎯</span>
+            <span id="hitosTitle">Hitos de la Estrategia</span>
+          </div>
+          <div class="hitos-prop-badge" id="hitosPropBadge"></div>
+        </div>
+        <div class="hitos-grid" id="hitosGrid">
+          <div style="color:rgba(255,255,255,.4);font-size:clamp(10px,.95vw,13px);padding:20px">Selecciona una propiedad para ver sus módulos</div>
+        </div>
+      </div>
+
+      <!-- KPIs + Gráficas -->
+      <div class="prop-est-bottom-grid">
+        <!-- Estado del abismo KPIs -->
+        <div class="prop-chasm-chart-card">
+          <div class="pcc-header">
+            <div class="pcc-title">Estado del Abismo</div>
+          </div>
+          <div id="propChasmKpis" style="padding:16px">
+            <div style="color:var(--text-muted);font-size:clamp(10px,.95vw,13px);text-align:center;padding:32px 0">Selecciona una propiedad</div>
+          </div>
+        </div>
+        <!-- Radar -->
+        <div class="prop-chasm-chart-card">
+          <div class="pcc-header"><div class="pcc-title">Radar de Cumplimiento</div></div>
+          <div style="height:240px;padding:16px"><canvas id="chartPropRadar"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Avance vs meta por módulo -->
+      <div class="prop-chasm-chart-card" style="margin-top:20px">
+        <div class="pcc-header">
+          <div class="pcc-title">Avance vs Meta — Por Módulo</div>
+          <div class="pcc-sub" id="propModChartSub"></div>
+        </div>
+        <div style="height:260px;padding:16px 20px"><canvas id="chartPropModProgress"></canvas></div>
+      </div>
+
+      <!-- Distribución -->
+      <div class="prop-chasm-chart-card" style="margin-top:20px">
+        <div class="pcc-header"><div class="pcc-title">Distribución por Estado</div></div>
+        <div style="height:220px;padding:16px"><canvas id="chartPropDist"></canvas></div>
+      </div>
+
+    </div>
+
+    <!-- ══ SUB-TAB: ROADMAP ══ -->
+    <div id="propSubRoadmap" style="display:none">
+
+      <!-- Selector de propiedad -->
+      <div class="prop-selector-bar">
+        <span class="prop-selector-label">🏢 Propiedad</span>
+        <div class="prop-dropdown-wrap">
+          <button class="prop-nav-btn" onclick="navPropStep('propDropdownRoad',-1)" title="Anterior">‹</button>
+          <select class="prop-dropdown" id="propDropdownRoad" onchange="selectRoadProp(this.value)"></select>
+          <button class="prop-nav-btn" onclick="navPropStep('propDropdownRoad',1)" title="Siguiente">›</button>
+          <div class="prop-dd-badge" id="propDdBadgeRoad"><span class="prop-dd-dot" style="background:#94a3b8"></span><span class="prop-dd-pct">—</span></div>
+        </div>
+      </div>
+
+      <div class="roadmap-layout">
+        <!-- Columna izquierda: abismo visual + tareas -->
+        <div class="roadmap-main">
+
+          <!-- Card: abismo animado -->
+          <div class="prop-chasm-chart-card" style="margin-bottom:18px">
+            <div class="pcc-header">
+              <div class="pcc-title">Abismo de <span id="roadPropName" style="color:var(--domo)">—</span></div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted)">Sellado:</span>
+                <span class="chasm-seal-pct" id="roadChasmPct">0%</span>
+              </div>
+            </div>
+
+            <!-- Visual: curva adopción mini con abismo -->
+            <div class="road-chasm-visual">
+              <div class="rcv-side rcv-left">
+                <div class="rcv-bar" style="height:54px;background:linear-gradient(180deg,#a34dde,#820ad1)"></div>
+                <div class="rcv-label">Early Adopters</div>
+              </div>
+              <div class="rcv-gap">
+                <div class="rcv-gap-label">ABISMO</div>
+                <div class="rcv-gap-track">
+                  <div class="rcv-gap-sealed" id="chasmGapFill"></div>
+                  <div class="rcv-gap-open" id="chasmGapRemaining"></div>
+                </div>
+                <div class="rcv-gap-pct" id="chasmGapPct">0% sellado</div>
+              </div>
+              <div class="rcv-side rcv-right">
+                <div class="rcv-bar" style="height:80px;background:linear-gradient(180deg,#c77dff,#820ad1)"></div>
+                <div class="rcv-label">Pragmáticos</div>
+              </div>
+            </div>
+
+            <!-- Tareas puente -->
+            <div style="padding:0 20px 18px">
+              <div class="pcc-sub" style="margin-bottom:10px;text-transform:uppercase;letter-spacing:.6px">Tareas sellando el abismo</div>
+              <div id="roadTaskBridges"></div>
+            </div>
+          </div>
+
+          <!-- Lista de tareas -->
+          <div id="roadTaskList"></div>
+        </div>
+
+        <!-- Columna derecha: agregar tarea -->
+        <div class="roadmap-sidebar">
+          <div class="prop-chasm-chart-card" style="position:sticky;top:80px">
+            <div class="pcc-header">
+              <div class="pcc-title">+ Nueva Tarea</div>
+            </div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:14px">
+
+              <div>
+                <div class="road-field-label">Categoría</div>
+                <div class="road-cat-grid" id="roadCategoryBtns">
+                  <button onclick="setRoadCategory('Administradores',this)" class="road-cat-btn road-cat-active">Admins</button>
+                  <button onclick="setRoadCategory('Multiplicadores',this)" class="road-cat-btn">Multiplicadores</button>
+                  <button onclick="setRoadCategory('Comunidad',this)" class="road-cat-btn">Comunidad</button>
+                  <button onclick="setRoadCategory('Junta',this)" class="road-cat-btn">Junta</button>
+                </div>
+              </div>
+
+              <div>
+                <div class="road-field-label">Descripción</div>
+                <textarea id="roadNewTaskText" class="form-textarea" style="min-height:80px;font-size:12px" placeholder="Ej: Activar módulo de acceso..."></textarea>
+              </div>
+
+              <div>
+                <div class="road-field-label">Peso en cierre del abismo</div>
+                <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+                  <input type="range" min="1" max="10" value="5" id="roadTaskWeight"
+                    style="flex:1;accent-color:var(--domo)"
+                    oninput="document.getElementById('roadWeightVal').textContent=this.value"/>
+                  <div style="min-width:36px;text-align:center">
+                    <span id="roadWeightVal" style="font-size:clamp(12px,1.3vw,18px);font-weight:800;color:var(--domo)">5</span>
+                    <div style="font-size:clamp(8px,.75vw,9px);color:var(--text-muted)">peso</div>
+                  </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:clamp(8px,.75vw,9px);color:var(--text-muted);margin-top:2px">
+                  <span>Menor impacto</span><span>Mayor impacto</span>
+                </div>
+              </div>
+
+              <button onclick="addRoadTask()" class="btn-primary" style="width:100%;font-family:'Montserrat',sans-serif">
+                + Agregar Tarea
+              </button>
+
+              <!-- Info sobre el peso -->
+              <div style="padding:10px 12px;background:rgba(130,10,209,.06);border-radius:10px;border:1px solid rgba(130,10,209,.15)">
+                <div style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--domo);margin-bottom:4px">¿Cómo funciona el peso?</div>
+                <div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);line-height:1.5">
+                  Cada tarea tiene un peso (1–10). El abismo se sella proporcionalmente: tareas con mayor peso contribuyen más al cierre total.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 <!-- ══════════════════════════════ END STRATEGY ══════════════════════════════ -->
+
+
+<!-- ══════════════════════ TASKS SECTION ══════════════════════ -->
+<div id="sec-tasks" style="display:none" class="fade-in">
+
+
+
+  <!-- Header -->
+  <div class="tasks-header">
+    <div>
+      <div class="tasks-eyebrow">✅ Gestión de Tareas · DomoNow</div>
+      <div class="tasks-title">Tareas por Propiedad</div>
+      <div class="tasks-sub">Asigna tareas a cada propiedad. Su progreso combinado con los módulos activos sella el abismo de adopción.</div>
+    </div>
+    <div class="tasks-global-pct">
+      <div class="tgp-label">Cierre global</div>
+      <div class="tgp-val" id="tasksGlobalPct">—</div>
+    </div>
+  </div>
+
+  <!-- Layout: property selector (left) + task panel (right) -->
+  <div class="tasks-layout">
+
+    <!-- Left: property list -->
+    <div class="tasks-prop-list" id="tasksPropList"></div>
+
+    <!-- Right: task detail panel -->
+    <div class="tasks-panel" id="tasksPanel">
+      <div class="tasks-empty-state" id="tasksEmptyState">
+        <div style="font-size:clamp(28px,3vw,40px);margin-bottom:clamp(8px,.8vw,12px)">🏢</div>
+        <div style="font-size:clamp(11px,1.1vw,15px);font-weight:700;color:var(--text);margin-bottom:6px">Selecciona una propiedad</div>
+        <div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted)">Elige una propiedad de la izquierda para gestionar sus tareas</div>
+      </div>
+
+      <!-- Property detail (hidden until selected) -->
+      <div id="tasksPropDetail" style="display:none">
+
+        <!-- Mini curva de adopción -->
+        <div class="tasks-adoption-card">
+          <div class="tac-header">
+            <div>
+              <div class="tac-eyebrow">Curva de Adopción</div>
+              <div class="tac-propname" id="tacPropName">—</div>
+            </div>
+            <div class="tac-chasm-badge">
+              <div class="tac-cb-label">Éxito del Cruce</div>
+              <div class="tac-cb-pct" id="tacChasmPct">0%</div>
+            </div>
+          </div>
+
+          <!-- Mini barras de adopción -->
+          <div class="tac-bars" id="tacBars">
+            <!-- rendered by JS -->
+          </div>
+
+          <!-- Barra de progreso del abismo -->
+          <div class="tac-progress-wrap">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px">Cierre del Abismo</span>
+              <span style="font-size:clamp(10px,.9vw,12px);font-weight:800;color:var(--domo)" id="tacSealPct">0%</span>
+            </div>
+            <div class="tac-bar-track">
+              <div class="tac-bar-mods" id="tacBarMods" style="width:0%"></div>
+              <div class="tac-bar-tasks" id="tacBarTasks" style="width:0%"></div>
+            </div>
+            <div style="display:flex;gap:14px;margin-top:6px">
+              <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:2px;background:#820ad1"></div><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">Módulos</span></div>
+              <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:2px;background:#00b460"></div><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">Tareas</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add task form -->
+        <div class="task-add-form" id="taskAddForm">
+          <div class="taf-title">+ Nueva Tarea</div>
+          <div class="taf-row">
+            <div class="taf-field">
+              <div class="taf-label">Categoría</div>
+              <div class="taf-cats" id="tafCatBtns">
+                <button class="taf-cat taf-cat-active" onclick="setTaskCat('Administradores',this)">Admins</button>
+                <button class="taf-cat" onclick="setTaskCat('Multiplicadores',this)">Multiplicadores</button>
+                <button class="taf-cat" onclick="setTaskCat('Comunidad',this)">Comunidad</button>
+                <button class="taf-cat" onclick="setTaskCat('Junta',this)">Junta</button>
+              </div>
+            </div>
+            <div class="taf-field" style="flex:2">
+              <div class="taf-label">Descripción de la tarea</div>
+              <input type="text" id="tafTaskText" class="form-input" placeholder="Ej: Digitalizar acceso de visitantes..." style="font-family:'Montserrat',sans-serif"/>
+            </div>
+            <div class="taf-field" style="min-width:140px">
+              <div class="taf-label">Peso (impacto en abismo)</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="range" min="1" max="10" value="5" id="tafWeight" style="flex:1;accent-color:var(--domo)" oninput="$('tafWeightVal').textContent=this.value"/>
+                <span id="tafWeightVal" style="font-size:clamp(12px,1.3vw,18px);font-weight:800;color:var(--domo);min-width:22px">5</span>
+              </div>
+            </div>
+            <button onclick="addTaskForProp()" class="btn-primary taf-add-btn">Agregar</button>
+          </div>
+        </div>
+
+        <!-- Task list -->
+        <div id="tasksListWrap"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ══════════════════════ END TASKS ══════════════════════ -->
+
+<!-- ══ ABISMO SUB-SECTIONS (each renders inside strategy layout) ══ -->
+<div id="sec-abismo-propiedad" style="display:none" class="fade-in">
+  <div class="strategy-header">
+    <div class="sh-top">
+      <div style="flex:1;min-width:0;position:relative;z-index:1">
+        <div class="sh-badge">🧭 Vista Estratégica · DomoNow</div>
+        <div class="sh-title">Abismo — Por Propiedad</div>
+        <div class="sh-sub">Módulos activos y estado de cumplimiento por propiedad.</div>
+      </div>
+    </div>
+    <div class="sh-metrics" id="strategyGlobalMetrics2"></div>
+  </div>
+  <div id="abismo-prop-filters" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted)">FILTRAR:</span>
+      <div class="filter-tabs" id="strategyPhaseTabs2">
+        <div class="filter-tab active" onclick="setStratPhaseNav('all',this,'2')">Todas</div>
+        <div class="filter-tab" onclick="setStratPhaseNav('implementation',this,'2')">Implementación</div>
+        <div class="filter-tab" onclick="setStratPhaseNav('pilot',this,'2')">Piloto</div>
+        <div class="filter-tab" onclick="setStratPhaseNav('support',this,'2')">Soporte</div>
+        <div class="filter-tab" onclick="setStratPhaseNav('done',this,'2')">Completado</div>
+      </div>
+    </div>
+    <div class="abismo-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#e03030"></div> Crítico &lt;50%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e67e00"></div> Alerta 50–79%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00b460"></div> Meta ≥80%</div>
+    </div>
+  </div>
+  <div class="abismo-grid" id="abismoGrid2"></div>
+</div>
+
+<div id="sec-abismo-calor" style="display:none" class="fade-in">
+  <div class="strategy-header">
+    <div class="sh-top">
+      <div style="flex:1;min-width:0;position:relative;z-index:1">
+        <div class="sh-badge">🧭 Vista Estratégica · DomoNow</div>
+        <div class="sh-title">Abismo — Mapa de Calor</div>
+        <div class="sh-sub">Cumplimiento de metas por módulo y propiedad.</div>
+      </div>
+    </div>
+  </div>
+  <div class="abismo-overview">
+    <div class="section-title">Mapa de Calor — % Cumplimiento por Módulo y Propiedad</div>
+    <div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-bottom:10px">Gris = módulo no activo.</div>
+    <div id="abismoHeatMap2"></div>
+  </div>
+</div>
+
+<div id="sec-abismo-graficas" style="display:none" class="fade-in">
+  <div class="strategy-header">
+    <div class="sh-top">
+      <div style="flex:1;min-width:0;position:relative;z-index:1">
+        <div class="sh-badge">🧭 Vista Estratégica · DomoNow</div>
+        <div class="sh-title">Abismo — Gráficas</div>
+        <div class="sh-sub">Visualizaciones de avance y brecha por propiedad y módulo.</div>
+      </div>
+    </div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card chart-full">
+      <div class="chart-header"><div class="section-title">Avance vs Meta por Propiedad</div></div>
+      <div class="chart-body chart-tall"><canvas id="chartAbismoProps2"></canvas></div>
+    </div>
+    <div class="chart-card chart-full">
+      <div class="chart-header"><div class="section-title">Cumplimiento por Módulo</div></div>
+      <div class="chart-body" style="height:320px"><canvas id="chartAbismoModules2"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header"><div class="section-title">Distribución Global</div></div>
+      <div class="chart-body"><canvas id="chartAbismoDist2"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header"><div class="section-title">Radar de Módulos</div></div>
+      <div class="chart-body"><canvas id="chartAbismoRadar2"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<div id="sec-abismo-porpropiedad" style="display:none" class="fade-in">
+  <div class="strategy-header">
+    <div class="sh-top">
+      <div style="flex:1;min-width:0;position:relative;z-index:1">
+        <div class="sh-badge">🧭 Vista Estratégica · DomoNow</div>
+        <div class="sh-title">Abismo — Por Propiedad</div>
+        <div class="sh-sub">Curva de adopción, hitos y cierre de abismo por propiedad.</div>
+      </div>
+    </div>
+  </div>
+  <!-- reuse prop sub-view logic but with fresh IDs -->
+  <div class="prop-subtabs-bar" style="margin-bottom:20px">
+    <button id="navPropSubTabEst" class="prop-subtab prop-subtab-active" onclick="setNavPropSubTab('estrategia')">🧭 Estrategia</button>
+    <button id="navPropSubTabRoad" class="prop-subtab" onclick="setNavPropSubTab('roadmap')">🗺️ Roadmap</button>
+  </div>
+  <div id="navPropSubStrategia">
+    <div class="prop-selector-bar">
+      <span class="prop-selector-label">🏢 Propiedad</span>
+      <div class="prop-dropdown-wrap">
+        <button class="prop-nav-btn" onclick="navPropStep('navPropDropdown',-1)" title="Anterior">‹</button>
+        <select class="prop-dropdown" id="navPropDropdown" onchange="navSelectPropChasm(this.value)"></select>
+        <button class="prop-nav-btn" onclick="navPropStep('navPropDropdown',1)" title="Siguiente">›</button>
+        <div class="prop-dd-badge" id="navPropDdBadge"><span class="prop-dd-dot" style="background:#94a3b8"></span><span class="prop-dd-pct">—</span></div>
+      </div>
+    </div>
+    <div class="adoption-main-card">
+      <div class="amc-header">
+        <div>
+          <div class="amc-eyebrow">🧭 Vista Estratégica · DomoNow</div>
+          <div class="amc-title" id="navPropChasmTitle">Curva de Adopción</div>
+        </div>
+        <div class="amc-success-badge">
+          <div class="amc-success-label">Éxito del Cruce</div>
+          <div class="amc-success-pct" id="navAdoptionSuccessPct">0%</div>
+        </div>
+      </div>
+      <div class="adoption-bars-wrap">
+        <div class="adoption-bars" id="navAdoptionCurve"><div class="curve-placeholder">Selecciona una propiedad</div></div>
+      </div>
+      <div class="amc-chasm-bar" id="navChasmMeter" style="display:none">
+        <div class="acb-label-left">0%</div>
+        <div class="acb-track"><div class="acb-fill" id="navChasmMeterFill" style="width:0%"></div></div>
+        <div class="acb-pct" id="navChasmPctLabel">—</div>
+        <div class="acb-label-right">100%</div>
+      </div>
+    </div>
+    <div class="hitos-card">
+      <div class="hitos-header">
+        <div class="hitos-title"><span class="hitos-icon">🎯</span><span id="navHitosTitle">Hitos de la Estrategia</span></div>
+        <div class="hitos-prop-badge" id="navHitosPropBadge"></div>
+      </div>
+      <div class="hitos-grid" id="navHitosGrid"><div style="color:rgba(255,255,255,.4);font-size:clamp(10px,.95vw,13px);padding:20px">Selecciona una propiedad</div></div>
+    </div>
+    <div class="prop-est-bottom-grid" style="margin-top:20px">
+      <div class="prop-chasm-chart-card">
+        <div class="pcc-header"><div class="pcc-title">Estado del Abismo</div></div>
+        <div id="navPropChasmKpis" style="padding:16px"><div style="color:var(--text-muted);font-size:clamp(10px,.95vw,13px);text-align:center;padding:32px 0">Selecciona una propiedad</div></div>
+      </div>
+      <div class="prop-chasm-chart-card">
+        <div class="pcc-header"><div class="pcc-title">Radar de Cumplimiento</div></div>
+        <div style="height:240px;padding:16px"><canvas id="navChartPropRadar"></canvas></div>
+      </div>
+    </div>
+  </div>
+  <div id="navPropSubRoadmap" style="display:none">
+    <div class="prop-selector-bar">
+      <span class="prop-selector-label">🏢 Propiedad</span>
+      <div class="prop-dropdown-wrap">
+        <button class="prop-nav-btn" onclick="navPropStep('navPropDropdownRoad',-1)" title="Anterior">‹</button>
+        <select class="prop-dropdown" id="navPropDropdownRoad" onchange="navSelectRoadProp(this.value)"></select>
+        <button class="prop-nav-btn" onclick="navPropStep('navPropDropdownRoad',1)" title="Siguiente">›</button>
+        <div class="prop-dd-badge" id="navPropDdBadgeRoad"><span class="prop-dd-dot" style="background:#94a3b8"></span><span class="prop-dd-pct">—</span></div>
+      </div>
+    </div>
+    <div class="roadmap-layout">
+      <div class="roadmap-main">
+        <div class="prop-chasm-chart-card" style="margin-bottom:18px">
+          <div class="pcc-header">
+            <div class="pcc-title">Abismo de <span id="navRoadPropName" style="color:var(--domo)">—</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted)">Sellado:</span><span class="chasm-seal-pct" id="navRoadChasmPct">0%</span></div>
+          </div>
+          <div class="road-chasm-visual">
+            <div class="rcv-side rcv-left"><div class="rcv-bar" style="height:54px;background:linear-gradient(180deg,#a34dde,#820ad1)"></div><div class="rcv-label">Early Adopters</div></div>
+            <div class="rcv-gap">
+              <div class="rcv-gap-label">ABISMO</div>
+              <div class="rcv-gap-track"><div class="rcv-gap-sealed" id="navChasmGapFill"></div><div class="rcv-gap-open" id="navChasmGapRemaining"></div></div>
+              <div class="rcv-gap-pct" id="navChasmGapPct">0% sellado</div>
+            </div>
+            <div class="rcv-side rcv-right"><div class="rcv-bar" style="height:80px;background:linear-gradient(180deg,#c77dff,#820ad1)"></div><div class="rcv-label">Pragmáticos</div></div>
+          </div>
+          <div style="padding:0 20px 18px">
+            <div class="pcc-sub" style="margin-bottom:10px;text-transform:uppercase;letter-spacing:.6px">Tareas sellando el abismo</div>
+            <div id="navRoadTaskBridges"></div>
+          </div>
+        </div>
+        <div id="navRoadTaskList"></div>
+      </div>
+      <div class="roadmap-sidebar">
+        <div class="prop-chasm-chart-card" style="position:sticky;top:80px">
+          <div class="pcc-header"><div class="pcc-title">+ Nueva Tarea</div></div>
+          <div style="padding:16px;display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div class="road-field-label">Categoría</div>
+              <div class="road-cat-grid" id="navRoadCategoryBtns">
+                <button onclick="setNavRoadCategory('Administradores',this)" class="road-cat-btn road-cat-active">Admins</button>
+                <button onclick="setNavRoadCategory('Multiplicadores',this)" class="road-cat-btn">Multiplicadores</button>
+                <button onclick="setNavRoadCategory('Comunidad',this)" class="road-cat-btn">Comunidad</button>
+                <button onclick="setNavRoadCategory('Junta',this)" class="road-cat-btn">Junta</button>
+              </div>
+            </div>
+            <div>
+              <div class="road-field-label">Descripción</div>
+              <textarea id="navRoadNewTaskText" class="form-textarea" style="min-height:80px;font-size:12px" placeholder="Ej: Activar módulo de acceso..."></textarea>
+            </div>
+            <div>
+              <div class="road-field-label">Peso en cierre del abismo</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+                <input type="range" min="1" max="10" value="5" id="navRoadTaskWeight" style="flex:1;accent-color:var(--domo)" oninput="$('navRoadWeightVal').textContent=this.value"/>
+                <div style="min-width:36px;text-align:center"><span id="navRoadWeightVal" style="font-size:clamp(12px,1.3vw,18px);font-weight:800;color:var(--domo)">5</span></div>
+              </div>
+            </div>
+            <button onclick="navAddRoadTask()" class="btn-primary" style="width:100%;font-family:'Montserrat',sans-serif">+ Agregar Tarea</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 </div></main>
 
@@ -731,11 +1650,14 @@ const PHASES={
 // ══════ STATE ══════
 let sb=null,sbChannel=null,charts={};
 let activeFilter='all',searchQuery='',progressFilter='all';
-let strategyPhaseFilter='all',strategyView='cards';
 let theme=localStorage.getItem('dn_theme')||'light';
 let isConnected=false,autoRefreshTimer=null,currentSection='connect';
 let settings={autoRefresh:60,userName:'',curWeekStart:'',prevWeekStart:''};
 let state={properties:[],weekData:{current:{},previous:{}},lastUpdated:null};
+let strategyView='cards',strategyPhaseFilter='all';
+let selectedPropId=null,roadSelectedPropId=null,roadCategory='Administradores';
+let propTasks=JSON.parse(localStorage.getItem('dn_prop_tasks')||'{}');
+function savePropTasks(){localStorage.setItem('dn_prop_tasks',JSON.stringify(propTasks));}
 const $=id=>document.getElementById(id);
 
 // ══════ HELPERS ══════
@@ -774,7 +1696,12 @@ function goSection(id){
   if(nav)nav.classList.add('active');
   currentSection=id;
   const titleEl=$('topbarTitle');
-  if(id==='strategy'){titleEl.innerHTML='Vista de <span style="color:var(--domo)">Estrategia — Abismo</span>';}
+  if(id==='strategy'){titleEl.innerHTML='Vista de <span style="color:var(--domo)">Estrategia — Abismo</span>';strategyView='overview';}
+  if(id==='tasks'){titleEl.innerHTML='Gestión de <span style="color:var(--domo)">Tareas por Propiedad</span>';}
+  if(id==='abismo-propiedad'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Por Propiedad</span>';strategyView='cards';}
+  if(id==='abismo-calor'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Mapa de Calor</span>';strategyView='heat';}
+  if(id==='abismo-graficas'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Gráficas</span>';strategyView='chart';}
+  if(id==='abismo-porpropiedad'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Por Propiedad</span>';strategyView='prop';}
   else{titleEl.innerHTML='Panel de <span style="color:var(--domo)">Implementación</span>';}
   renderSection(id);
 }
@@ -788,6 +1715,11 @@ function renderSection(id){
   if(id==='charts')renderChartsPage();
   if(id==='settings')renderSettings();
   if(id==='strategy')renderStrategySection();
+  if(id==='tasks')renderTasksSection();
+  if(id==='abismo-propiedad'){strategyView='cards';renderStrategyFromNav('cards');}
+  if(id==='abismo-calor'){strategyView='heat';renderStrategyFromNav('heat');}
+  if(id==='abismo-graficas'){strategyView='chart';renderStrategyFromNav('chart');}
+  if(id==='abismo-porpropiedad'){strategyView='prop';renderStrategyFromNav('prop');}
 }
 
 // ══════ SUPABASE ══════
@@ -850,7 +1782,7 @@ function renderWeekCompare(){
     const cur=state.weekData.current[mid]||0,prev=state.weekData.previous[mid]||0;
     const diff=cur-prev,pct=prev>0?Math.round((diff/prev)*100):0;
     const cls=diff>0?'up':diff<0?'down':'eq',arrow=diff>0?'▲':diff<0?'▼':'—';
-    return `<div class="wc-item"><div class="wc-mod">${m.icon} ${m.label}</div><div style="display:flex;align-items:flex-end;gap:10px;margin-top:6px"><div class="wc-cur">${cur}</div><div class="wc-prev">Ant: ${prev}</div><div class="wc-delta ${cls}">${arrow} ${Math.abs(pct)}%</div></div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">${m.unit}</div></div>`;
+    return `<div class="wc-item"><div class="wc-mod">${m.icon} ${m.label}</div><div style="display:flex;align-items:flex-end;gap:10px;margin-top:6px"><div class="wc-cur">${cur}</div><div class="wc-prev">Ant: ${prev}</div><div class="wc-delta ${cls}">${arrow} ${Math.abs(pct)}%</div></div><div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:4px">${m.unit}</div></div>`;
   }).join('');
 }
 
@@ -880,7 +1812,7 @@ function renderPropertiesTable(){
     const cfg=PHASES[p.phase]||PHASES.implementation;
     const overall=getPropProgress(p);
     const clr=pctColor(overall);
-    return `<tr><td><strong>${p.name}</strong>${p.entry_date?`<div style="font-size:10px;color:var(--text-muted)">📅 ${p.entry_date}</div>`:''}</td><td>${p.city||'—'}</td><td><span class="pill ${cfg.pill}">${cfg.label}</span></td><td style="font-family:'JetBrains Mono',monospace">${p.units||0}</td><td><strong>${(p.modules||[]).length}</strong>/${MODULES.length}</td><td style="font-family:'JetBrains Mono',monospace">${p.days||0}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${overall}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${overall}%</span></div></td><td><div class="actions-cell"><button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Editar</button><button class="btn-del" onclick="deleteProp('${p.id}')">🗑️</button></div></td></tr>`;
+    return `<tr><td><strong>${p.name}</strong>${p.entry_date?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">📅 ${p.entry_date}</div>`:''}</td><td>${p.city||'—'}</td><td><span class="pill ${cfg.pill}">${cfg.label}</span></td><td style="font-family:JetBrains Mono,monospace">${p.units||0}</td><td><strong>${(p.modules||[]).length}</strong>/${MODULES.length}</td><td style="font-family:JetBrains Mono,monospace">${p.days||0}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${overall}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${overall}%</span></div></td><td><div class="actions-cell"><button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Editar</button><button class="btn-del" onclick="deleteProp('${p.id}')">🗑️</button></div></td></tr>`;
   }).join('');
 }
 
@@ -906,7 +1838,7 @@ function renderModulesTable(){
     const avgVal=active.length?Math.round(active.reduce((s,p)=>s+((p.module_values||{})[m.id]||0),0)/active.length):0;
     const clr=pctColor(avgPct);
     const refMeta=calcMeta(m.id,80);
-    return `<tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${m.icon}</span><strong>${m.label}</strong></div></td><td><span style="font-size:10px;color:var(--text-muted)">${m.unit}</span></td><td><span style="font-size:11px;font-weight:700;color:var(--domo)">${refMeta} <span style="font-weight:400;color:var(--text-muted)">(ref. 80 unid.)</span></span></td><td><strong style="font-family:'JetBrains Mono',monospace">${avgVal}</strong> ${m.unit}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${avgPct}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${avgPct}%</span></div></td><td><span class="pill pill-impl">${withMod('implementation')}</span></td><td><span class="pill pill-pilot">${withMod('pilot')}</span></td><td><span class="pill pill-support">${withMod('support')}</span></td><td><span class="pill pill-done">${withMod('done')}</span></td></tr>`;
+    return `<tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${m.icon}</span><strong>${m.label}</strong></div></td><td><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">${m.unit}</span></td><td><span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--domo)">${refMeta} <span style="font-weight:400;color:var(--text-muted)">(ref. 80 unid.)</span></span></td><td><strong style="font-family:JetBrains Mono,monospace">${avgVal}</strong> ${m.unit}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${avgPct}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${avgPct}%</span></div></td><td><span class="pill pill-impl">${withMod('implementation')}</span></td><td><span class="pill pill-pilot">${withMod('pilot')}</span></td><td><span class="pill pill-support">${withMod('support')}</span></td><td><span class="pill pill-done">${withMod('done')}</span></td></tr>`;
   }).join('');
 }
 
@@ -1030,7 +1962,7 @@ function renderPropertyProgressCards(){
     const overall=getPropProgress(p);const clr=pctColor(overall);
     const activeMods=p.modules||[];const inactiveMods=MODULES.filter(m=>!activeMods.includes(m.id));
     const modRows=MODULES.filter(m=>activeMods.includes(m.id)).map(m=>{const val=mv[m.id]||0;const meta=m.metaFn(units);const pct=calcPct(m.id,val,units);const mc=pctColor(pct);return `<div class="pp-mod-row"><div class="pp-mod-icon">${m.icon}</div><div class="pp-mod-name">${m.label}</div><div class="pp-mod-num">${val}/${meta}</div><div class="pp-mod-pct" style="color:${mc}">${pct}%</div></div><div class="pp-mod-bar-wrap"><div class="pp-mod-fill" style="width:${Math.min(100,pct)}%;background:${mc}"></div></div>`;}).join('');
-    return `<div class="pp-card"><div class="pp-header"><div><div class="pp-name">${p.name}</div><div class="pp-city">📍 ${p.city||'—'} · ${units} unid.</div>${p.entry_date?`<div style="font-size:10px;color:var(--text-muted);margin-top:2px">📅 ${p.entry_date}</div>`:''}</div><div style="text-align:right"><div class="pp-pct-big" style="color:${clr}">${overall}%</div><span class="pill ${cfg.pill}" style="margin-top:4px;display:inline-flex">${cfg.label}</span></div></div><div class="pp-body"><div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:4px"><span>Avance ponderado</span><span style="font-weight:700;color:${clr}">${overall}%</span></div><div class="pp-overall-bar"><div class="pp-overall-fill" style="width:${overall}%;background:${clr}"></div></div></div>${activeMods.length?`<div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Módulos activos (${activeMods.length}/${MODULES.length})</div><div class="pp-mod-list">${modRows}</div>`:`<div style="font-size:12px;color:var(--text-muted);padding:10px 0;text-align:center">Sin módulos activos</div>`}${inactiveMods.length?`<div style="font-size:10px;color:var(--text-muted);margin-top:8px">Pendientes: ${inactiveMods.map(m=>m.icon+' '+m.label).join(', ')}</div>`:''}</div><div class="pp-footer"><div class="pp-days">⏱ ${p.days||0} días</div><button class="pp-edit-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button></div></div>`;
+    return `<div class="pp-card"><div class="pp-header"><div><div class="pp-name">${p.name}</div><div class="pp-city">📍 ${p.city||'—'} · ${units} unid.</div>${p.entry_date?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:2px">📅 ${p.entry_date}</div>`:''}</div><div style="text-align:right"><div class="pp-pct-big" style="color:${clr}">${overall}%</div><span class="pill ${cfg.pill}" style="margin-top:4px;display:inline-flex">${cfg.label}</span></div></div><div class="pp-body"><div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:4px"><span>Avance ponderado</span><span style="font-weight:700;color:${clr}">${overall}%</span></div><div class="pp-overall-bar"><div class="pp-overall-fill" style="width:${overall}%;background:${clr}"></div></div></div>${activeMods.length?`<div style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Módulos activos (${activeMods.length}/${MODULES.length})</div><div class="pp-mod-list">${modRows}</div>`:`<div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted);padding:10px 0;text-align:center">Sin módulos activos</div>`}${inactiveMods.length?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:8px">Pendientes: ${inactiveMods.map(m=>m.icon+' '+m.label).join(', ')}</div>`:''}</div><div class="pp-footer"><div class="pp-days">⏱ ${p.days||0} días</div><button class="pp-edit-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button></div></div>`;
   }).join('');
 }
 function renderModuleProgressChart(){
@@ -1105,9 +2037,24 @@ function gapLevelLabel(pct) {
 
 function renderStrategySection() {
   renderStrategyGlobalMetrics();
-  renderAbismoCards();
-  // Pre-render heat and chart for when user switches
-  setTimeout(() => { renderAbismoHeatMap(); renderAbismoCharts(); }, 50);
+  // Reset to overview on each visit
+  if(strategyView !== 'overview') {
+    const btn = $('btnViewOverview');
+    if(btn) { btn.classList.add('strat-tab-active'); }
+    ['cards','heat','chart','prop'].forEach(v => {
+      const cap = v.charAt(0).toUpperCase() + v.slice(1);
+      const vBtn = $('btnView'+cap); if(vBtn) vBtn.classList.remove('strat-tab-active');
+      const vEl = $('stratView'+cap); if(vEl) vEl.style.display = 'none';
+    });
+    const ov = $('stratViewOverview'); if(ov) ov.style.display = 'block';
+    const fb = $('stratFiltersBar'); if(fb) fb.style.display = 'none';
+    strategyView = 'overview';
+  }
+  if(strategyView === 'overview') renderStrategyOverview();
+  if(strategyView === 'cards') renderAbismoCards();
+  if(strategyView === 'heat') renderAbismoHeatMap();
+  if(strategyView === 'chart') renderAbismoCharts();
+  if(strategyView === 'prop') renderPropChasmView();
 }
 
 function renderStrategyGlobalMetrics() {
@@ -1145,6 +2092,130 @@ function renderStrategyGlobalMetrics() {
   `;
 }
 
+function renderStrategyOverview() {
+  const props = state.properties;
+  const total = props.length;
+
+  // ── KPI cards ──
+  const globalAvg = getGlobalProgress();
+  const critical = props.filter(p => getPropProgress(p) < 50).length;
+  const onTarget = props.filter(p => getPropProgress(p) >= 80).length;
+  const totalMods = props.reduce((s,p)=>s+(p.modules||[]).length,0);
+  const avgMods = total ? (totalMods/total).toFixed(1) : 0;
+
+  const kpiRow = $('overviewKpiRow');
+  if(kpiRow) {
+    const kpis = [
+      {val: globalAvg+'%', label:'Avance Global', sub: globalAvg>=80?'✅ En Meta':globalAvg>=50?'⚠️ En Alerta':'🔴 Crítico', color: globalAvg>=80?'#00b460':globalAvg>=50?'#e67e00':'#e03030'},
+      {val: (100-globalAvg)+'%', label:'Abismo Global', sub: (100-globalAvg)>30?'⚡ Brecha significativa':'🟢 Brecha mínima', color:'#e03030'},
+      {val: critical, label:'Propiedades Críticas', sub: critical?'Requieren atención':'Sin críticas', color:'#e03030'},
+      {val: onTarget+'/'+total, label:'En Meta (≥80%)', sub: Math.round(onTarget/(total||1)*100)+'% del portafolio', color:'#00b460'},
+    ];
+    kpiRow.innerHTML = kpis.map(k =>
+      '<div class="ov-kpi" style="--ok:'+k.color+'">'
+      +'<div class="ov-kpi-val" style="color:'+k.color+'">'+k.val+'</div>'
+      +'<div class="ov-kpi-label">'+k.label+'</div>'
+      +'<div class="ov-kpi-sub" style="color:'+k.color+'">'+k.sub+'</div>'
+      +'</div>'
+    ).join('');
+  }
+
+  // ── Sub label ──
+  const sub = $('overviewTableSub');
+  if(sub) sub.textContent = total + ' propiedades · actualizado ' + (state.lastUpdated ? state.lastUpdated.toLocaleTimeString('es-CO') : 'ahora');
+
+  // ── Table ──
+  const head = $('overviewTableHead');
+  const body = $('overviewTableBody');
+  if(head) head.innerHTML = ['Propiedad','Ciudad','Fase','Unidades','Módulos','Días','Avance'].map(h =>
+    '<th style="padding:10px 14px;text-align:left;font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap">'+h+'</th>'
+  ).join('');
+  if(body) {
+    if(!props.length) {
+      body.innerHTML = '<tr><td colspan="7" style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">📭 Sin propiedades</td></tr>';
+    } else {
+      const sorted = [...props].sort((a,b)=>getPropProgress(b)-getPropProgress(a));
+      body.innerHTML = sorted.map(p => {
+        const cfg = PHASES[p.phase]||PHASES.implementation;
+        const pct = getPropProgress(p);
+        const c = pct>=80?'#00b460':pct>=50?'#e67e00':'#e03030';
+        return '<tr style="border-bottom:1px solid var(--border)">'
+          +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-weight:700">'+p.name+'</td>'
+          +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);color:var(--text-muted)">'+( p.city||'—')+'</td>'
+          +'<td style="padding:11px 14px"><span class="pill '+cfg.pill+'">'+cfg.label+'</span></td>'
+          +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-family:JetBrains Mono,monospace">'+( p.units||0)+'</td>'
+          +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-weight:700;color:var(--domo)">'+(p.modules||[]).length+'/'+MODULES.length+'</td>'
+          +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-family:JetBrains Mono,monospace">'+(p.days||0)+'</td>'
+          +'<td style="padding:11px 14px"><div style="display:flex;align-items:center;gap:8px">'
+          +'<div style="flex:1;height:5px;border-radius:3px;background:var(--surface2);overflow:hidden;min-width:50px"><div style="height:100%;width:'+pct+'%;background:'+c+';border-radius:3px"></div></div>'
+          +'<span style="font-size:clamp(9px,.85vw,11px);font-weight:800;color:'+c+';min-width:34px">'+pct+'%</span>'
+          +'</div></td>'
+          +'</tr>';
+      }).join('');
+    }
+  }
+
+  // ── Charts ──
+  const dk = theme==='dark';
+  const tc = dk?'#9287b8':'#7c6fa0';
+  const gc = dk?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)';
+
+  // Phase donut
+  destroyChart('chartOverviewPhase');
+  const c1=$('chartOverviewPhase');
+  if(c1){
+    charts['chartOverviewPhase']=new Chart(c1.getContext('2d'),{
+      type:'doughnut',
+      data:{labels:Object.values(PHASES).map(p=>p.label),datasets:[{data:Object.keys(PHASES).map(k=>props.filter(p=>p.phase===k).length),backgroundColor:Object.values(PHASES).map(p=>p.color),borderWidth:0,hoverOffset:6}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}
+    });
+  }
+
+  // Radar modules
+  destroyChart('chartOverviewRadar');
+  const c2=$('chartOverviewRadar');
+  if(c2){
+    const modPcts=MODULES.map(m=>{const a=props.filter(p=>(p.modules||[]).includes(m.id));return a.length?Math.round(a.reduce((s,p)=>s+calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/a.length):0;});
+    charts['chartOverviewRadar']=new Chart(c2.getContext('2d'),{
+      type:'radar',
+      data:{labels:MODULES.map(m=>m.icon+' '+m.label),datasets:[
+        {label:'Cumplimiento',data:modPcts,backgroundColor:'rgba(130,10,209,.15)',borderColor:'#820ad1',pointBackgroundColor:'#820ad1',borderWidth:2,pointRadius:3},
+        {label:'Meta',data:MODULES.map(()=>100),backgroundColor:'rgba(0,180,100,.04)',borderColor:'rgba(0,180,100,.4)',borderWidth:1,pointRadius:2}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}
+    });
+  }
+
+  // Props bar
+  destroyChart('chartOverviewProps');
+  const c3=$('chartOverviewProps');
+  if(c3){
+    const sorted=[...props].sort((a,b)=>getPropProgress(b)-getPropProgress(a));
+    const pcts=sorted.map(p=>getPropProgress(p));
+    charts['chartOverviewProps']=new Chart(c3.getContext('2d'),{
+      type:'bar',
+      data:{labels:sorted.map(p=>p.name.length>14?p.name.substring(0,14)+'…':p.name),datasets:[
+        {label:'Avance %',data:pcts,backgroundColor:pcts.map(v=>v>=80?'rgba(0,180,100,.8)':v>=50?'rgba(230,126,0,.8)':'rgba(130,10,209,.8)'),borderRadius:5,borderSkipped:false}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{max:100,ticks:{color:tc,font:{family:'Montserrat',size:9}},grid:{color:gc}},y:{ticks:{color:tc,font:{family:'Montserrat',size:9}},grid:{color:gc}}}}
+    });
+  }
+
+  // Dist donut
+  destroyChart('chartOverviewDist');
+  const c4=$('chartOverviewDist');
+  if(c4){
+    const g=props.filter(p=>getPropProgress(p)>=80).length;
+    const w=props.filter(p=>getPropProgress(p)>=50&&getPropProgress(p)<80).length;
+    const cr=props.filter(p=>getPropProgress(p)<50).length;
+    charts['chartOverviewDist']=new Chart(c4.getContext('2d'),{
+      type:'doughnut',
+      data:{labels:['Meta ≥80%','Alerta 50-79%','Crítico <50%'],datasets:[{data:[g,w,cr],backgroundColor:['#00b460','#e67e00','#e03030'],borderWidth:0,hoverOffset:6}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}
+    });
+  }
+}
+
 function renderAbismoCards() {
   const props = getStrategyProps();
   if(!props.length) {
@@ -1172,7 +2243,7 @@ function buildAbismoCard(p) {
         <div class="abismo-mod-icon">${m.icon}</div>
         <div class="abismo-mod-bars">
           <div class="abismo-mod-name" style="color:var(--text-muted)">${m.label}</div>
-          <div class="abismo-bar-wrap" style="margin-top:4px"><div style="font-size:9px;color:var(--text-muted)">sin activar</div></div>
+          <div class="abismo-bar-wrap" style="margin-top:4px"><div style="font-size:clamp(8px,.75vw,9px);color:var(--text-muted)">sin activar</div></div>
         </div>
         <div class="abismo-mod-nums"><div class="abismo-mod-val" style="color:var(--text-muted)">—</div><div class="abismo-mod-target">meta: ${d.meta}</div></div>
         <div class="abismo-mod-pct-col" style="color:var(--text-muted);font-size:11px">N/A</div>
@@ -1217,9 +2288,9 @@ function buildAbismoCard(p) {
             <div class="ach-overall-label">Avance ponderado</div>
             <div class="ach-overall-bar"><div class="ach-overall-fill" style="width:${avgPct}%;background:${barColor}"></div></div>
             <div style="display:flex;justify-content:space-between;margin-top:3px">
-              <span style="font-size:9px;color:rgba(255,255,255,.4)">0%</span>
-              <span style="font-size:9px;color:rgba(255,255,255,.55)">Abismo: <span style="color:#ff9a9a;font-weight:700">${avgGapPct}%</span></span>
-              <span style="font-size:9px;color:rgba(255,255,255,.4)">100%</span>
+              <span style="font-size:clamp(8px,.75vw,9px);color:rgba(255,255,255,.4)">0%</span>
+              <span style="font-size:clamp(8px,.75vw,9px);color:rgba(255,255,255,.55)">Abismo: <span style="color:#ff9a9a;font-weight:700">${avgGapPct}%</span></span>
+              <span style="font-size:clamp(8px,.75vw,9px);color:rgba(255,255,255,.4)">100%</span>
             </div>
           </div>
         </div>
@@ -1237,7 +2308,7 @@ function buildAbismoCard(p) {
           <div class="abismo-gap-total-val ${gapBadge}">${avgGapPct}% hacia meta</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
-          <span style="font-size:11px;color:var(--text-muted)">⏱ ${p.days||0} días</span>
+          <span style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted)">⏱ ${p.days||0} días</span>
           <button class="abismo-action-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button>
         </div>
       </div>
@@ -1319,6 +2390,502 @@ function renderAbismoCharts() {
   ]);
 }
 
+// ══════ STRATEGY VIEW MANAGEMENT ══════
+function setStrategyView(view, el) {
+  strategyView = view;
+  // Hide all views & deactivate all tabs
+  ['overview','cards','heat','chart','prop'].forEach(v => {
+    const cap = v.charAt(0).toUpperCase() + v.slice(1);
+    const btn = $('btnView' + cap);
+    if(btn) btn.classList.remove('strat-tab-active');
+    const vEl = $('stratView' + cap);
+    if(vEl) vEl.style.display = 'none';
+  });
+  // Activate clicked tab & show view
+  el.classList.add('strat-tab-active');
+  const target = $('stratView' + view.charAt(0).toUpperCase() + view.slice(1));
+  if(target) target.style.display = 'block';
+  // Show/hide filter bar only for card/heat/chart
+  const filtersBar = $('stratFiltersBar');
+  if(filtersBar) filtersBar.style.display = ['cards','heat','chart'].includes(view) ? 'flex' : 'none';
+  // Render
+  if(view === 'overview') renderStrategyOverview();
+  if(view === 'heat') renderAbismoHeatMap();
+  if(view === 'chart') renderAbismoCharts();
+  if(view === 'prop') renderPropChasmView();
+}
+
+function setStratPhase(f, el) {
+  strategyPhaseFilter = f;
+  document.querySelectorAll('#strategyPhaseTabs .filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAbismoCards();
+  if(strategyView === 'heat') renderAbismoHeatMap();
+  if(strategyView === 'chart') renderAbismoCharts();
+}
+
+// ══════ PROP SUBTABS ══════
+let propSubTab = 'estrategia';
+
+function setPropSubTab(tab) {
+  propSubTab = tab;
+  $('propSubStrategia').style.display = tab === 'estrategia' ? 'block' : 'none';
+  $('propSubRoadmap').style.display = tab === 'roadmap' ? 'block' : 'none';
+  $('propSubTabEst').className = 'prop-subtab' + (tab === 'estrategia' ? ' prop-subtab-active' : '');
+  $('propSubTabRoad').className = 'prop-subtab' + (tab === 'roadmap' ? ' prop-subtab-active' : '');
+  if(tab === 'estrategia') renderPropStratTab();
+  if(tab === 'roadmap') renderPropRoadmapTab();
+}
+
+// ══════ PROP CHASM VIEW ══════
+function renderPropChasmView() {
+  const props = state.properties;
+  buildPropDropdown('propDropdown', props, selectedPropId);
+  buildPropDropdown('propDropdownRoad', props, roadSelectedPropId);
+  if(!selectedPropId && props.length) selectPropChasm(props[0].id);
+  else if(selectedPropId) renderPropStratTab();
+  if(!roadSelectedPropId && props.length) selectRoadProp(props[0].id);
+}
+
+// Map dropdown IDs to their select fn and badge ID
+const PROP_DROPDOWN_MAP = {
+  'propDropdown':       {fn:'selectPropChasm',    badge:'propDdBadge'},
+  'propDropdownRoad':   {fn:'selectRoadProp',     badge:'propDdBadgeRoad'},
+  'navPropDropdown':    {fn:'navSelectPropChasm', badge:'navPropDdBadge'},
+  'navPropDropdownRoad':{fn:'navSelectRoadProp',  badge:'navPropDdBadgeRoad'},
+};
+
+function buildPropDropdown(dropdownId, props, activeId) {
+  const sel = $(dropdownId); if(!sel) return;
+  const map = PROP_DROPDOWN_MAP[dropdownId];
+  if(!props.length) { sel.innerHTML='<option>Sin propiedades</option>'; return; }
+  sel.innerHTML = props.map(p =>
+    '<option value="' + p.id + '"' + (String(p.id)===String(activeId)?' selected':'') + '>'
+    + p.name + (p.city?' · '+p.city:'') + ' — ' + getPropProgress(p) + '%'
+    + '</option>'
+  ).join('');
+  // onchange already in HTML, but also ensure it fires correctly
+  sel.onchange = function() { window[map.fn](this.value); };
+  updatePropDdBadge(dropdownId, props, activeId);
+}
+
+// Keep buildPropPills as alias for backward compat
+function buildPropPills(containerId, props, activeId, fnName, countId) {
+  // Map old IDs to new dropdown IDs
+  const idMap = {
+    'propSelectorTabs':        'propDropdown',
+    'propSelectorTabsRoad':    'propDropdownRoad',
+    'navPropSelectorTabs':     'navPropDropdown',
+    'navPropSelectorTabsRoad': 'navPropDropdownRoad',
+  };
+  const dropId = idMap[containerId] || containerId;
+  buildPropDropdown(dropId, props, activeId);
+}
+
+function updatePropDdBadge(dropdownId, props, activeId) {
+  const map = PROP_DROPDOWN_MAP[dropdownId]; if(!map) return;
+  const badge = $(map.badge); if(!badge) return;
+  const p = props.find(x => String(x.id)===String(activeId));
+  if(!p) return;
+  const pct = getPropProgress(p);
+  const color = pct>=80?'#00b460':pct>=50?'#e67e00':'#e03030';
+  badge.innerHTML = '<span class="prop-dd-dot" style="background:'+color+'"></span>'
+    + '<span class="prop-dd-pct" style="color:'+color+'">'+pct+'%</span>';
+}
+
+function navPropStep(dropdownId, dir) {
+  const sel = $(dropdownId); if(!sel||!sel.options.length) return;
+  const cur = sel.selectedIndex;
+  const next = (cur + dir + sel.options.length) % sel.options.length;
+  sel.selectedIndex = next;
+  sel.dispatchEvent(new Event('change'));
+}
+
+function selectPropChasm(id) {
+  selectedPropId = String(id);
+  buildPropDropdown('propDropdown', state.properties, selectedPropId);
+  renderPropStratTab();
+}
+
+function renderPropStratTab() {
+  const p = state.properties.find(x => String(x.id) === String(selectedPropId));
+  if(!p) return;
+  const { modData, avgPct, avgGapPct } = calcAbismo(p);
+  const units = p.units || 50;
+
+  // Title & eyebrow
+  if($('propChasmTitle')) $('propChasmTitle').textContent = p.name + (p.city ? ' · ' + p.city : '');
+  if($('propModChartSub')) $('propModChartSub').textContent = p.name;
+
+  // Adoption curve (full design)
+  renderAdoptionCurve(p, avgPct, avgGapPct);
+
+  // Hitos de la estrategia (dark card)
+  renderHitosGrid(p, modData);
+
+  // KPIs
+  renderPropKpis(p, avgPct, avgGapPct);
+
+  // Charts
+  renderPropCharts(p, modData, avgPct);
+}
+
+function renderHitosGrid(p, modData) {
+  const propTasksForP = propTasks[String(p.id)] || [];
+  const grid = $('hitosGrid');
+  const titleEl = $('hitosTitle');
+  const badgeEl = $('hitosPropBadge');
+  if(!grid) return;
+
+  if(titleEl) titleEl.textContent = 'Hitos de ' + p.name;
+  if(badgeEl) badgeEl.textContent = (p.modules||[]).length + ' módulos activos';
+
+  // Show active modules as hitos + prop tasks
+  const items = [];
+
+  // Module-based hitos
+  modData.filter(d => d.isActive).forEach(d => {
+    const m = MODULES.find(x => x.id === d.mid);
+    items.push({
+      cat: m.icon + ' ' + m.label,
+      text: m.label + ' — ' + d.val + '/' + d.meta + ' ' + m.unit,
+      progress: d.pct,
+      isModule: true
+    });
+  });
+
+  // Task-based hitos
+  propTasksForP.forEach(t => {
+    items.push({
+      cat: t.category,
+      text: t.text,
+      progress: t.progress,
+      isModule: false
+    });
+  });
+
+  if(!items.length) {
+    grid.innerHTML = '<div style="color:rgba(255,255,255,.35);font-size:clamp(10px,.95vw,13px);padding:20px;grid-column:1/-1">Sin módulos activos ni tareas asignadas.</div>';
+    return;
+  }
+
+  grid.innerHTML = items.map(item => {
+    const barColor = item.progress === 100 ? '#00e57c' : item.progress >= 50 ? '#ffcc00' : '#820ad1';
+    const isDone = item.progress === 100;
+    return '<div class="hito-card">'
+      + '<span class="hito-cat">' + item.cat + '</span>'
+      + '<div class="hito-text">' + item.text + '</div>'
+      + '<div class="hito-bar-wrap"><div class="hito-bar-fill" style="width:' + item.progress + '%;background:' + barColor + '"></div></div>'
+      + '<div class="hito-footer">'
+      + '<span class="hito-pct" style="color:' + barColor + '">' + item.progress + '%</span>'
+      + '<span class="hito-status ' + (isDone?'hito-done':'hito-pending') + '">' + (isDone?'✓ Meta':'En progreso') + '</span>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function renderAdoptionCurve(p, avgPct, avgGapPct) {
+  const wrap = $('adoptionCurve');
+  if(!wrap) return;
+
+  // Tasks-based seal progress for this property
+  const tasks = propTasks[String(p.id)] || [];
+  const totalW = tasks.reduce((s,t)=>s+t.weight,0);
+  const doneW = tasks.reduce((s,t)=>s+(t.progress/100)*t.weight,0);
+  const taskSeal = totalW > 0 ? Math.round((doneW/totalW)*100) : 0;
+  // Combined: module progress + task seal influence
+  const combinedSeal = Math.min(100, Math.round((avgPct + taskSeal) / 2));
+  const chasmRemaining = 100 - combinedSeal;
+  const chasmColor = combinedSeal >= 80 ? '#00b460' : combinedSeal >= 50 ? '#e67e00' : '#e03030';
+
+  // Update success pct badge
+  const succEl = $('adoptionSuccessPct');
+  if(succEl) {
+    succEl.textContent = combinedSeal + '%';
+    succEl.style.color = chasmColor;
+  }
+
+  // Segment definitions matching index5 design
+  const segs = [
+    {name:'Innovadores',  color:'#34d399', h:'90px'},
+    {name:'Visionarios',  color:'#84cc16', h:'140px'},
+    null,
+    {name:'Pragmáticos',  color:'#fbbf24', h:'210px'},
+    {name:'Conservadores',color:'#fb7185', h:'168px'},
+    {name:'Escépticos',   color:'#94a3b8', h:'88px'},
+  ];
+
+  wrap.innerHTML = segs.map(seg => {
+    if(seg === null) {
+      return '<div class="ab-gap">'
+        + '<div class="ab-gap-track">'
+        + '<div class="ab-gap-fill" style="height:' + combinedSeal + '%;background:' + chasmColor + '"></div>'
+        + '</div>'
+        + '<div class="ab-gap-info">'
+        + '<div class="ab-gap-word">Abismo</div>'
+        + '<div class="ab-gap-pct">' + chasmRemaining + '%</div>'
+        + '</div>'
+        + '</div>';
+    }
+    return '<div class="ab-seg" title="' + seg.name + '">'
+      + '<div class="ab-bar" style="height:' + seg.h + ';background:' + seg.color + '"></div>'
+      + '<div class="ab-label" style="color:' + seg.color + '">' + seg.name + '</div>'
+      + '</div>';
+  }).join('');
+
+  // Show & animate chasm meter bar
+  const meter = $('chasmMeter');
+  if(meter) meter.style.display = 'flex';
+  const fill = $('chasmMeterFill');
+  if(fill) setTimeout(()=>{ fill.style.width = combinedSeal + '%'; }, 80);
+  const pctLbl = $('chasmPctLabel');
+  if(pctLbl) pctLbl.textContent = combinedSeal + '% sellado · ' + chasmRemaining + '% restante';
+}
+
+function renderPropKpis(p, avgPct, avgGapPct) {
+  const el = $('propChasmKpis');
+  if(!el) return;
+  const cfg = PHASES[p.phase] || PHASES.implementation;
+  const lvlColor = avgPct >= 80 ? '#00b460' : avgPct >= 50 ? '#e67e00' : '#e03030';
+  const activeMods = (p.modules||[]).length;
+  const tasks = propTasks[p.id] || [];
+  const totalWeight = tasks.reduce((s,t)=>s+t.weight,0);
+  const doneWeight = tasks.filter(t=>t.progress===100).reduce((s,t)=>s+t.weight,0);
+  const sealPct = totalWeight > 0 ? Math.round((doneWeight/totalWeight)*100) : 0;
+  el.innerHTML = `
+    <div class="pck-grid">
+      <div class="pck-item"><div class="pck-val" style="color:${lvlColor}">${avgPct}%</div><div class="pck-label">Avance global</div></div>
+      <div class="pck-item"><div class="pck-val" style="color:#e03030">${avgGapPct}%</div><div class="pck-label">Abismo restante</div></div>
+      <div class="pck-item"><div class="pck-val" style="color:var(--domo)">${activeMods}</div><div class="pck-label">Módulos activos</div></div>
+      <div class="pck-item"><div class="pck-val" style="color:#00b460">${sealPct}%</div><div class="pck-label">Cierre por tareas</div></div>
+    </div>
+    <div style="margin-top:12px;padding:10px 12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+      <div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Fase actual</div>
+      <span class="pill ${cfg.pill}">${cfg.label}</span>
+      <div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-top:6px">⏱ ${p.days||0} días · ${p.units||0} unidades</div>
+    </div>`;
+}
+
+function renderPropCharts(p, modData, avgPct) {
+  const dk = theme === 'dark';
+  const tc = dk ? '#9287b8' : '#7c6fa0';
+  const activeMods = modData.filter(d => d.isActive);
+  if(!activeMods.length) return;
+
+  // Bar: avance vs meta por módulo
+  const labels = activeMods.map(d => MODULES.find(m=>m.id===d.mid).icon + ' ' + MODULES.find(m=>m.id===d.mid).label);
+  const vals = activeMods.map(d => d.pct);
+  const gaps = activeMods.map(d => Math.max(0, 100 - d.pct));
+  const colors = vals.map(v => v>=80?'rgba(0,180,100,.8)':v>=50?'rgba(230,126,0,.8)':'rgba(130,10,209,.8)');
+
+  destroyChart('chartPropModProgress');
+  const c1 = $('chartPropModProgress'); if(c1) {
+    const ctx = c1.getContext('2d');
+    charts['chartPropModProgress'] = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {label:'Avance (%)', data:vals, backgroundColor:colors, borderRadius:5, borderSkipped:false},
+          {label:'Abismo (%)', data:gaps, backgroundColor:'rgba(100,100,120,.12)', borderRadius:5, borderSkipped:false}
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color:tc, font:{family:'Montserrat',size:10}, boxWidth:10 } } },
+        scales: {
+          x: { stacked:true, ticks:{color:tc, font:{family:'Montserrat',size:9}}, grid:{color:dk?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)'} },
+          y: { stacked:true, max:100, ticks:{color:tc, font:{family:'Montserrat',size:10}}, grid:{color:dk?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)'} }
+        }
+      }
+    });
+  }
+
+  // Radar
+  destroyChart('chartPropRadar');
+  const c2 = $('chartPropRadar'); if(c2) {
+    const ctx = c2.getContext('2d');
+    charts['chartPropRadar'] = new Chart(ctx, {
+      type:'radar',
+      data:{labels,datasets:[
+        {label:'Avance',data:vals,backgroundColor:'rgba(130,10,209,.15)',borderColor:'#820ad1',pointBackgroundColor:'#820ad1',borderWidth:2,pointRadius:3},
+        {label:'Meta',data:activeMods.map(()=>100),backgroundColor:'rgba(0,180,100,.05)',borderColor:'rgba(0,180,100,.5)',borderWidth:1,pointRadius:2}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}
+    });
+  }
+
+  // Doughnut
+  destroyChart('chartPropDist');
+  const c3 = $('chartPropDist'); if(c3) {
+    const ctx = c3.getContext('2d');
+    const good = vals.filter(v=>v>=80).length;
+    const warn = vals.filter(v=>v>=50&&v<80).length;
+    const crit = vals.filter(v=>v<50).length;
+    charts['chartPropDist'] = new Chart(ctx, {
+      type:'doughnut',
+      data:{labels:['Meta ≥80%','Alerta 50-79%','Crítico <50%'],datasets:[{data:[good,warn,crit],backgroundColor:['#00b460','#e67e00','#e03030'],borderWidth:0,hoverOffset:6}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}
+    });
+  }
+}
+
+// ══════ ROADMAP (PROP) ══════
+function setRoadCategory(cat, el) {
+  roadCategory = cat;
+  document.querySelectorAll('#roadCategoryBtns .road-cat-btn').forEach(b => b.className = 'road-cat-btn');
+  el.className = 'road-cat-btn road-cat-active';
+}
+
+function selectRoadProp(id) {
+  roadSelectedPropId = String(id);
+  buildPropDropdown('propDropdownRoad', state.properties, roadSelectedPropId);
+  renderPropRoadmapTab();
+}
+
+function addRoadTask() {
+  const id = roadSelectedPropId;
+  if(!id) { showToast('Selecciona una propiedad primero','error'); return; }
+  const text = $('roadNewTaskText')?.value?.trim();
+  if(!text) { showToast('Escribe una descripción','error'); return; }
+  const weight = parseInt($('roadTaskWeight')?.value) || 5;
+  if(!propTasks[id]) propTasks[id] = [];
+  propTasks[id].push({ id: Date.now(), category: roadCategory, text, weight, progress: 0 });
+  savePropTasks();
+  if($('roadNewTaskText')) $('roadNewTaskText').value = '';
+  renderPropRoadmapTab();
+  showToast('✅ Tarea agregada','success');
+}
+
+function updateRoadTaskProgress(propId, taskId, val) {
+  if(!propTasks[propId]) return;
+  const t = propTasks[propId].find(x => x.id === taskId);
+  if(t) { t.progress = parseInt(val); savePropTasks(); renderRoadChasmVisual(propId); renderRoadTaskList(propId); }
+}
+
+function deleteRoadTask(propId, taskId) {
+  if(!propTasks[propId]) return;
+  propTasks[propId] = propTasks[propId].filter(x => x.id !== taskId);
+  savePropTasks();
+  renderPropRoadmapTab();
+}
+
+function getRoadSealPct(propId) {
+  const tasks = propTasks[propId] || [];
+  if(!tasks.length) return 0;
+  const totalWeight = tasks.reduce((s,t)=>s+t.weight,0);
+  const doneWeight = tasks.reduce((s,t)=>s+(t.progress/100)*t.weight,0);
+  return totalWeight > 0 ? Math.round((doneWeight/totalWeight)*100) : 0;
+}
+
+function renderPropRoadmapTab() {
+  const id = roadSelectedPropId;
+  const p = state.properties.find(x => String(x.id) === String(id));
+  if(!p) return;
+
+  // Update prop name
+  if($('roadPropName')) $('roadPropName').textContent = p.name;
+
+  // Seal pct
+  const sealPct = getRoadSealPct(id);
+  if($('roadChasmPct')) $('roadChasmPct').textContent = sealPct + '%';
+
+  renderRoadChasmVisual(id);
+  renderRoadTaskBridges(id);
+  renderRoadTaskList(id);
+}
+
+function renderRoadChasmVisual(propId) {
+  const sealPct = getRoadSealPct(propId);
+  const color = sealPct >= 80 ? '#00b460' : sealPct >= 50 ? '#e67e00' : '#820ad1';
+
+  // rcv-gap-sealed height
+  const fill = $('chasmGapFill');
+  if(fill) setTimeout(()=>{ fill.style.height = sealPct + '%'; }, 80);
+
+  // rcv-gap-open takes the rest (flex handles it, but also set explicitly)
+  const rem = $('chasmGapRemaining');
+  if(rem) rem.style.height = (100 - sealPct) + '%';
+
+  // pct label
+  const pct = $('chasmGapPct');
+  if(pct) { pct.textContent = sealPct + '% sellado'; pct.style.color = color; }
+
+  // header pct badge
+  const badge = $('roadChasmPct');
+  if(badge) { badge.textContent = sealPct + '%'; badge.style.color = color; }
+}
+
+function renderRoadTaskBridges(propId) {
+  const el = $('roadTaskBridges');
+  if(!el) return;
+  const tasks = (propTasks[propId] || []);
+  if(!tasks.length) {
+    el.innerHTML = '<div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted);padding:8px 0">Sin tareas asignadas aún.</div>';
+    return;
+  }
+  const totalW = tasks.reduce((s,t)=>s+t.weight,0);
+  el.innerHTML = tasks.map(t => {
+    const share = totalW > 0 ? Math.round((t.weight/totalW)*100) : 0;
+    const contribution = Math.round(share * (t.progress/100));
+    const barColor = t.progress === 100 ? '#00b460' : t.progress >= 50 ? '#e67e00' : 'var(--domo)';
+    return `<div class="task-bridge-row">
+      <div class="tbr-name" title="${t.text}">${t.text}</div>
+      <div class="tbr-weight">×${t.weight}</div>
+      <div class="tbr-bar-wrap"><div class="tbr-bar-fill" style="width:${t.progress}%;background:${barColor}"></div></div>
+      <div class="tbr-pct" style="color:${barColor}">${contribution}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRoadTaskList(propId) {
+  const el = $('roadTaskList');
+  if(!el) return;
+  const tasks = propTasks[propId] || [];
+  if(!tasks.length) {
+    el.innerHTML = '<div class="prop-chasm-chart-card" style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">📋 Agrega tareas para comenzar a sellar el abismo.</div>';
+    return;
+  }
+  el.innerHTML = tasks.map(t => {
+    const barColor = t.progress === 100 ? '#00b460' : t.progress >= 50 ? '#e67e00' : '#820ad1';
+    const isDone = t.progress === 100;
+    const safeId = String(t.id);
+    const safeProp = String(propId).replace(/'/g,'');
+    return '<div class="road-task-card' + (isDone?' rtc-done':'') + '" data-tid="' + safeId + '" data-pid="' + safeProp + '">'
+      + '<div class="rtc-top">'
+      + '<span class="rtc-cat">' + t.category + '</span>'
+      + '<div class="rtc-text">' + t.text + '</div>'
+      + '<div class="rtc-weight">Peso: ' + t.weight + '</div>'
+      + '<button class="rtc-del-btn" data-tid="' + safeId + '" data-pid="' + safeProp + '" style="color:var(--text-muted);background:none;border:none;cursor:pointer;font-size:clamp(11px,1vw,14px);padding:0 4px">✕</button>'
+      + '</div>'
+      + '<div class="rtc-progress-row">'
+      + '<span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);font-weight:700;min-width:60px">PROGRESO</span>'
+      + '<div class="rtc-bar-wrap"><div class="rtc-bar-fill" id="rtc-bar-' + safeId + '" style="width:' + t.progress + '%;background:' + barColor + '"></div></div>'
+      + '<input type="range" min="0" max="100" value="' + t.progress + '" class="rtc-slider" data-tid="' + safeId + '" data-pid="' + safeProp + '" style="width:80px;accent-color:' + barColor + '"/>'
+      + '<div class="rtc-pct-lbl" id="rtc-pct-' + safeId + '" style="color:' + barColor + '">' + t.progress + '%</div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+  // Attach event listeners after DOM update
+  el.querySelectorAll('.rtc-del-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      deleteRoadTask(this.dataset.pid, parseInt(this.dataset.tid));
+    });
+  });
+  el.querySelectorAll('.rtc-slider').forEach(slider => {
+    slider.addEventListener('input', function() {
+      updateRoadTaskProgress(this.dataset.pid, parseInt(this.dataset.tid), this.value);
+      const bar = document.getElementById('rtc-bar-' + this.dataset.tid);
+      const pct = document.getElementById('rtc-pct-' + this.dataset.tid);
+      const v = parseInt(this.value);
+      const c = v === 100 ? '#00b460' : v >= 50 ? '#e67e00' : '#820ad1';
+      if(bar) { bar.style.width = v + '%'; bar.style.background = c; }
+      if(pct) { pct.textContent = v + '%'; pct.style.color = c; }
+    });
+  });
+}
+
 // ══════ CHARTS ══════
 function destroyChart(id){if(charts[id]){try{charts[id].destroy();}catch(e){}delete charts[id];}}
 function makeChart(id,type,labels,datasets,extra={},extraOpts={}){
@@ -1362,7 +2929,7 @@ function renderSettings(){
   $('setShowUrl').textContent=url?url.substring(0,50)+'…':'No configurado';
   $('setConnStatus').textContent=isConnected?'Conectado ✓':'No conectado';$('setConnStatus').style.color=isConnected?'#00b460':'#e03030';
   $('themeBtn2').textContent=theme==='dark'?'☀️ Claro':'🌙 Oscuro';
-  $('targetSettings').innerHTML=MODULES.map(m=>{const ref80=m.metaFn(80);return `<div class="setting-row"><div><div class="setting-label">${m.icon} ${m.label}</div><div class="setting-sub">${m.unit} · ${m.metaLabel(80)}</div></div><span style="font-size:12px;font-weight:800;color:var(--domo)">${ref80}</span></div>`;}).join('');
+  $('targetSettings').innerHTML=MODULES.map(m=>{const ref80=m.metaFn(80);return `<div class="setting-row"><div><div class="setting-label">${m.icon} ${m.label}</div><div class="setting-sub">${m.unit} · ${m.metaLabel(80)}</div></div><span style="font-size:clamp(10px,.9vw,12px);font-weight:800;color:var(--domo)">${ref80}</span></div>`;}).join('');
 }
 function autoSetDates(){settings.curWeekStart=getLastFriday(-7);settings.prevWeekStart=getLastFriday(-14);const cw=$('setCurWeekStart'),pw=$('setPrevWeekStart');if(cw)cw.value=settings.curWeekStart;if(pw)pw.value=settings.prevWeekStart;saveSettings();}
 function saveSettings(){const ar=$('setAutoRefresh'),un=$('setUserName'),cw=$('setCurWeekStart'),pw=$('setPrevWeekStart');if(ar)settings.autoRefresh=parseInt(ar.value)||60;if(un)settings.userName=un.value;if(cw)settings.curWeekStart=cw.value;if(pw)settings.prevWeekStart=pw.value;localStorage.setItem('dn_settings',JSON.stringify(settings));startAutoRefresh();updateGreeting();}
@@ -1397,6 +2964,530 @@ document.addEventListener('DOMContentLoaded',async()=>{
     }catch(e){localStorage.removeItem('dn_sb_url');localStorage.removeItem('dn_sb_key');}
   }
 });
+
+// ══════════════════════════════════════════════
+// TASKS SECTION
+// ══════════════════════════════════════════════
+let taskCat = 'Administradores';
+let taskSelectedPropId = null;
+
+const TASK_SEGS = [
+  {name:'Innovadores',  color:'#34d399', h:'70px'},
+  {name:'Visionarios',  color:'#84cc16', h:'110px'},
+  null,
+  {name:'Pragmáticos',  color:'#fbbf24', h:'160px'},
+  {name:'Conservadores',color:'#fb7185', h:'128px'},
+  {name:'Escépticos',   color:'#94a3b8', h:'68px'},
+];
+
+function setTaskCat(cat, el) {
+  taskCat = cat;
+  document.querySelectorAll('#tafCatBtns .taf-cat').forEach(b => b.className = 'taf-cat');
+  el.className = 'taf-cat taf-cat-active';
+}
+
+function getTaskSealPct(propId) {
+  const tasks = propTasks[String(propId)] || [];
+  if(!tasks.length) return 0;
+  const totalW = tasks.reduce((s,t) => s + t.weight, 0);
+  const doneW  = tasks.reduce((s,t) => s + (t.progress/100) * t.weight, 0);
+  return totalW > 0 ? Math.round((doneW/totalW)*100) : 0;
+}
+
+function getCombinedSealPct(p) {
+  const { avgPct } = calcAbismo(p);
+  const taskSeal = getTaskSealPct(p.id);
+  // weighted: 60% module progress + 40% task completion
+  return Math.min(100, Math.round(avgPct * 0.6 + taskSeal * 0.4));
+}
+
+function renderTasksSection() {
+  const props = state.properties;
+  const list = $('tasksPropList');
+  if(!list) return;
+
+  // Global pct
+  const globalSeal = props.length
+    ? Math.round(props.reduce((s,p) => s + getCombinedSealPct(p), 0) / props.length)
+    : 0;
+  const gEl = $('tasksGlobalPct');
+  if(gEl) {
+    gEl.textContent = globalSeal + '%';
+    gEl.style.color = globalSeal>=80?'#00e57c':globalSeal>=50?'#fbbf24':'#fb7185';
+  }
+
+  // Property list
+  if(!props.length) {
+    list.innerHTML = '<div style="color:var(--text-muted);font-size:clamp(10px,.9vw,12px);padding:16px;text-align:center">Sin propiedades</div>';
+    return;
+  }
+
+  list.innerHTML = props.map(p => {
+    const seal = getCombinedSealPct(p);
+    const tasks = propTasks[String(p.id)] || [];
+    const barColor = seal>=80?'#00b460':seal>=50?'#e67e00':'#820ad1';
+    const isActive = String(p.id) === String(taskSelectedPropId);
+    return '<div class="tpl-card' + (isActive?' tpl-active':'') + '" onclick="selectTaskProp(' + JSON.stringify(String(p.id)) + ')">'
+      + '<div class="tpl-name">' + p.name + '</div>'
+      + '<div class="tpl-meta">' + (p.city||'—') + ' · ' + (p.units||0) + ' und.</div>'
+      + '<div class="tpl-bar-wrap"><div class="tpl-bar-fill" style="width:' + seal + '%;background:' + barColor + '"></div></div>'
+      + '<div class="tpl-pct" style="color:' + barColor + '">' + seal + '% sellado</div>'
+      + (tasks.length ? '<div class="tpl-task-count">' + tasks.length + ' tarea' + (tasks.length!==1?'s':'') + '</div>' : '')
+      + '</div>';
+  }).join('');
+
+  // Auto-select first
+  if(!taskSelectedPropId && props.length) selectTaskProp(String(props[0].id));
+  else if(taskSelectedPropId) renderTaskDetail(taskSelectedPropId);
+}
+
+function selectTaskProp(id) {
+  taskSelectedPropId = String(id);
+  // Update active state in list
+  document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('tpl-active'));
+  document.querySelectorAll('.tpl-card').forEach(c => {
+    if((c.getAttribute('onclick')||'').includes(JSON.stringify(id))) c.classList.add('tpl-active');
+  });
+  // Show detail panel
+  const empty = $('tasksEmptyState'); if(empty) empty.style.display='none';
+  const detail = $('tasksPropDetail'); if(detail) detail.style.display='block';
+  renderTaskDetail(id);
+}
+
+function renderTaskDetail(id) {
+  const p = state.properties.find(x => String(x.id) === String(id));
+  if(!p) return;
+
+  const { modData, avgPct, avgGapPct } = calcAbismo(p);
+  const taskSeal = getTaskSealPct(id);
+  const combined = getCombinedSealPct(p);
+  const chasmColor = combined>=80?'#00b460':combined>=50?'#e67e00':'#e03030';
+
+  // ── Adoption curve ──
+  if($('tacPropName')) $('tacPropName').textContent = p.name;
+  if($('tacChasmPct')) {
+    $('tacChasmPct').textContent = combined + '%';
+    $('tacChasmPct').style.color = chasmColor;
+  }
+
+  const tacBars = $('tacBars');
+  if(tacBars) {
+    tacBars.innerHTML = TASK_SEGS.map(seg => {
+      if(seg === null) {
+        const remaining = 100 - combined;
+        return '<div class="tac-gap-col">'
+          + '<div class="tac-gap-track">'
+          + '<div class="tac-gap-fill" style="height:' + combined + '%;background:' + chasmColor + '"></div>'
+          + '</div>'
+          + '<div class="tac-gap-word">Abismo</div>'
+          + '<div class="tac-gap-pct">' + remaining + '%</div>'
+          + '</div>';
+      }
+      return '<div class="tac-seg">'
+        + '<div class="tac-bar" style="height:' + seg.h + ';background:' + seg.color + '"></div>'
+        + '<div class="tac-label" style="color:' + seg.color + '">' + seg.name + '</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  // ── Stacked progress bar (modules + tasks) ──
+  const modsPct = Math.round(avgPct * 0.6);
+  const tasksPct = Math.round(taskSeal * 0.4);
+  if($('tacSealPct')) { $('tacSealPct').textContent = combined + '%'; $('tacSealPct').style.color = chasmColor; }
+  setTimeout(() => {
+    if($('tacBarMods')) $('tacBarMods').style.width = modsPct + '%';
+    if($('tacBarTasks')) $('tacBarTasks').style.width = tasksPct + '%';
+  }, 80);
+
+  // ── Task list ──
+  renderTaskList(id);
+}
+
+function renderTaskList(propId) {
+  const el = $('tasksListWrap');
+  if(!el) return;
+  const tasks = propTasks[String(propId)] || [];
+  const totalW = tasks.reduce((s,t) => s+t.weight, 0);
+
+  if(!tasks.length) {
+    el.innerHTML = '<div style="background:var(--surface);border:2px dashed var(--border);border-radius:14px;padding:32px;text-align:center">'
+      + '<div style="font-size:clamp(14px,1.8vw,24px);margin-bottom:8px">📋</div>'
+      + '<div style="font-size:clamp(10px,.95vw,13px);font-weight:600;color:var(--text-muted)">Sin tareas aún — agrega la primera arriba</div>'
+      + '</div>';
+    return;
+  }
+
+  el.innerHTML = '<div style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px">'
+    + tasks.length + ' tarea' + (tasks.length!==1?'s':'') + ' · Peso total: ' + totalW + '</div>'
+    + tasks.map(t => {
+        const barColor = t.progress===100?'#00b460':t.progress>=50?'#e67e00':'#820ad1';
+        const share = totalW>0 ? Math.round((t.weight/totalW)*100) : 0;
+        const contrib = Math.round(share*(t.progress/100));
+        const isDone = t.progress===100;
+        return '<div class="task-item-card' + (isDone?' tic-done':'') + '" id="tic-' + t.id + '">'
+          + '<div class="tic-top">'
+          + '<span class="tic-cat-badge">' + t.category + '</span>'
+          + '<div class="tic-text">' + t.text + '</div>'
+          + '<span class="tic-weight">Peso ' + t.weight + '</span>'
+          + '<button class="tic-del" data-pid="' + propId + '" data-tid="' + t.id + '" onclick="deleteTaskItem(this)">✕</button>'
+          + '</div>'
+          + '<div class="tic-progress-row">'
+          + '<span class="tic-prog-label">Progreso</span>'
+          + '<div class="tic-bar-wrap"><div class="tic-bar-fill" id="ticbar-'+t.id+'" style="width:'+t.progress+'%;background:'+barColor+'"></div></div>'
+          + '<input type="range" min="0" max="100" value="'+t.progress+'" class="tic-slider" data-pid="'+propId+'" data-tid="'+t.id+'" />'
+          + '<div class="tic-pct" id="ticpct-'+t.id+'" style="color:'+barColor+'">'+t.progress+'%</div>'
+          + '<div class="tic-contrib" title="Contribución al cierre">+'+contrib+'%</div>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+
+  // Attach slider listeners
+  el.querySelectorAll('.tic-slider').forEach(slider => {
+    slider.addEventListener('input', function() {
+      const pid = this.dataset.pid;
+      const tid = parseInt(this.dataset.tid);
+      const val = parseInt(this.value);
+      updateTaskItemProgress(pid, tid, val);
+    });
+  });
+}
+
+function addTaskForProp() {
+  const id = taskSelectedPropId;
+  if(!id) { showToast('Selecciona una propiedad','error'); return; }
+  const text = ($('tafTaskText')||{}).value?.trim();
+  if(!text) { showToast('Escribe una descripción','error'); return; }
+  const weight = parseInt(($('tafWeight')||{}).value) || 5;
+  if(!propTasks[id]) propTasks[id] = [];
+  propTasks[id].push({ id: Date.now(), category: taskCat, text, weight, progress: 0 });
+  savePropTasks();
+  if($('tafTaskText')) $('tafTaskText').value = '';
+  renderTasksSection();
+  showToast('✅ Tarea agregada','success');
+}
+
+function updateTaskItemProgress(propId, taskId, val) {
+  const tasks = propTasks[String(propId)];
+  if(!tasks) return;
+  const t = tasks.find(x => x.id === taskId);
+  if(!t) return;
+  t.progress = val;
+  savePropTasks();
+  // Update UI inline (no full re-render for smoothness)
+  const barColor = val===100?'#00b460':val>=50?'#e67e00':'#820ad1';
+  const bar = $('ticbar-'+taskId); if(bar){bar.style.width=val+'%;';bar.style.background=barColor;}
+  const pct = $('ticpct-'+taskId); if(pct){pct.textContent=val+'%';pct.style.color=barColor;}
+  const card = $('tic-'+taskId);
+  if(card){if(val===100)card.classList.add('tic-done');else card.classList.remove('tic-done');}
+  // Update the adoption curve + bars
+  renderTaskDetail(propId);
+  // Refresh prop list sidebar bars
+  renderTasksSection();
+}
+
+function deleteTaskItem(btn) {
+  const propId = btn.dataset.pid;
+  const taskId = parseInt(btn.dataset.tid);
+  if(!propTasks[propId]) return;
+  propTasks[propId] = propTasks[propId].filter(x => x.id !== taskId);
+  savePropTasks();
+  renderTasksSection();
+  showToast('Tarea eliminada','success');
+}
+
+
+// ══════════════════════════════════════════════
+// NAV-LEVEL ABISMO SECTIONS (sidebar items)
+// ══════════════════════════════════════════════
+let navRoadCategory = 'Administradores';
+let navSelectedPropId = null;
+let navRoadSelectedPropId = null;
+
+function renderStrategyFromNav(view) {
+  // Render into the independent sec-abismo-* containers
+  if(view === 'cards') {
+    renderStrategyGlobalMetrics2();
+    renderAbismoCards2();
+  }
+  if(view === 'heat') renderAbismoHeatMap2();
+  if(view === 'chart') renderAbismoCharts2();
+  if(view === 'prop') renderNavPropChasmView();
+}
+
+function setStratPhaseNav(f, el, suffix) {
+  strategyPhaseFilter = f;
+  document.querySelectorAll('#strategyPhaseTabs' + suffix + ' .filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderAbismoCards2();
+}
+
+function renderStrategyGlobalMetrics2() {
+  const el = $('strategyGlobalMetrics2');
+  if(!el) return;
+  // Re-use same logic as main
+  const props = getStrategyProps();
+  const total = props.length;
+  const globalAvg = total ? Math.round(props.reduce((s,p)=>s+getPropProgress(p),0)/total) : 0;
+  const abismoGlobal = 100 - globalAvg;
+  const critical = props.filter(p=>getPropProgress(p)<50).length;
+  const onTarget = props.filter(p=>getPropProgress(p)>=80).length;
+  const m = [
+    {val:globalAvg+'%',lbl:'Avance Global',sub:'',color:globalAvg>=80?'#00b460':globalAvg>=50?'#e67e00':'#e03030'},
+    {val:abismoGlobal+'%',lbl:'Abismo Global',sub:abismoGlobal>30?'⚡ Brecha significativa':'🟢 Brecha mínima',color:'#e03030'},
+    {val:String(critical),lbl:'Propiedades Críticas',sub:critical?'Requieren atención urgente':'Sin críticas',color:'#e03030'},
+    {val:String(onTarget),lbl:'En Meta (≥80%)',sub:Math.round(onTarget/(total||1)*100)+'% del portafolio',color:'#00b460'},
+  ];
+  el.innerHTML = m.map(x=>'<div class="sh-metric"><div class="sh-metric-val" style="color:'+x.color+'">'+x.val+'</div><div class="sh-metric-lbl">'+x.lbl+'</div><div class="sh-metric-sub" style="color:'+x.color+'">'+x.sub+'</div></div>').join('');
+}
+
+function renderAbismoCards2() {
+  const el = $('abismoGrid2'); if(!el) return;
+  const props = getStrategyProps();
+  el.innerHTML = props.length ? props.map(p => buildAbismoCard(p)).join('') : '<div style="color:var(--text-muted);padding:40px;text-align:center">Sin propiedades</div>';
+}
+
+function renderAbismoHeatMap2() {
+  const el = $('abismoHeatMap2'); if(!el) return;
+  // Call existing heat map builder targeting new element
+  const props = getStrategyProps();
+  buildHeatMapInto(el, props);
+}
+
+function renderAbismoCharts2() {
+  const props = getStrategyProps();
+  renderAbismoChartsInto(props, '2');
+}
+
+// ── Nav prop chasm view ──
+function renderNavPropChasmView() {
+  const props = state.properties;
+  ['navPropSelectorTabs','navPropSelectorTabsRoad'].forEach(tabsId => {
+    const el = $(tabsId); if(!el) return;
+    el.innerHTML = props.map(p => {
+      const isSelEst = tabsId==='navPropSelectorTabs' && String(navSelectedPropId)===String(p.id);
+      const isSelRoad = tabsId==='navPropSelectorTabsRoad' && String(navRoadSelectedPropId)===String(p.id);
+      const isSel = isSelEst || isSelRoad;
+      const fn = tabsId==='navPropSelectorTabs'
+        ? 'navSelectPropChasm('+JSON.stringify(String(p.id))+')'
+        : 'navSelectRoadProp('+JSON.stringify(String(p.id))+')';
+      return '<div class="filter-tab'+(isSel?' active':'')+'" onclick="'+fn+'">'+(p.name.length>18?p.name.substring(0,18)+'…':p.name)+'</div>';
+    }).join('') || '<span style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted)">Sin propiedades</span>';
+  });
+  if(!navSelectedPropId && props.length) navSelectPropChasm(String(props[0].id));
+  if(!navRoadSelectedPropId && props.length) navSelectRoadProp(String(props[0].id));
+}
+
+function setNavPropSubTab(tab) {
+  $('navPropSubStrategia').style.display = tab==='estrategia'?'block':'none';
+  $('navPropSubRoadmap').style.display = tab==='roadmap'?'block':'none';
+  $('navPropSubTabEst').className = 'prop-subtab'+(tab==='estrategia'?' prop-subtab-active':'');
+  $('navPropSubTabRoad').className = 'prop-subtab'+(tab==='roadmap'?' prop-subtab-active':'');
+  if(tab==='estrategia' && navSelectedPropId) navRenderPropStratTab();
+  if(tab==='roadmap' && navRoadSelectedPropId) navRenderRoadmapTab();
+}
+
+function navSelectPropChasm(id) {
+  navSelectedPropId = String(id);
+  buildPropDropdown('navPropDropdown', state.properties, navSelectedPropId);
+  navRenderPropStratTab();
+}
+
+function navRenderPropStratTab() {
+  const p = state.properties.find(x=>String(x.id)===String(navSelectedPropId));
+  if(!p) return;
+  const {modData,avgPct,avgGapPct} = calcAbismo(p);
+  if($('navPropChasmTitle')) $('navPropChasmTitle').textContent = p.name+(p.city?' · '+p.city:'');
+
+  // Adoption curve (reuse same logic with nav- prefixed elements)
+  const wrap = $('navAdoptionCurve'); if(!wrap) return;
+  const tasks = propTasks[String(p.id)]||[];
+  const totalW = tasks.reduce((s,t)=>s+t.weight,0);
+  const doneW = tasks.reduce((s,t)=>s+(t.progress/100)*t.weight,0);
+  const taskSeal = totalW>0?Math.round((doneW/totalW)*100):0;
+  const combinedSeal = Math.min(100,Math.round(avgPct*0.6+taskSeal*0.4));
+  const chasmRemaining = 100-combinedSeal;
+  const chasmColor = combinedSeal>=80?'#00b460':combinedSeal>=50?'#e67e00':'#e03030';
+
+  const succEl = $('navAdoptionSuccessPct');
+  if(succEl){succEl.textContent=combinedSeal+'%';succEl.style.color=chasmColor;}
+
+  const SEGS=[
+    {name:'Innovadores',color:'#34d399',h:'90px'},
+    {name:'Visionarios',color:'#84cc16',h:'140px'},
+    null,
+    {name:'Pragmáticos',color:'#fbbf24',h:'210px'},
+    {name:'Conservadores',color:'#fb7185',h:'168px'},
+    {name:'Escépticos',color:'#94a3b8',h:'88px'},
+  ];
+  wrap.innerHTML = SEGS.map(seg=>{
+    if(seg===null) return '<div class="ab-gap">'
+      +'<div class="ab-gap-track"><div class="ab-gap-fill" style="height:'+combinedSeal+'%;background:'+chasmColor+'"></div></div>'
+      +'<div class="ab-gap-info"><div class="ab-gap-word">Abismo</div><div class="ab-gap-pct">'+chasmRemaining+'%</div></div>'
+      +'</div>';
+    return '<div class="ab-seg"><div class="ab-bar" style="height:'+seg.h+';background:'+seg.color+'"></div>'
+      +'<div class="ab-label" style="color:'+seg.color+'">'+seg.name+'</div></div>';
+  }).join('');
+
+  const meter=$('navChasmMeter');if(meter)meter.style.display='flex';
+  const fill=$('navChasmMeterFill');if(fill)setTimeout(()=>{fill.style.width=combinedSeal+'%';},80);
+  const pctLbl=$('navChasmPctLabel');if(pctLbl)pctLbl.textContent=combinedSeal+'% sellado · '+chasmRemaining+'% restante';
+
+  // Hitos
+  const hitosEl=$('navHitosGrid');
+  const titleEl=$('navHitosTitle');
+  const badgeEl=$('navHitosPropBadge');
+  if(titleEl)titleEl.textContent='Hitos de '+p.name;
+  if(badgeEl)badgeEl.textContent=(p.modules||[]).length+' módulos activos';
+  if(hitosEl){
+    const items=[];
+    modData.filter(d=>d.isActive).forEach(d=>{
+      const m=MODULES.find(x=>x.id===d.mid);
+      items.push({cat:m.icon+' '+m.label,text:m.label+' — '+d.val+'/'+d.meta+' '+m.unit,progress:d.pct});
+    });
+    (propTasks[String(p.id)]||[]).forEach(t=>items.push({cat:t.category,text:t.text,progress:t.progress}));
+    hitosEl.innerHTML=items.length?items.map(item=>{
+      const bc=item.progress===100?'#00e57c':item.progress>=50?'#ffcc00':'#820ad1';
+      return '<div class="hito-card"><span class="hito-cat">'+item.cat+'</span>'
+        +'<div class="hito-text">'+item.text+'</div>'
+        +'<div class="hito-bar-wrap"><div class="hito-bar-fill" style="width:'+item.progress+'%;background:'+bc+'"></div></div>'
+        +'<div class="hito-footer"><span class="hito-pct" style="color:'+bc+'">'+item.progress+'%</span>'
+        +'<span class="hito-status '+(item.progress===100?'hito-done':'hito-pending')+'">'+(item.progress===100?'✓ Meta':'En progreso')+'</span></div></div>';
+    }).join(''):'<div style="color:rgba(255,255,255,.35);font-size:clamp(10px,.95vw,13px);padding:20px">Sin módulos activos.</div>';
+  }
+
+  // KPIs
+  const kpiEl=$('navPropChasmKpis');
+  if(kpiEl){
+    const lvlColor=avgPct>=80?'#00b460':avgPct>=50?'#e67e00':'#e03030';
+    const taskSealFull=totalW>0?Math.round((tasks.filter(t=>t.progress===100).reduce((s,t)=>s+t.weight,0)/totalW)*100):0;
+    kpiEl.innerHTML='<div class="pck-grid">'
+      +'<div class="pck-item"><div class="pck-val" style="color:'+lvlColor+'">'+avgPct+'%</div><div class="pck-label">Avance módulos</div></div>'
+      +'<div class="pck-item"><div class="pck-val" style="color:#e03030">'+avgGapPct+'%</div><div class="pck-label">Abismo restante</div></div>'
+      +'<div class="pck-item"><div class="pck-val" style="color:var(--domo)">'+(p.modules||[]).length+'</div><div class="pck-label">Módulos activos</div></div>'
+      +'<div class="pck-item"><div class="pck-val" style="color:#00b460">'+combinedSeal+'%</div><div class="pck-label">Cierre combinado</div></div>'
+      +'</div>';
+  }
+}
+
+function navSelectRoadProp(id) {
+  navRoadSelectedPropId = String(id);
+  buildPropDropdown('navPropDropdownRoad', state.properties, navRoadSelectedPropId);
+  navRenderRoadmapTab();
+}
+
+function navRenderRoadmapTab() {
+  const id = navRoadSelectedPropId;
+  const p = state.properties.find(x=>String(x.id)===String(id)); if(!p) return;
+  if($('navRoadPropName')) $('navRoadPropName').textContent = p.name;
+  const sealPct = getRoadSealPct(id);
+  const color = sealPct>=80?'#00b460':sealPct>=50?'#e67e00':'#820ad1';
+  if($('navRoadChasmPct')){$('navRoadChasmPct').textContent=sealPct+'%';$('navRoadChasmPct').style.color=color;}
+  const fill=$('navChasmGapFill');if(fill)setTimeout(()=>{fill.style.height=sealPct+'%';},80);
+  const rem=$('navChasmGapRemaining');if(rem)rem.style.height=(100-sealPct)+'%';
+  const pct=$('navChasmGapPct');if(pct){pct.textContent=sealPct+'% sellado';pct.style.color=color;}
+  // Bridges
+  const bridgesEl=$('navRoadTaskBridges');
+  const tasks=propTasks[id]||[];
+  const totalW=tasks.reduce((s,t)=>s+t.weight,0);
+  if(bridgesEl){
+    bridgesEl.innerHTML=tasks.length?tasks.map(t=>{
+      const share=totalW>0?Math.round((t.weight/totalW)*100):0;
+      const contrib=Math.round(share*(t.progress/100));
+      const bc=t.progress===100?'#00b460':t.progress>=50?'#e67e00':'var(--domo)';
+      return '<div class="task-bridge-row"><div class="tbr-name" title="'+t.text+'">'+t.text+'</div>'
+        +'<div class="tbr-weight">×'+t.weight+'</div>'
+        +'<div class="tbr-bar-wrap"><div class="tbr-bar-fill" style="width:'+t.progress+'%;background:'+bc+'"></div></div>'
+        +'<div class="tbr-pct" style="color:'+bc+'">+'+contrib+'%</div></div>';
+    }).join(''):'<div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted);padding:8px 0">Sin tareas asignadas.</div>';
+  }
+  // Task list
+  const listEl=$('navRoadTaskList');
+  if(listEl){
+    listEl.innerHTML=tasks.length?tasks.map(t=>{
+      const bc=t.progress===100?'#00b460':t.progress>=50?'#e67e00':'#820ad1';
+      return '<div class="road-task-card'+(t.progress===100?' rtc-done':'')+'">'
+        +'<div class="rtc-top"><span class="rtc-cat">'+t.category+'</span><div class="rtc-text">'+t.text+'</div>'
+        +'<div class="rtc-weight">Peso: '+t.weight+'</div>'
+        +'<button class="tic-del" data-pid="'+id+'" data-tid="'+t.id+'" onclick="deleteRoadTask(this.dataset.pid,parseInt(this.dataset.tid));navRenderRoadmapTab();">✕</button></div>'
+        +'<div class="rtc-progress-row"><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);font-weight:700;min-width:60px">PROGRESO</span>'
+        +'<div class="rtc-bar-wrap"><div class="rtc-bar-fill" style="width:'+t.progress+'%;background:'+bc+'"></div></div>'
+        +'<input type="range" min="0" max="100" value="'+t.progress+'" style="width:80px;accent-color:'+bc+'" '
+        +'oninput="updateRoadTaskProgress('+JSON.stringify(id)+','+t.id+',this.value);navRenderRoadmapTab();" />'
+        +'<div class="rtc-pct-lbl" style="color:'+bc+'">'+t.progress+'%</div></div></div>';
+    }).join(''):'<div class="prop-chasm-chart-card" style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">📋 Agrega tareas para comenzar.</div>';
+  }
+}
+
+function setNavRoadCategory(cat, el) {
+  navRoadCategory = cat;
+  document.querySelectorAll('#navRoadCategoryBtns .road-cat-btn').forEach(b => b.className='road-cat-btn');
+  el.className = 'road-cat-btn road-cat-active';
+}
+
+function navAddRoadTask() {
+  const id = navRoadSelectedPropId;
+  if(!id){showToast('Selecciona una propiedad','error');return;}
+  const text=($('navRoadNewTaskText')||{}).value?.trim();
+  if(!text){showToast('Escribe una descripción','error');return;}
+  const weight=parseInt(($('navRoadTaskWeight')||{}).value)||5;
+  if(!propTasks[id])propTasks[id]=[];
+  propTasks[id].push({id:Date.now(),category:navRoadCategory,text,weight,progress:0});
+  savePropTasks();
+  if($('navRoadNewTaskText'))$('navRoadNewTaskText').value='';
+  navRenderRoadmapTab();
+  showToast('✅ Tarea agregada','success');
+}
+
+// Stubs for chart helpers (reuse existing render functions with new canvas ids)
+function buildHeatMapInto(el, props) {
+  // Build same heat map table as renderAbismoHeatMap but into arbitrary element
+  if(!props.length){el.innerHTML='<div style="color:var(--text-muted);padding:40px;text-align:center">Sin propiedades</div>';return;}
+  const cols = MODULES.map(m=>m.icon+' '+m.label);
+  let html='<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%"><thead><tr>'
+    +'<th style="padding:8px 12px;font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-align:left;white-space:nowrap;background:var(--surface2);border:1px solid var(--border)">Propiedad</th>'
+    +cols.map(c=>'<th style="padding:8px 10px;font-size:clamp(8px,.75vw,9px);font-weight:700;color:var(--text-muted);text-align:center;white-space:nowrap;background:var(--surface2);border:1px solid var(--border)">'+c+'</th>').join('')
+    +'</tr></thead><tbody>'
+    +props.map(p=>{
+      const {modData}=calcAbismo(p);
+      return '<tr>'
+        +'<td style="padding:8px 12px;font-size:clamp(10px,.9vw,12px);font-weight:700;white-space:nowrap;border:1px solid var(--border)">'+p.name+'</td>'
+        +MODULES.map(m=>{
+          const d=modData.find(x=>x.mid===m.id);
+          if(!d||!d.isActive) return '<td style="padding:6px 10px;text-align:center;background:var(--surface3);border:1px solid var(--border)"><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">—</span></td>';
+          const c=d.pct>=80?'rgba(0,180,100,.25)':d.pct>=50?'rgba(230,126,0,.2)':'rgba(224,48,48,.2)';
+          const fc=d.pct>=80?'#00b460':d.pct>=50?'#e67e00':'#e03030';
+          return '<td style="padding:6px 10px;text-align:center;background:'+c+';border:1px solid var(--border)"><span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:'+fc+'">'+d.pct+'%</span></td>';
+        }).join('')+'</tr>';
+    }).join('')+'</tbody></table></div>';
+  el.innerHTML=html;
+}
+
+function renderAbismoChartsInto(props, suffix) {
+  const dk=theme==='dark', tc=dk?'#9287b8':'#7c6fa0', gc=dk?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)';
+  const labels=props.map(p=>p.name.length>14?p.name.substring(0,14)+'…':p.name);
+  const avances=props.map(p=>getPropProgress(p));
+  const abismos=avances.map(v=>100-v);
+  const barsColors=avances.map(v=>v>=80?'rgba(0,180,100,.8)':v>=50?'rgba(230,126,0,.8)':'rgba(130,10,209,.8)');
+
+  destroyChart('chartAbismoProps'+suffix);
+  const c1=$('chartAbismoProps'+suffix);
+  if(c1){charts['chartAbismoProps'+suffix]=new Chart(c1.getContext('2d'),{type:'bar',data:{labels,datasets:[{label:'Avance %',data:avances,backgroundColor:barsColors,borderRadius:5},{label:'Abismo %',data:abismos,backgroundColor:'rgba(100,100,120,.12)',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}},scales:{x:{stacked:true,ticks:{color:tc,font:{family:'Montserrat',size:9}},grid:{color:gc}},y:{stacked:true,max:100,ticks:{color:tc,font:{family:'Montserrat',size:10}},grid:{color:gc}}}}});}
+
+  const modPcts=MODULES.map(m=>{const a=props.filter(p=>(p.modules||[]).includes(m.id));return a.length?Math.round(a.reduce((s,p)=>s+calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/a.length):0;});
+  destroyChart('chartAbismoModules'+suffix);
+  const c2=$('chartAbismoModules'+suffix);
+  if(c2){charts['chartAbismoModules'+suffix]=new Chart(c2.getContext('2d'),{type:'bar',data:{labels:MODULES.map(m=>m.icon+' '+m.label),datasets:[{label:'Cumplimiento %',data:modPcts,backgroundColor:modPcts.map(v=>v>=80?'rgba(0,180,100,.8)':v>=50?'rgba(230,126,0,.8)':'rgba(130,10,209,.8)'),borderRadius:5},{label:'Abismo %',data:modPcts.map(v=>100-v),backgroundColor:'rgba(100,100,120,.12)',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}},scales:{x:{stacked:true,ticks:{color:tc,font:{family:'Montserrat',size:9}},grid:{color:gc}},y:{stacked:true,max:100,ticks:{color:tc,font:{family:'Montserrat',size:10}},grid:{color:gc}}}}});}
+
+  const g=avances.filter(v=>v>=80).length,w=avances.filter(v=>v>=50&&v<80).length,cr=avances.filter(v=>v<50).length;
+  destroyChart('chartAbismoDist'+suffix);
+  const c3=$('chartAbismoDist'+suffix);
+  if(c3){charts['chartAbismoDist'+suffix]=new Chart(c3.getContext('2d'),{type:'doughnut',data:{labels:['Meta ≥80%','Alerta 50-79%','Crítico <50%'],datasets:[{data:[g,w,cr],backgroundColor:['#00b460','#e67e00','#e03030'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}});}
+
+  destroyChart('chartAbismoRadar'+suffix);
+  const c4=$('chartAbismoRadar'+suffix);
+  if(c4){charts['chartAbismoRadar'+suffix]=new Chart(c4.getContext('2d'),{type:'radar',data:{labels:MODULES.map(m=>m.icon+' '+m.label),datasets:[{label:'Promedio',data:modPcts,backgroundColor:'rgba(130,10,209,.15)',borderColor:'#820ad1',pointBackgroundColor:'#820ad1',borderWidth:2,pointRadius:3},{label:'Meta',data:MODULES.map(()=>100),backgroundColor:'rgba(0,180,100,.05)',borderColor:'rgba(0,180,100,.4)',borderWidth:1,pointRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}});}
+}
+
 </script>
 </body>
 </html>

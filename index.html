@@ -3424,7 +3424,7 @@ function getCombinedSealPct(p) {
   const { avgPct } = calcAbismo(p);
   const taskSeal = getTaskSealPct(p.id);
   // weighted: 60% module progress + 40% task completion
-  return Math.min(100, Math.round(avgPct * 0.6 + taskSeal * 0.4));
+  return Math.min(100, Math.round(avgPct * 0.8 + taskSeal * 0.2));
 }
 
 function renderTasksSection() {
@@ -3517,8 +3517,8 @@ function renderTaskDetail(id) {
   }
 
   // ── Stacked progress bar (modules + tasks) ──
-  const modsPct = Math.round(avgPct * 0.6);
-  const tasksPct = Math.round(taskSeal * 0.4);
+  const modsPct = Math.round(avgPct * 0.8);
+  const tasksPct = Math.round(taskSeal * 0.2);
   if($('tacSealPct')) { $('tacSealPct').textContent = combined + '%'; $('tacSealPct').style.color = chasmColor; }
   // Checkmark y mensaje de estado
   const sealCheck = $('tacSealCheck');
@@ -3556,7 +3556,7 @@ function renderTaskList(propId) {
     const isDone = t.progress === 100;
     const zoneCols = {Innovadores:'#34d399',Visionarios:'#84cc16','Pragmáticos':'#fbbf24',Conservadores:'#fb7185','Escépticos':'#94a3b8'};
     const zoneCol = zoneCols[t.category] || 'var(--domo)';
-    const maxContrib = totalW > 0 ? Math.round((t.weight / totalW) * 100 * 0.4) : 0;
+    const maxContrib = totalW > 0 ? Math.round((t.weight / totalW) * 100 * 0.2) : 0;
     const curContrib = isDone ? maxContrib : 0;
     const barColor   = isDone ? '#00b460' : '#820ad1';
     const checkClass = isDone ? 'tic-check-btn checked' : 'tic-check-btn';
@@ -3741,7 +3741,7 @@ function navRenderPropStratTab() {
   const totalW = tasks.reduce((s,t)=>s+t.weight,0);
   const doneW = tasks.reduce((s,t)=>s+(t.progress/100)*t.weight,0);
   const taskSeal = totalW>0?Math.round((doneW/totalW)*100):0;
-  const combinedSeal = Math.min(100,Math.round(avgPct*0.6+taskSeal*0.4));
+  const combinedSeal = Math.min(100,Math.round(avgPct*0.8+taskSeal*0.2));
   const chasmRemaining = 100-combinedSeal;
   const chasmColor = combinedSeal>=80?'#00b460':combinedSeal>=50?'#e67e00':'#e03030';
 
@@ -4612,24 +4612,70 @@ function toggleAbismoTasks(propId) {
 
 function renderAbismoTaskBadge(propId) {
   const tasks = propTasks[String(propId)] || [];
+  const totalW = tasks.reduce((s,t) => s + t.weight, 0);
+  const done = tasks.filter(t => t.progress === 100).length;
+
   const badge = document.getElementById('abt-badge-' + propId);
   if (badge) badge.textContent = tasks.length;
+
+  const sealEl = document.getElementById('abt-seal-' + propId);
+  if (sealEl) {
+    const p = state.properties.find(x => String(x.id) === String(propId));
+    if (p) {
+      const v = getCombinedSealPct(p);
+      sealEl.textContent = v + '% sellado' + (v >= 80 ? ' ✅' : '');
+      sealEl.style.color = v >= 80 ? '#00b460' : v >= 50 ? '#e67e00' : '#e03030';
+    }
+  }
+
   const list = document.getElementById('abt-list-' + propId);
   if (!list) return;
+
   if (!tasks.length) {
     list.innerHTML = '<div class="abt-empty">Sin tareas — agrega una abajo ↓</div>';
     return;
   }
+
   const _zc = {'Innovadores':'#34d399','Visionarios':'#84cc16','Pragmáticos':'#fbbf24','Conservadores':'#fb7185','Escépticos':'#94a3b8'};
-  list.innerHTML = tasks.map(t => {
+  const hdrCol = done === tasks.length && done > 0 ? '#00b460' : 'var(--text-muted)';
+
+  list.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+    <span style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">${tasks.length} tarea${tasks.length!==1?'s':''} · Peso: ${totalW}</span>
+    <span style="font-size:10px;font-weight:800;color:${hdrCol}">${done===tasks.length&&done>0?'✅ ':''}${done}/${tasks.length}</span>
+  </div>`
+  + tasks.map(t => {
+    const isDone = t.progress === 100;
     const zc = _zc[t.category] || '#820ad1';
-    return `<div class="abt-item" id="abt-item-${propId}-${t.id}">
-      <input type="checkbox" class="abt-check" ${t.progress===100?'checked':''} onchange="toggleAbismoTask('${propId}',${t.id},this.checked)">
-      <span style="font-size:9px;font-weight:700;color:${zc};white-space:nowrap;flex-shrink:0">${t.category||''}</span>
-      <span class="abt-text${t.progress===100?' done':''}">${t.text}</span>
-      <button class="abt-del" onclick="deleteAbismoTask('${propId}',${t.id})" title="Eliminar">✕</button>
+    const maxC = totalW > 0 ? Math.round((t.weight / totalW) * 100 * 0.2) : 0;
+    const curC = isDone ? maxC : 0;
+    const bc = isDone ? '#00b460' : '#820ad1';
+    const checkClass = isDone ? 'tic-check-btn checked' : 'tic-check-btn';
+    return `<div class="abt-item" id="abt-item-${propId}-${t.id}" style="flex-direction:column;align-items:stretch;border-left:2px solid ${zc};padding:8px 10px;gap:4px;background:var(--surface)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="${checkClass}" onclick="toggleAbismoTaskCheck('${propId}',${t.id})" style="width:18px;height:18px;font-size:11px;flex-shrink:0">${isDone?'✓':''}</button>
+        <span style="font-size:8px;font-weight:700;color:${zc};white-space:nowrap;padding:1px 6px;border-radius:10px;background:${zc}20;flex-shrink:0">${t.category}</span>
+        <span class="abt-text${isDone?' done':''}" style="flex:1${isDone?';text-decoration:line-through;color:var(--text-muted)':''}">${t.text}</span>
+        <button class="abt-del" onclick="deleteAbismoTask('${propId}',${t.id})" title="Eliminar" style="flex-shrink:0">✕</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding-left:26px">
+        <span style="font-size:8px;font-weight:700;color:var(--text-muted);text-transform:uppercase;white-space:nowrap">Abismo</span>
+        <div style="flex:1;height:5px;border-radius:3px;background:var(--surface2);overflow:hidden">
+          <div style="height:100%;width:${curC}%;background:${bc};border-radius:3px;transition:width .5s ease"></div>
+        </div>
+        <span style="font-size:9px;font-weight:800;color:${bc};min-width:38px;text-align:right">${isDone?'+'+maxC+'%':'+0%/+'+maxC+'%'}</span>
+      </div>
     </div>`;
   }).join('');
+}
+
+function toggleAbismoTaskCheck(propId, taskId) {
+  const tasks = propTasks[String(propId)] || [];
+  const t = tasks.find(x => x.id === taskId);
+  if (!t) return;
+  t.progress = t.progress === 100 ? 0 : 100;
+  savePropTasks();
+  renderAbismoTaskBadge(propId);
+  showToast(t.progress===100 ? '✅ Tarea completada' : '↩️ Tarea pendiente', t.progress===100?'success':'info');
 }
 
 function addAbismoTask(propId) {

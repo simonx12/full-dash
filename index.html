@@ -1907,7 +1907,7 @@ const MODULES = [
   {id:'muro',label:'Muro',icon:'💬',unit:'publicaciones/mes',metaLabel:u=>`Meta fija: 8 publicaciones al mes`,metaFn:u=>8},
   {id:'alertas',label:'Alertas',icon:'🔔',unit:'alertas/mes',metaLabel:u=>`Meta: mínimo 2, ideal 5 alertas/mes`,metaFn:u=>2},
   {id:'solicitudes',label:'Solicitudes',icon:'📋',unit:'aptos con solicitudes',metaLabel:u=>`Meta: ${Math.round(u*0.30)} aptos (30% de ${u})`,metaFn:u=>Math.round(u*0.30)},
-  {id:'zonas',label:'Zonas Comunes',icon:'⬜',unit:'reservas/mes',metaLabel:u=>`Meta: ${Math.round(u/6)} reservas (1/6 de ${u})`,metaFn:u=>Math.round(u/6)},
+  {id:'zonas',label:'Zonas Comunes',icon:'⬜',unit:'reservas/mes',metaLabel:u=>`Meta: ${Math.round(u/6)} reservas (80 de ${u})`,metaFn:u=>Math.round(u*0.80)},
   {id:'documentos',label:'Documentos',icon:'📄',unit:'aptos con acceso',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
   {id:'financiero',label:'Financiero',icon:'💰',unit:'aptos activos',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
   {id:'votaciones',label:'Votaciones',icon:'🗳️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},

@@ -1038,6 +1038,11 @@ tr:hover td{background:var(--surface2)}
       <button class="btn-primary btn-sm" onclick="autoSetDates()">Calcular automáticamente (último viernes)</button>
     </div>
     <div class="settings-card full">
+      <div class="settings-section">Datos Locales</div>
+      <div class="setting-row" style="background:rgba(0,180,100,.05);border:1px solid rgba(0,180,100,.2);border-radius:12px;padding:12px 16px;margin-bottom:8px">
+        <div><div class="setting-label">💾 Guardado en este navegador</div><div class="setting-sub" id="localDataInfo">—</div></div>
+        <button class="btn-outline" style="color:#e03030;border-color:#e03030;font-size:11px;padding:4px 10px" onclick="clearLocalData()">🗑️ Borrar todo</button>
+      </div>
       <div class="settings-section">Conexión Supabase</div>
       <div class="setting-row"><div><div class="setting-label">Project URL</div></div><div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted);font-family:JetBrains Mono,monospace" id="setShowUrl">No configurado</div></div>
       <div class="setting-row"><div><div class="setting-label">Estado</div></div><div id="setConnStatus" style="font-size:clamp(10px,.9vw,12px);font-weight:600"></div></div>
@@ -1863,7 +1868,7 @@ tr:hover td{background:var(--surface2)}
 <div class="modal-overlay" id="propModal" style="display:none" onclick="closeModalOutside(event)">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Agregar Propiedad</div>
+      <div class="modal-title" id="modalTitle">Agregar Propiedad</div><div id="modalSaveStatus" style="font-size:10px;font-weight:700;color:#00b460;margin-top:2px;display:none">💾 Guardado automáticamente</div>
       <div class="modal-close" onclick="closeModal()">✕</div>
     </div>
     <div class="modal-body">
@@ -1956,6 +1961,24 @@ let strategyView='cards',strategyPhaseFilter='all';
 let selectedPropId=null,roadSelectedPropId=null,roadCategory='Administradores';
 let propTasks=JSON.parse(localStorage.getItem('dn_prop_tasks')||'{}');
 function savePropTasks(){localStorage.setItem('dn_prop_tasks',JSON.stringify(propTasks));}
+
+// ── Persistencia de propiedades (modo offline/demo) ──
+function saveStateLocal(){
+  try { localStorage.setItem('dn_state_props', JSON.stringify(state.properties)); } catch(e){}
+}
+function loadStateLocal(){
+  try {
+    const raw = localStorage.getItem('dn_state_props');
+    if(raw) {
+      const props = JSON.parse(raw);
+      if(Array.isArray(props) && props.length) {
+        state.properties = props;
+        return true;
+      }
+    }
+  } catch(e){}
+  return false;
+}
 const $=id=>document.getElementById(id);
 
 // ══════ HELPERS ══════
@@ -1972,17 +1995,22 @@ function pctBadgeClass(pct){return pct>=80?'c-green':pct>=50?'c-orange':'c-purpl
 // ══════ DEMO DATA ══════
 function useDemoData(){
   isConnected=true;
-  state.properties=[
-    {id:'1',name:'Torres del Parque',city:'Bogotá',phase:'implementation',days:45,units:120,modules:['acceso','muro','alertas'],module_values:{acceso:8,muro:5,alertas:3},notes:'Iniciando',entry_date:'2024-11-01'},
-    {id:'2',name:'Conjunto Los Andes',city:'Medellín',phase:'pilot',days:30,units:85,modules:['acceso','muro','solicitudes','zonas'],module_values:{acceso:7,muro:8,solicitudes:18,zonas:10},notes:'Piloto activo',entry_date:'2024-10-15'},
-    {id:'3',name:'Residencias Bolívar',city:'Cali',phase:'support',days:180,units:200,modules:['acceso','muro','alertas','solicitudes','zonas','documentos','financiero'],module_values:{acceso:16,muro:9,alertas:4,solicitudes:40,zonas:35,documentos:120,financiero:100},notes:'Consolidado',entry_date:'2024-05-01'},
-    {id:'4',name:'Park Reservado',city:'Barranquilla',phase:'done',days:365,units:60,modules:['acceso','muro','alertas','solicitudes','zonas','documentos','financiero','votaciones'],module_values:{acceso:5,muro:8,alertas:5,solicitudes:15,zonas:15,documentos:39,financiero:39,votaciones:39},notes:'Completo',entry_date:'2024-01-01'},
-    {id:'5',name:'Ciudad Verde',city:'Pereira',phase:'implementation',days:15,units:75,modules:['acceso'],module_values:{acceso:2},notes:'Inicio',entry_date:'2024-12-15'},
-    {id:'6',name:'Altos del Prado',city:'Bucaramanga',phase:'pilot',days:22,units:95,modules:['acceso','muro','alertas','solicitudes'],module_values:{acceso:6,muro:7,alertas:3,solicitudes:16},notes:'Buen avance',entry_date:'2024-12-01'}
-  ];
+  // Si hay datos guardados localmente, usarlos en lugar del demo
+  const loaded = loadStateLocal();
+  if(!loaded){
+    state.properties=[
+      {id:'1',name:'Torres del Parque',city:'Bogotá',phase:'implementation',days:45,units:120,modules:['acceso','muro','alertas'],module_values:{acceso:8,muro:5,alertas:3},notes:'Iniciando',entry_date:'2024-11-01'},
+      {id:'2',name:'Conjunto Los Andes',city:'Medellín',phase:'pilot',days:30,units:85,modules:['acceso','muro','solicitudes','zonas'],module_values:{acceso:7,muro:8,solicitudes:18,zonas:10},notes:'Piloto activo',entry_date:'2024-10-15'},
+      {id:'3',name:'Residencias Bolívar',city:'Cali',phase:'support',days:180,units:200,modules:['acceso','muro','alertas','solicitudes','zonas','documentos','financiero'],module_values:{acceso:16,muro:9,alertas:4,solicitudes:40,zonas:35,documentos:120,financiero:100},notes:'Consolidado',entry_date:'2024-05-01'},
+      {id:'4',name:'Park Reservado',city:'Barranquilla',phase:'done',days:365,units:60,modules:['acceso','muro','alertas','solicitudes','zonas','documentos','financiero','votaciones'],module_values:{acceso:5,muro:8,alertas:5,solicitudes:15,zonas:15,documentos:39,financiero:39,votaciones:39},notes:'Completo',entry_date:'2024-01-01'},
+      {id:'5',name:'Ciudad Verde',city:'Pereira',phase:'implementation',days:15,units:75,modules:['acceso'],module_values:{acceso:2},notes:'Inicio',entry_date:'2024-12-15'},
+      {id:'6',name:'Altos del Prado',city:'Bucaramanga',phase:'pilot',days:22,units:95,modules:['acceso','muro','alertas','solicitudes'],module_values:{acceso:6,muro:7,alertas:3,solicitudes:16},notes:'Buen avance',entry_date:'2024-12-01'}
+    ];
+    saveStateLocal();
+  }
   state.weekData={current:{alertas:4,solicitudes:28,muro:9,acceso:12},previous:{alertas:3,solicitudes:24,muro:7,acceso:10}};
   goSection('dashboard');
-  showToast('🧪 Modo demo activo','success');
+  showToast(loaded ? '💾 Datos guardados restaurados' : '🧪 Modo demo activo','success');
 }
 
 // ══════ NAVIGATION ══════
@@ -2011,7 +2039,7 @@ function renderSection(id){
   if(id==='modules')renderModulesSection();
   if(id==='progress')renderProgressSection();
   if(id==='charts')renderChartsPage();
-  if(id==='settings')renderSettings();
+  if(id==='settings'){renderSettings();updateLocalDataInfo();}
   if(id==='strategy')renderStrategySection();
   if(id==='tasks')renderTasksSection();
   if(id==='abismo-propiedad'){strategyView='cards';renderStrategyFromNav('cards');}
@@ -2194,12 +2222,44 @@ function onModuleInput(mid,rawVal){
   if(badge){badge.textContent=pct+'%';badge.className='mp-pct-badge '+pctBadgeClass(pct);}
   if(bar){bar.style.width=Math.min(100,pct)+'%';bar.style.background=clr;}
   if(lbl){lbl.textContent=val+' / '+meta+' '+MODULES.find(m=>m.id===mid).unit;}
+  // Guardar en tiempo real si hay propiedad activa en modo local
+  if(!sb){
+    const editId = $('editPropId') ? $('editPropId').value : '';
+    if(editId){
+      const idx = state.properties.findIndex(x=>String(x.id)===String(editId));
+      if(idx>=0){
+        if(!state.properties[idx].module_values) state.properties[idx].module_values={};
+        state.properties[idx].module_values[mid] = val;
+        // Debounce el guardado para no saturar localStorage
+        clearTimeout(window._saveDebounce);
+        window._saveDebounce = setTimeout(()=>{
+          saveStateLocal();
+          const ind = $('modalSaveStatus');
+          if(ind){ind.style.display='block';clearTimeout(window._hideInd);window._hideInd=setTimeout(()=>{ind.style.display='none';},2000);}
+        }, 600);
+      }
+    }
+  }
 }
 function toggleModuleCheck(id,inp){
   const numEl=$('mp-num-'+id),row=$('mp-row-'+id),barRow=$('mp-barrow-'+id),badge=$('mp-badge-'+id);
   if(!numEl||!row)return;
   if(inp.checked){numEl.disabled=false;if(!numEl.value)numEl.value='0';row.classList.add('mp-on');if(barRow)barRow.style.display='flex';onModuleInput(id,numEl.value);}
   else{numEl.disabled=true;numEl.value='';row.classList.remove('mp-on');if(barRow)barRow.style.display='none';if(badge){badge.textContent='—';badge.className='mp-pct-badge';}const bar=$('mp-bar-'+id);if(bar){bar.style.width='0%';}const lbl=$('mp-barlbl-'+id);if(lbl)lbl.textContent='—';}
+  // Guardar módulos activos inmediatamente en modo local
+  if(!sb){
+    const editId = $('editPropId') ? $('editPropId').value : '';
+    if(editId){
+      const idx = state.properties.findIndex(x=>String(x.id)===String(editId));
+      if(idx>=0){
+        const mods=[], mvals={};
+        MODULES.forEach(m=>{const c=$('mp-chk-'+m.id),n=$('mp-num-'+m.id);if(c&&c.checked){mods.push(m.id);mvals[m.id]=Math.max(0,parseInt(n?.value)||0);}});
+        state.properties[idx].modules = mods;
+        state.properties[idx].module_values = mvals;
+        saveStateLocal();
+      }
+    }
+  }
 }
 function closeModal(){$('propModal').style.display='none';}
 function closeModalOutside(e){if(e.target===$('propModal'))closeModal();}
@@ -2214,11 +2274,12 @@ async function saveProperty(){
   closeModal();
   if(editId){
     if(sb){await updateSupabase(editId,prop);await fetchAllData();}
-    else{const idx=state.properties.findIndex(x=>String(x.id)===String(editId));if(idx>=0)state.properties[idx]={...state.properties[idx],...prop};}
+    else{const idx=state.properties.findIndex(x=>String(x.id)===String(editId));if(idx>=0){state.properties[idx]={...state.properties[idx],...prop};saveStateLocal();}}
   }else{
     if(sb){await insertSupabase(prop);await fetchAllData();}
     else{state.properties.unshift({...prop,id:'demo-'+Date.now()});}
   }
+  saveStateLocal();
   showToast('✅ Guardado','success');
   renderSection(currentSection);
 }
@@ -2226,7 +2287,7 @@ async function saveProperty(){
 async function deleteProp(id){
   if(!confirm('¿Eliminar esta propiedad?'))return;
   if(sb){await deleteSupabase(id);await fetchAllData();}
-  else{state.properties=state.properties.filter(x=>String(x.id)!==String(id));renderSection(currentSection);}
+  else{state.properties=state.properties.filter(x=>String(x.id)!==String(id));saveStateLocal();renderSection(currentSection);}
   showToast('🗑️ Eliminado','success');
 }
 
@@ -3290,6 +3351,15 @@ document.addEventListener('DOMContentLoaded',async()=>{
       if(error)throw error;
       isConnected=true;await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
     }catch(e){localStorage.removeItem('dn_sb_url');localStorage.removeItem('dn_sb_key');}
+  } else {
+    // Sin Supabase: si hay datos locales guardados, restaurar automáticamente
+    const hasLocal = loadStateLocal();
+    if(hasLocal){
+      isConnected=true;
+      state.weekData={current:{alertas:4,solicitudes:28,muro:9,acceso:12},previous:{alertas:3,solicitudes:24,muro:7,acceso:10}};
+      goSection('dashboard');
+      showToast('💾 Datos locales restaurados','success');
+    }
   }
 });
 
@@ -3446,50 +3516,53 @@ function renderTaskList(propId) {
   if(!el) return;
   const tasks = propTasks[String(propId)] || [];
   const totalW = tasks.reduce((s,t) => s+t.weight, 0);
+  const done = tasks.filter(t => t.progress === 100).length;
 
   if(!tasks.length) {
     el.innerHTML = '<div style="background:var(--surface);border:2px dashed var(--border);border-radius:14px;padding:32px;text-align:center">'
-      + '<div style="font-size:clamp(14px,1.8vw,24px);margin-bottom:8px">📋</div>'
-      + '<div style="font-size:clamp(10px,.95vw,13px);font-weight:600;color:var(--text-muted)">Sin tareas aún — agrega la primera arriba</div>'
+      + '<div style="font-size:24px;margin-bottom:8px">📋</div>'
+      + '<div style="font-size:clamp(10px,.95vw,13px);font-weight:600;color:var(--text-muted)">Sin tareas — agrega la primera arriba</div>'
       + '</div>';
     return;
   }
 
-  el.innerHTML = '<div style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px">'
-    + tasks.length + ' tarea' + (tasks.length!==1?'s':'') + ' · Peso total: ' + totalW + '</div>'
+  const headerColor = done === tasks.length && done > 0 ? '#00b460' : 'var(--text-muted)';
+  el.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+    + '<span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px">'
+    + tasks.length + ' tarea' + (tasks.length!==1?'s':'') + ' · Peso total: ' + totalW + '</span>'
+    + '<span style="font-size:clamp(10px,.9vw,12px);font-weight:800;color:'+headerColor+'">'
+    + (done===tasks.length && done>0 ? '✅ ' : '') + done + '/' + tasks.length + ' completadas</span>'
+    + '</div>'
     + tasks.map(t => {
-        const barColor = t.progress===100?'#00b460':t.progress>=50?'#e67e00':'#820ad1';
-        const share = totalW>0 ? Math.round((t.weight/totalW)*100) : 0;
-        const contrib = Math.round(share*(t.progress/100));
-        const isDone = t.progress===100;
+        const isDone = t.progress === 100;
         const zoneCols = {'Innovadores':'#34d399','Visionarios':'#84cc16','Pragmáticos':'#fbbf24','Conservadores':'#fb7185','Escépticos':'#94a3b8'};
         const zoneCol = zoneCols[t.category] || 'var(--domo)';
-        return '<div class="task-item-card' + (isDone?' tic-done':'') + '" id="tic-' + t.id + '">'
+        const maxContrib = totalW > 0 ? Math.round((t.weight / totalW) * 100 * 0.4) : 0;
+        const curContrib = isDone ? maxContrib : 0;
+        const barColor   = isDone ? '#00b460' : '#820ad1';
+        return '<div class="task-item-card' + (isDone?' tic-done':'') + '" id="tic-'+t.id+'" style="border-left:3px solid '+zoneCol+'">'
           + '<div class="tic-top">'
-          + '<span class="tic-cat-badge" style="background:' + zoneCol + '20;border-color:' + zoneCol + ';color:' + zoneCol + '">' + t.category + '</span>'
-          + '<div class="tic-text">' + t.text + '</div>'
-          + '<span class="tic-weight">Peso ' + t.weight + '</span>'
-          + '<button class="tic-del" data-pid="' + propId + '" data-tid="' + t.id + '" onclick="deleteTaskItem(this)">✕</button>'
+          + '<button class="tic-check-btn'+(isDone?' checked':'')+'" onclick="checkToggleTask(''+propId+'','+t.id+')" title="'+(isDone?'Marcar pendiente':'Marcar completada')+'">'
+          + (isDone ? '✓' : '') + '</button>'
+          + '<div style="flex:1">'
+          + '<div style="display:flex;align-items:center;gap:7px;margin-bottom:4px">'
+          + '<span class="tic-cat-badge" style="background:'+zoneCol+'20;border-color:'+zoneCol+';color:'+zoneCol+'">'+t.category+'</span>'
+          + '<span class="tic-weight-pill">Peso '+t.weight+'</span>'
           + '</div>'
-          + '<div class="tic-progress-row">'
-          + '<span class="tic-prog-label">Progreso</span>'
-          + '<div class="tic-bar-wrap"><div class="tic-bar-fill" id="ticbar-'+t.id+'" style="width:'+t.progress+'%;background:'+barColor+'"></div></div>'
-          + '<input type="range" min="0" max="100" value="'+t.progress+'" class="tic-slider" data-pid="'+propId+'" data-tid="'+t.id+'" />'
-          + '<div class="tic-pct" id="ticpct-'+t.id+'" style="color:'+barColor+'">'+t.progress+'%</div>'
-          + '<div class="tic-contrib" title="Contribución al cierre">+'+contrib+'%</div>'
+          + '<div class="tic-text" style="'+(isDone?'text-decoration:line-through;color:var(--text-muted)':'')+'">'+t.text+'</div>'
+          + '</div>'
+          + '<button class="tic-del" data-pid="'+propId+'" data-tid="'+t.id+'" onclick="deleteTaskItem(this)">✕</button>'
+          + '</div>'
+          + '<div class="tic-abismo-row">'
+          + '<span class="tic-abismo-label">Abismo</span>'
+          + '<div class="tic-abismo-bar-wrap">'
+          + '<div class="tic-abismo-fill" id="ticbar-'+t.id+'" style="width:'+curContrib+'%;background:'+barColor+'"></div>'
+          + '</div>'
+          + '<span class="tic-contrib-label" id="ticpct-'+t.id+'" style="color:'+barColor+'">'
+          + (isDone ? '+'+maxContrib+'%' : '+0% / +'+maxContrib+'%') + '</span>'
           + '</div>'
           + '</div>';
       }).join('');
-
-  // Attach slider listeners
-  el.querySelectorAll('.tic-slider').forEach(slider => {
-    slider.addEventListener('input', function() {
-      const pid = this.dataset.pid;
-      const tid = parseInt(this.dataset.tid);
-      const val = parseInt(this.value);
-      updateTaskItemProgress(pid, tid, val);
-    });
-  });
 }
 
 function addTaskForProp() {
@@ -4711,8 +4784,9 @@ function saveQuickDate() {
   if(!p) return;
   p.entry_date = newDate;
   p.days = getDaysFromEntry(p);
-  // Persist to Supabase if connected
-  updateSupabase(propId, p);
+  // Persist to Supabase si conectado, o en local
+  if(sb) updateSupabase(propId, p);
+  saveStateLocal();
   $('quickDateModal').style.display = 'none';
   showToast('📅 Fecha actualizada — Sem. ' + getPropWeek(p) + '/8', 'success');
   // Re-render current section
@@ -4735,6 +4809,27 @@ function checkToggleTask(propId, taskId) {
   // También actualizar badge en abismo cards si existe
   renderAbismoTaskBadge && renderAbismoTaskBadge(propId);
   showToast(t.progress===100 ? '✅ Tarea completada — abismo actualizado' : '↩️ Tarea marcada pendiente', t.progress===100?'success':'info');
+}
+
+
+// ══ LOCAL DATA MANAGEMENT ══
+function clearLocalData() {
+  if(!confirm('¿Borrar todos los datos guardados localmente? Esto no afecta Supabase.')) return;
+  localStorage.removeItem('dn_state_props');
+  localStorage.removeItem('dn_prop_tasks');
+  propTasks = {};
+  showToast('🗑️ Datos locales borrados', 'success');
+  updateLocalDataInfo();
+}
+function updateLocalDataInfo() {
+  const el = $('localDataInfo');
+  if(!el) return;
+  const props = localStorage.getItem('dn_state_props');
+  const tasks = localStorage.getItem('dn_prop_tasks');
+  const propCount = props ? (JSON.parse(props)||[]).length : 0;
+  const taskCount = tasks ? Object.values(JSON.parse(tasks)||{}).reduce((s,a)=>s+a.length,0) : 0;
+  const sizeKb = Math.round(((props||'').length + (tasks||'').length) / 1024 * 10)/10;
+  el.textContent = propCount + ' propiedades · ' + taskCount + ' tareas · ' + sizeKb + ' KB';
 }
 
 </script>

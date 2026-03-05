@@ -835,6 +835,11 @@ tr:hover td{background:var(--surface2)}
 .tic-abismo-row{display:flex;align-items:center;gap:8px;margin-top:8px}
 .tic-abismo-label{font-size:clamp(7px,.7vw,9px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
 
+
+.rtc-check-btn{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all .2s}
+.rtc-check-btn.checked{background:#00b460;border-color:#00b460;color:#fff}
+.rtc-check-btn:hover{border-color:#00b460}
+
 </style>
 </head>
 <body data-theme="light">
@@ -3151,7 +3156,22 @@ function addRoadTask() {
 function updateRoadTaskProgress(propId, taskId, val) {
   if(!propTasks[propId]) return;
   const t = propTasks[propId].find(x => x.id === taskId);
-  if(t) { t.progress = parseInt(val); savePropTasks(); renderRoadChasmVisual(propId); renderRoadTaskList(propId); }
+  if(!t) return;
+  t.progress = parseInt(val);
+  savePropTasks();
+  // Actualizar card visualmente sin re-render (slider sigue activo)
+  const sid = String(taskId);
+  const bc = t.progress===100?'#00b460':t.progress>=50?'#e67e00':'#820ad1';
+  const bar = $('rtc-bar-'+sid); if(bar){bar.style.width=t.progress+'%';bar.style.background=bc;}
+  const lbl = $('rtc-pct-'+sid); if(lbl){lbl.textContent=t.progress+'%';lbl.style.color=bc;}
+  const card = document.querySelector('[data-tid="'+sid+'"]');
+  if(card){ if(t.progress===100) card.classList.add('rtc-done'); else card.classList.remove('rtc-done'); }
+  // Checkmark en el botón
+  const chk = $('rtc-chk-'+sid);
+  if(chk){ chk.className='rtc-check-btn'+(t.progress===100?' checked':''); chk.textContent=t.progress===100?'✓':''; }
+  // Actualizar abismo en tiempo real
+  renderRoadChasmVisual(propId);
+  renderRoadTaskBridges(propId);
 }
 
 function deleteRoadTask(propId, taskId) {
@@ -3233,45 +3253,52 @@ function renderRoadTaskList(propId) {
   const el = $('roadTaskList');
   if(!el) return;
   const tasks = propTasks[propId] || [];
+  const done = tasks.filter(t=>t.progress===100).length;
   if(!tasks.length) {
-    el.innerHTML = `<div class="prop-chasm-chart-card" style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">📋 Agrega tareas para comenzar a sellar el abismo.</div>`;
+    el.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px;border:2px dashed var(--border);border-radius:14px">📋 Agrega tareas para comenzar a sellar el abismo.</div>`;
     return;
   }
-  el.innerHTML = tasks.map(t => {
-    const bc = t.progress === 100 ? '#00b460' : t.progress >= 50 ? '#e67e00' : '#820ad1';
-    const isDone = t.progress === 100;
+  const hdrCol = done===tasks.length&&done>0?'#00b460':'var(--text-muted)';
+  el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <span style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px">${tasks.length} tarea${tasks.length!==1?'s':''}</span>
+    <span style="font-size:12px;font-weight:800;color:${hdrCol}">${done===tasks.length&&done>0?'✅ ':''} ${done}/${tasks.length} completadas</span>
+  </div>`
+  + tasks.map(t => {
+    const bc = t.progress===100?'#00b460':t.progress>=50?'#e67e00':'#820ad1';
+    const isDone = t.progress===100;
     const sid = String(t.id);
     const spid = String(propId);
-    const doneClass = isDone ? ' rtc-done' : '';
-    return `<div class="road-task-card${doneClass}" data-tid="${sid}" data-pid="${spid}">
+    const zoneCols = {Innovadores:'#34d399',Visionarios:'#84cc16','Pragmáticos':'#fbbf24',Conservadores:'#fb7185','Escépticos':'#94a3b8'};
+    const zoneCol = zoneCols[t.category]||'var(--domo)';
+    return `<div class="road-task-card${isDone?' rtc-done':''}" id="rtc-card-${sid}" data-tid="${sid}" data-pid="${spid}" style="border-left:3px solid ${zoneCol}">
       <div class="rtc-top">
-        <span class="rtc-cat">${t.category}</span>
-        <div class="rtc-text">${t.text}</div>
-        <div class="rtc-weight">Peso: ${t.weight}</div>
-        <button class="rtc-del-btn" data-tid="${sid}" data-pid="${spid}" style="color:var(--text-muted);background:none;border:none;cursor:pointer;font-size:13px;padding:0 4px">✕</button>
+        <button class="rtc-check-btn${isDone?' checked':''}" id="rtc-chk-${sid}" onclick="toggleRoadTask('${spid}',${sid})" title="${isDone?'Marcar pendiente':'Marcar completada'}">${isDone?'✓':''}</button>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+            <span class="rtc-cat" style="background:${zoneCol}20;border-color:${zoneCol};color:${zoneCol}">${t.category}</span>
+            <span style="font-size:9px;font-weight:700;color:var(--text-muted);background:var(--surface2);padding:2px 6px;border-radius:8px;border:1px solid var(--border)">Peso ${t.weight}</span>
+          </div>
+          <div class="rtc-text" style="${isDone?'text-decoration:line-through;color:var(--text-muted)':''}">${t.text}</div>
+        </div>
+        <button class="rtc-del-btn" data-tid="${sid}" data-pid="${spid}" style="color:var(--text-muted);background:none;border:none;cursor:pointer;font-size:13px;padding:0 4px;flex-shrink:0">✕</button>
       </div>
-      <div class="rtc-progress-row">
-        <span style="font-size:10px;color:var(--text-muted);font-weight:700;min-width:60px">PROGRESO</span>
-        <div class="rtc-bar-wrap"><div class="rtc-bar-fill" id="rtc-bar-${sid}" style="width:${t.progress}%;background:${bc}"></div></div>
-        <input type="range" min="0" max="100" value="${t.progress}" class="rtc-slider" data-tid="${sid}" data-pid="${spid}" style="width:80px;accent-color:${bc}"/>
-        <div class="rtc-pct-lbl" id="rtc-pct-${sid}" style="color:${bc}">${t.progress}%</div>
+      <div class="rtc-progress-row" style="margin-top:8px">
+        <span style="font-size:9px;color:var(--text-muted);font-weight:700;min-width:50px;text-transform:uppercase">Avance</span>
+        <div class="rtc-bar-wrap" style="height:8px;border-radius:4px">
+          <div class="rtc-bar-fill" id="rtc-bar-${sid}" style="width:${t.progress}%;background:${bc};border-radius:4px"></div>
+        </div>
+        <input type="range" min="0" max="100" value="${t.progress}" class="rtc-slider" data-tid="${sid}" data-pid="${spid}" style="width:70px;accent-color:${bc}"/>
+        <div class="rtc-pct-lbl" id="rtc-pct-${sid}" style="color:${bc};min-width:32px;text-align:right">${t.progress}%</div>
       </div>
     </div>`;
   }).join('');
+  // Listeners
   el.querySelectorAll('.rtc-del-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      deleteRoadTask(this.dataset.pid, parseInt(this.dataset.tid));
-    });
+    btn.addEventListener('click', function() { deleteRoadTask(this.dataset.pid, parseInt(this.dataset.tid)); });
   });
   el.querySelectorAll('.rtc-slider').forEach(slider => {
     slider.addEventListener('input', function() {
-      updateRoadTaskProgress(this.dataset.pid, parseInt(this.dataset.tid), this.value);
-      const bar = document.getElementById('rtc-bar-' + this.dataset.tid);
-      const pct = document.getElementById('rtc-pct-' + this.dataset.tid);
-      const v = parseInt(this.value);
-      const c = v === 100 ? '#00b460' : v >= 50 ? '#e67e00' : '#820ad1';
-      if(bar) { bar.style.width = v + '%'; bar.style.background = c; }
-      if(pct) { pct.textContent = v + '%'; pct.style.color = c; }
+      updateRoadTaskProgress(this.dataset.pid, parseInt(this.dataset.tid), parseInt(this.value));
     });
   });
 }
@@ -4834,6 +4861,20 @@ function updateLocalDataInfo() {
   el.textContent = propCount + ' propiedades · ' + taskCount + ' tareas · ' + sizeKb + ' KB';
 }
 
+
+// ── Toggle tarea roadmap (0 / 100) ──
+function toggleRoadTask(propId, taskId) {
+  const tasks = propTasks[String(propId)];
+  if(!tasks) return;
+  const t = tasks.find(x => x.id === taskId);
+  if(!t) return;
+  t.progress = t.progress === 100 ? 0 : 100;
+  savePropTasks();
+  updateRoadTaskProgress(String(propId), taskId, t.progress);
+  // Re-render lista para actualizar tachado y header
+  renderRoadTaskList(String(propId));
+  showToast(t.progress===100?'✅ Tarea completada':'↩️ Tarea pendiente', t.progress===100?'success':'info');
+}
 </script>
 
 <!-- ══ QUICK DATE EDIT MODAL ══ -->

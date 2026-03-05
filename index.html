@@ -3519,50 +3519,51 @@ function renderTaskList(propId) {
   const done = tasks.filter(t => t.progress === 100).length;
 
   if(!tasks.length) {
-    el.innerHTML = '<div style="background:var(--surface);border:2px dashed var(--border);border-radius:14px;padding:32px;text-align:center">'
-      + '<div style="font-size:24px;margin-bottom:8px">📋</div>'
-      + '<div style="font-size:clamp(10px,.95vw,13px);font-weight:600;color:var(--text-muted)">Sin tareas — agrega la primera arriba</div>'
-      + '</div>';
+    el.innerHTML = '<div style="background:var(--surface);border:2px dashed var(--border);border-radius:14px;padding:32px;text-align:center"><div style="font-size:24px;margin-bottom:8px">📋</div><div style="font-size:13px;font-weight:600;color:var(--text-muted)">Sin tareas — agrega la primera arriba</div></div>';
     return;
   }
 
   const headerColor = done === tasks.length && done > 0 ? '#00b460' : 'var(--text-muted)';
-  el.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
-    + '<span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px">'
-    + tasks.length + ' tarea' + (tasks.length!==1?'s':'') + ' · Peso total: ' + totalW + '</span>'
-    + '<span style="font-size:clamp(10px,.9vw,12px);font-weight:800;color:'+headerColor+'">'
-    + (done===tasks.length && done>0 ? '✅ ' : '') + done + '/' + tasks.length + ' completadas</span>'
-    + '</div>'
-    + tasks.map(t => {
-        const isDone = t.progress === 100;
-        const zoneCols = {'Innovadores':'#34d399','Visionarios':'#84cc16','Pragmáticos':'#fbbf24','Conservadores':'#fb7185','Escépticos':'#94a3b8'};
-        const zoneCol = zoneCols[t.category] || 'var(--domo)';
-        const maxContrib = totalW > 0 ? Math.round((t.weight / totalW) * 100 * 0.4) : 0;
-        const curContrib = isDone ? maxContrib : 0;
-        const barColor   = isDone ? '#00b460' : '#820ad1';
-        return '<div class="task-item-card' + (isDone?' tic-done':'') + '" id="tic-'+t.id+'" style="border-left:3px solid '+zoneCol+'">'
-          + '<div class="tic-top">'
-          + '<button class="tic-check-btn'+(isDone?' checked':'')+'" onclick="checkToggleTask(''+propId+'','+t.id+')" title="'+(isDone?'Marcar pendiente':'Marcar completada')+'">'
-          + (isDone ? '✓' : '') + '</button>'
-          + '<div style="flex:1">'
-          + '<div style="display:flex;align-items:center;gap:7px;margin-bottom:4px">'
-          + '<span class="tic-cat-badge" style="background:'+zoneCol+'20;border-color:'+zoneCol+';color:'+zoneCol+'">'+t.category+'</span>'
-          + '<span class="tic-weight-pill">Peso '+t.weight+'</span>'
-          + '</div>'
-          + '<div class="tic-text" style="'+(isDone?'text-decoration:line-through;color:var(--text-muted)':'')+'">'+t.text+'</div>'
-          + '</div>'
-          + '<button class="tic-del" data-pid="'+propId+'" data-tid="'+t.id+'" onclick="deleteTaskItem(this)">✕</button>'
-          + '</div>'
-          + '<div class="tic-abismo-row">'
-          + '<span class="tic-abismo-label">Abismo</span>'
-          + '<div class="tic-abismo-bar-wrap">'
-          + '<div class="tic-abismo-fill" id="ticbar-'+t.id+'" style="width:'+curContrib+'%;background:'+barColor+'"></div>'
-          + '</div>'
-          + '<span class="tic-contrib-label" id="ticpct-'+t.id+'" style="color:'+barColor+'">'
-          + (isDone ? '+'+maxContrib+'%' : '+0% / +'+maxContrib+'%') + '</span>'
-          + '</div>'
-          + '</div>';
-      }).join('');
+  const rows = tasks.map(t => {
+    const isDone = t.progress === 100;
+    const zoneCols = {Innovadores:'#34d399',Visionarios:'#84cc16','Pragmáticos':'#fbbf24',Conservadores:'#fb7185','Escépticos':'#94a3b8'};
+    const zoneCol = zoneCols[t.category] || 'var(--domo)';
+    const maxContrib = totalW > 0 ? Math.round((t.weight / totalW) * 100 * 0.4) : 0;
+    const curContrib = isDone ? maxContrib : 0;
+    const barColor   = isDone ? '#00b460' : '#820ad1';
+    const checkClass = isDone ? 'tic-check-btn checked' : 'tic-check-btn';
+    const checkMark  = isDone ? '✓' : '';
+    const doneTitle  = isDone ? 'Marcar pendiente' : 'Marcar completada';
+    const textStyle  = isDone ? 'text-decoration:line-through;color:var(--text-muted)' : '';
+    const contrib    = isDone ? '+'+maxContrib+'%' : '+0% / +'+maxContrib+'%';
+    const cardClass  = isDone ? 'task-item-card tic-done' : 'task-item-card';
+
+    return `<div class="${cardClass}" id="tic-${t.id}" style="border-left:3px solid ${zoneCol}">
+      <div class="tic-top">
+        <button class="${checkClass}" onclick="checkToggleTask(${JSON.stringify(String(propId))},${t.id})" title="${doneTitle}">${checkMark}</button>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px">
+            <span class="tic-cat-badge" style="background:${zoneCol}20;border-color:${zoneCol};color:${zoneCol}">${t.category}</span>
+            <span class="tic-weight-pill">Peso ${t.weight}</span>
+          </div>
+          <div class="tic-text" style="${textStyle}">${t.text}</div>
+        </div>
+        <button class="tic-del" data-pid="${propId}" data-tid="${t.id}" onclick="deleteTaskItem(this)">✕</button>
+      </div>
+      <div class="tic-abismo-row">
+        <span class="tic-abismo-label">Abismo</span>
+        <div class="tic-abismo-bar-wrap">
+          <div class="tic-abismo-fill" id="ticbar-${t.id}" style="width:${curContrib}%;background:${barColor}"></div>
+        </div>
+        <span class="tic-contrib-label" id="ticpct-${t.id}" style="color:${barColor}">${contrib}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <span style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px">${tasks.length} tarea${tasks.length!==1?'s':''} · Peso total: ${totalW}</span>
+    <span style="font-size:12px;font-weight:800;color:${headerColor}">${done===tasks.length&&done>0?'✅ ':''}${done}/${tasks.length} completadas</span>
+  </div>${rows}`;
 }
 
 function addTaskForProp() {

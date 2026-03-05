@@ -685,6 +685,112 @@ tr:hover td{background:var(--surface2)}
   .adoption-bars{height:180px}
 }
 
+
+/* ══ AVANCE LINEAL CSS ══ */
+/* ══════════════════════════════════════════
+   AVANCE LINEAL — CSS
+══════════════════════════════════════════ */
+
+/* Semáforo card */
+.sem-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: all .25s;
+}
+.sem-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.sem-header {
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sem-icon-name { display: flex; align-items: center; gap: 10px; }
+.sem-icon { font-size: clamp(16px,1.8vw,22px); }
+.sem-name { font-size: clamp(11px,1vw,14px); font-weight: 800; }
+.sem-light-wrap {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; padding: 14px 18px;
+}
+.sem-light {
+  width: clamp(18px,1.6vw,22px);
+  height: clamp(18px,1.6vw,22px);
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,.15);
+  transition: all .4s;
+}
+.sem-light.sem-on-red    { background: #e03030; box-shadow: 0 0 12px 4px rgba(224,48,48,.5); }
+.sem-light.sem-on-yellow { background: #f7b500; box-shadow: 0 0 12px 4px rgba(247,181,0,.5); }
+.sem-light.sem-on-green  { background: #00b460; box-shadow: 0 0 12px 4px rgba(0,180,100,.5); }
+.sem-light.sem-off       { background: var(--surface3); opacity: .3; }
+.sem-body { padding: 0 18px 16px; }
+.sem-index-val {
+  font-size: clamp(20px,2.4vw,32px);
+  font-weight: 900;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.sem-label {
+  font-size: clamp(8px,.8vw,10px);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.sem-bar-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.sem-bar-label { font-size: clamp(8px,.75vw,9px); font-weight: 700; color: var(--text-muted); min-width: 56px; }
+.sem-bar-track { flex: 1; height: 5px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
+.sem-bar-fill  { height: 100%; border-radius: 3px; transition: width .8s ease; }
+.sem-pct       { font-size: clamp(9px,.85vw,11px); font-weight: 800; min-width: 38px; text-align: right; }
+.sem-week-info {
+  font-size: clamp(8px,.8vw,10px);
+  color: var(--text-muted);
+  text-align: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+/* Week mini cards */
+.week-mini-card {
+  background: var(--surface);
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  padding: 14px 16px;
+  transition: all .2s;
+}
+.week-mini-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.week-mini-card.wmc-active { border-color: var(--domo); background: rgba(130,10,209,.04); }
+.wmc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.wmc-week { font-size: clamp(9px,.85vw,11px); font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .7px; }
+.wmc-index {
+  font-size: clamp(10px,.95vw,13px);
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.wmc-index.idx-green  { background: rgba(0,180,100,.15); color: #00b460; }
+.wmc-index.idx-yellow { background: rgba(247,181,0,.18); color: #b87e00; }
+.wmc-index.idx-red    { background: rgba(224,48,48,.12); color: #e03030; }
+.wmc-real  { font-size: clamp(18px,2vw,26px); font-weight: 900; line-height: 1; margin-bottom: 3px; }
+.wmc-exp   { font-size: clamp(10px,.9vw,12px); color: var(--text-muted); }
+.wmc-bar-track { width: 100%; height: 5px; border-radius: 3px; background: var(--surface2); overflow: hidden; margin-top: 8px; position: relative; }
+.wmc-bar-fill  { height: 100%; border-radius: 3px; transition: width .8s ease; }
+.wmc-bar-marker { position: absolute; top: -3px; width: 2px; height: 11px; background: var(--domo); opacity: .6; border-radius: 1px; }
+
+/* Lineal speed gauge */
+.speed-gauge-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.speed-gauge-arc  { position: relative; width: 100px; height: 56px; overflow: hidden; }
+.speed-gauge-svg  { width: 100%; height: 100%; }
+
+
 </style>
 </head>
 <body data-theme="light">
@@ -713,6 +819,7 @@ tr:hover td{background:var(--surface2)}
     <div class="nav-item nav-strategy" data-sec="strategy" onclick="showSection('strategy',this)"><span class="nav-icon">🧭</span> Estrategia — Abismo</div>
     <div class="nav-item nav-sub" data-sec="abismo-propiedad" onclick="showSection('abismo-propiedad',this)"><span class="nav-icon">⬛</span> Por Propiedad</div>
     <div class="nav-item nav-sub" data-sec="abismo-porpropiedad" onclick="showSection('abismo-porpropiedad',this)"><span class="nav-icon">🏢</span> Abismo x Prop.</div>
+    <div class="nav-item nav-sub" data-sec="lineal" onclick="showSection('lineal',this)"><span class="nav-icon">📉</span> Avance Lineal</div>
   </nav>
   <div class="sidebar-bottom">
     <div class="sidebar-version">DomoNow v3.0 · 2025</div>
@@ -1541,6 +1648,165 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
+
+<!-- ══ AVANCE LINEAL ══ -->
+<!-- ══════════ AVANCE LINEAL SECTION ══════════ -->
+<div id="sec-lineal" class="fade-in">
+
+  <!-- Header -->
+  <div class="strategy-header">
+    <div style="position:relative;z-index:1">
+      <div class="sh-badge">📉 Progresión Temporal · DomoNow</div>
+      <div class="sh-title">Avance Lineal por Semana</div>
+      <div class="sh-sub">Seguimiento semanal de cada módulo contra la línea esperada. Meta: 80% de usabilidad en 8 semanas (~10%/semana).</div>
+    </div>
+    <div class="sh-metrics" id="linealGlobalMetrics"></div>
+  </div>
+
+  <!-- Sub-tab nav -->
+  <div class="strat-tab-nav">
+    <button class="strat-tab-btn strat-tab-active" id="linealTab1" onclick="setLinealTab('overview',this)"><span>📊</span> Resumen Global</button>
+    <button class="strat-tab-btn" id="linealTab2" onclick="setLinealTab('module',this)"><span>📉</span> Progreso por Módulo</button>
+    <button class="strat-tab-btn" id="linealTab3" onclick="setLinealTab('compare',this)"><span>⚖️</span> Comparativa Semanal</button>
+    <button class="strat-tab-btn" id="linealTab4" onclick="setLinealTab('semaforo',this)"><span>🚦</span> Semáforo de Cumplimiento</button>
+  </div>
+
+  <!-- ══ TAB: OVERVIEW ══ -->
+  <div id="linealViewOverview">
+    <div class="prop-selector-bar">
+      <span class="prop-selector-label">🏢 Propiedad</span>
+      <div class="prop-dropdown-wrap">
+        <button class="prop-nav-btn" onclick="navPropStep('linealPropDrop',-1)">‹</button>
+        <select class="prop-dropdown" id="linealPropDrop" onchange="selectLinealProp(this.value)"></select>
+        <button class="prop-nav-btn" onclick="navPropStep('linealPropDrop',1)">›</button>
+        <div class="prop-dd-badge" id="linealPropBadge">
+          <span class="prop-dd-dot" style="background:#94a3b8"></span>
+          <span class="prop-dd-pct">Sem. <span id="linealCurWeekBadge">—</span>/8</span>
+        </div>
+      </div>
+    </div>
+    <div class="overview-kpi-row" id="linealKpiRow"></div>
+    <div class="prop-chasm-chart-card">
+      <div class="pcc-header">
+        <div class="pcc-title">Progresión Global — Todas las Semanas</div>
+        <div class="pcc-sub" id="linealOverviewSub">Meta: 10% semanal · 80% final</div>
+      </div>
+      <div style="height:340px;padding:20px"><canvas id="chartLinealOverview"></canvas></div>
+    </div>
+    <div style="margin-bottom:8px;font-size:clamp(9px,.85vw,11px);font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Detalle por Semana</div>
+    <div id="linealWeekCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:24px"></div>
+  </div>
+
+  <!-- ══ TAB: MODULE ══ -->
+  <div id="linealViewModule" style="display:none">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div class="prop-selector-bar" style="margin-bottom:0">
+        <span class="prop-selector-label">🏢 Propiedad</span>
+        <div class="prop-dropdown-wrap">
+          <button class="prop-nav-btn" onclick="navPropStep('linealModPropDrop',-1)">‹</button>
+          <select class="prop-dropdown" id="linealModPropDrop" onchange="selectLinealModProp(this.value)"></select>
+          <button class="prop-nav-btn" onclick="navPropStep('linealModPropDrop',1)">›</button>
+        </div>
+      </div>
+      <div class="prop-selector-bar" style="margin-bottom:0">
+        <span class="prop-selector-label">🧩 Módulo</span>
+        <div class="prop-dropdown-wrap">
+          <button class="prop-nav-btn" onclick="navModStep(-1)">‹</button>
+          <select class="prop-dropdown" id="linealModDrop" onchange="selectLinealMod(this.value)"></select>
+          <button class="prop-nav-btn" onclick="navModStep(1)">›</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px" id="linealModKpis"></div>
+    <div class="prop-chasm-chart-card">
+      <div class="pcc-header">
+        <div class="pcc-title" id="linealModChartTitle">Progresión del Módulo</div>
+        <div class="pcc-sub" id="linealModChartSub"></div>
+      </div>
+      <div style="height:320px;padding:20px"><canvas id="chartLinealMod"></canvas></div>
+    </div>
+    <div class="table-card">
+      <div class="table-topbar"><div class="section-title" style="margin-bottom:0" id="linealModTableTitle">Desglose Semanal</div></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Semana</th><th>Valor Real</th><th>Meta</th>
+            <th>% Real</th><th>% Esperado</th><th>Índice Cumpl.</th><th>Estado</th>
+          </tr></thead>
+          <tbody id="linealModTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: COMPARE ══ -->
+  <div id="linealViewCompare" style="display:none">
+    <div class="prop-selector-bar">
+      <span class="prop-selector-label">🏢 Propiedad</span>
+      <div class="prop-dropdown-wrap">
+        <button class="prop-nav-btn" onclick="navPropStep('linealCmpPropDrop',-1)">‹</button>
+        <select class="prop-dropdown" id="linealCmpPropDrop" onchange="selectLinealCmpProp(this.value)"></select>
+        <button class="prop-nav-btn" onclick="navPropStep('linealCmpPropDrop',1)">›</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:20px">
+      <div>
+        <div style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Semana A</div>
+        <select class="prop-dropdown" id="cmpWeekA" style="max-width:160px" onchange="renderCompareView()">
+          <option value="1">Semana 1</option><option value="2">Semana 2</option>
+          <option value="3" selected>Semana 3</option><option value="4">Semana 4</option>
+          <option value="5">Semana 5</option><option value="6">Semana 6</option>
+          <option value="7">Semana 7</option><option value="8">Semana 8</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Semana B</div>
+        <select class="prop-dropdown" id="cmpWeekB" style="max-width:160px" onchange="renderCompareView()">
+          <option value="1">Semana 1</option><option value="2">Semana 2</option>
+          <option value="3">Semana 3</option><option value="4">Semana 4</option>
+          <option value="5">Semana 5</option><option value="6" selected>Semana 6</option>
+          <option value="7">Semana 7</option><option value="8">Semana 8</option>
+        </select>
+      </div>
+    </div>
+    <div class="prop-chasm-chart-card">
+      <div class="pcc-header">
+        <div class="pcc-title" id="cmpChartTitle">Semana A vs Semana B</div>
+        <div class="pcc-sub" id="cmpChartSub"></div>
+      </div>
+      <div style="height:320px;padding:20px"><canvas id="chartLinealCmp"></canvas></div>
+    </div>
+    <div class="table-card">
+      <div class="table-topbar"><div class="section-title" style="margin-bottom:0">Tabla Comparativa por Módulo</div></div>
+      <div style="overflow-x:auto"><table><thead id="cmpTableHead"></thead><tbody id="cmpTableBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: SEMÁFORO ══ -->
+  <div id="linealViewSemaforo" style="display:none">
+    <div class="prop-selector-bar">
+      <span class="prop-selector-label">🏢 Propiedad</span>
+      <div class="prop-dropdown-wrap">
+        <button class="prop-nav-btn" onclick="navPropStep('linealSemPropDrop',-1)">‹</button>
+        <select class="prop-dropdown" id="linealSemPropDrop" onchange="selectLinealSemProp(this.value)"></select>
+        <button class="prop-nav-btn" onclick="navPropStep('linealSemPropDrop',1)">›</button>
+      </div>
+    </div>
+    <div id="semaforoGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px"></div>
+    <div class="prop-chasm-chart-card">
+      <div class="pcc-header">
+        <div class="pcc-title">Radar de Índices de Cumplimiento</div>
+        <div class="pcc-sub" id="semaforoRadarSub"></div>
+      </div>
+      <div style="height:340px;padding:20px"><canvas id="chartSemaforoRadar"></canvas></div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══ END AVANCE LINEAL ══ -->
+
 </div></main>
 
 <!-- MODAL -->
@@ -1669,6 +1935,7 @@ function goSection(id){
   if(id==='abismo-propiedad'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Por Propiedad</span>';strategyView='cards';}
 
   if(id==='abismo-porpropiedad'){titleEl.innerHTML='Abismo <span style="color:var(--domo)">Por Propiedad</span>';strategyView='prop';}
+  if(id==='lineal'){titleEl.innerHTML='Avance <span style="color:var(--domo)">Lineal por Semana</span>';}
   else{titleEl.innerHTML='Panel de <span style="color:var(--domo)">Implementación</span>';}
   renderSection(id);
 }
@@ -1686,6 +1953,7 @@ function renderSection(id){
   if(id==='abismo-propiedad'){strategyView='cards';renderStrategyFromNav('cards');}
 
   if(id==='abismo-porpropiedad'){strategyView='prop';renderStrategyFromNav('prop');}
+  if(id==='lineal'){renderLinealSection();}
 }
 
 // ══════ SUPABASE ══════
@@ -3460,6 +3728,667 @@ function renderAbismoChartsInto(props, suffix) {
   const c4=$('chartAbismoRadar'+suffix);
   if(c4){charts['chartAbismoRadar'+suffix]=new Chart(c4.getContext('2d'),{type:'radar',data:{labels:MODULES.map(m=>m.icon+' '+m.label),datasets:[{label:'Promedio',data:modPcts,backgroundColor:'rgba(130,10,209,.15)',borderColor:'#820ad1',pointBackgroundColor:'#820ad1',borderWidth:2,pointRadius:3},{label:'Meta',data:MODULES.map(()=>100),backgroundColor:'rgba(0,180,100,.05)',borderColor:'rgba(0,180,100,.4)',borderWidth:1,pointRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}});}
 }
+
+
+// ══ AVANCE LINEAL JS ══
+// ══════════════════════════════════════════════════════
+//  AVANCE LINEAL — LÓGICA COMPLETA
+// ══════════════════════════════════════════════════════
+
+// State for lineal section
+let linealPropId        = null;  // overview tab
+let linealModPropId     = null;  // module tab
+let linealModId         = 'acceso'; // selected module
+let linealCmpPropId     = null;  // compare tab
+let linealSemPropId     = null;  // semáforo tab
+let linealTab           = 'overview';
+
+// ── Week calculation helpers ──────────────────────────
+
+/**
+ * Returns the current week number (1–8) based on a property's entry_date.
+ * Week 1 = days 1–7, Week 2 = days 8–14, etc.
+ * Returns null if no entry_date or entry_date is in the future.
+ */
+function calcCurrentWeek(entryDate) {
+  if(!entryDate) return null;
+  const start = new Date(entryDate);
+  if(isNaN(start.getTime())) return null;
+  const now = new Date();
+  const diffDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+  if(diffDays < 0) return null;
+  const week = Math.floor(diffDays / 7) + 1;
+  return Math.min(8, Math.max(1, week));
+}
+
+/**
+ * Expected cumulative % for week W (linear: 10%/week, max 80%).
+ */
+function expectedPctForWeek(week) {
+  return Math.min(80, week * 10);
+}
+
+/**
+ * Simulates weekly values for a module/property.
+ * Since we only have the current value, we distribute it progressively.
+ * Week W value = current * (W / currentWeek), capped at current.
+ */
+function simulateWeeklyValues(prop, mid) {
+  const curWeek = calcCurrentWeek(prop.entry_date) || 1;
+  const mv       = prop.module_values || {};
+  const curVal   = mv[mid] || 0;
+  const units    = prop.units || 50;
+  const meta     = calcMeta(mid, units);
+
+  // Build 8-week array of simulated values
+  const vals = [];
+  for(let w = 1; w <= 8; w++) {
+    if(w > curWeek) {
+      vals.push(null); // future weeks unknown
+    } else if(curWeek === 0) {
+      vals.push(0);
+    } else {
+      // Simple linear interpolation from 0 to curVal over weeks 1..curWeek
+      // Add slight S-curve: slow start, faster middle, plateau end
+      const progress = w / curWeek;
+      // S-curve factor
+      const sCurve = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+      const simVal = Math.round(curVal * sCurve);
+      vals.push(Math.max(0, simVal));
+    }
+  }
+  return { vals, curWeek, meta, curVal };
+}
+
+/**
+ * Get real % for a specific week (simulated).
+ */
+function realPctForWeek(prop, mid, week) {
+  const { vals, meta } = simulateWeeklyValues(prop, mid);
+  const val = vals[week - 1];
+  if(val === null || val === undefined) return null;
+  if(!meta || meta <= 0) return 0;
+  return Math.min(100, Math.round((val / meta) * 100));
+}
+
+/**
+ * Compliance index: real% / expected% × 100.
+ * Returns null if real% is null (future).
+ */
+function complianceIndex(realPct, expectedPct) {
+  if(realPct === null || realPct === undefined) return null;
+  if(!expectedPct || expectedPct <= 0) return realPct > 0 ? 999 : 100;
+  return Math.round((realPct / expectedPct) * 100);
+}
+
+/**
+ * Average real % across all active modules for a property in a given week.
+ */
+function propRealPctForWeek(prop, week) {
+  const mods = prop.modules || [];
+  if(!mods.length) return 0;
+  const pcts = mods.map(mid => realPctForWeek(prop, mid, week)).filter(v => v !== null);
+  if(!pcts.length) return 0;
+  return Math.round(pcts.reduce((s,v) => s+v, 0) / pcts.length);
+}
+
+// ── Section tab switcher ─────────────────────────────
+function setLinealTab(tab, el) {
+  linealTab = tab;
+  ['overview','module','compare','semaforo'].forEach(t => {
+    const cap = t.charAt(0).toUpperCase() + t.slice(1);
+    const btn = $('linealTab' + {overview:1,module:2,compare:3,semaforo:4}[t]);
+    if(btn) btn.classList.remove('strat-tab-active');
+    const view = $('linealView' + cap);
+    if(view) view.style.display = 'none';
+  });
+  el.classList.add('strat-tab-active');
+  $('linealView' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = 'block';
+  if(tab === 'overview')  renderLinealOverview();
+  if(tab === 'module')    renderLinealModuleTab();
+  if(tab === 'compare')   renderCompareView();
+  if(tab === 'semaforo')  renderSemaforoView();
+}
+
+// ── Main render entry ────────────────────────────────
+function renderLinealSection() {
+  const props = state.properties;
+  // Init prop IDs
+  if(!linealPropId    && props.length) linealPropId    = String(props[0].id);
+  if(!linealModPropId && props.length) linealModPropId = String(props[0].id);
+  if(!linealCmpPropId && props.length) linealCmpPropId = String(props[0].id);
+  if(!linealSemPropId && props.length) linealSemPropId = String(props[0].id);
+
+  renderLinealGlobalMetrics();
+
+  // Build all prop dropdowns
+  buildPropDropdownGeneric('linealPropDrop',    props, linealPropId,    p => { linealPropId = p; renderLinealOverview(); });
+  buildPropDropdownGeneric('linealModPropDrop', props, linealModPropId, p => { linealModPropId = p; renderLinealModuleTab(); });
+  buildPropDropdownGeneric('linealCmpPropDrop', props, linealCmpPropId, p => { linealCmpPropId = p; renderCompareView(); });
+  buildPropDropdownGeneric('linealSemPropDrop', props, linealSemPropId, p => { linealSemPropId = p; renderSemaforoView(); });
+
+  // Build module dropdown
+  buildModDropdown();
+
+  // Render active tab
+  if(linealTab === 'overview')  renderLinealOverview();
+  if(linealTab === 'module')    renderLinealModuleTab();
+  if(linealTab === 'compare')   renderCompareView();
+  if(linealTab === 'semaforo')  renderSemaforoView();
+}
+
+// Generic dropdown builder with callback
+function buildPropDropdownGeneric(id, props, activeId, onChangeFn) {
+  const sel = $(id); if(!sel) return;
+  sel.innerHTML = props.map(p =>
+    '<option value="' + p.id + '"' + (String(p.id)===String(activeId)?' selected':'') + '>'
+    + p.name + (p.city?' · '+p.city:'') + '</option>'
+  ).join('') || '<option>Sin propiedades</option>';
+  sel.onchange = function() { onChangeFn(String(this.value)); };
+}
+
+function buildModDropdown() {
+  const prop = state.properties.find(p => String(p.id) === String(linealModPropId));
+  const mods = (prop ? prop.modules : MODULES.map(m => m.id)) || [];
+  const sel = $('linealModDrop'); if(!sel) return;
+  const available = MODULES.filter(m => mods.includes(m.id));
+  if(!available.length) {
+    sel.innerHTML = '<option>Sin módulos activos</option>';
+    return;
+  }
+  sel.innerHTML = available.map(m =>
+    '<option value="' + m.id + '"' + (m.id === linealModId ? ' selected' : '') + '>'
+    + m.icon + ' ' + m.label + '</option>'
+  ).join('');
+  sel.onchange = function() { linealModId = this.value; renderLinealModuleTab(); };
+  if(!mods.includes(linealModId)) linealModId = mods[0];
+}
+
+function selectLinealProp(id)    { linealPropId = id;    buildPropDropdownGeneric('linealPropDrop', state.properties, id, p=>{ linealPropId=p; renderLinealOverview(); }); renderLinealOverview(); }
+function selectLinealModProp(id) { linealModPropId = id; buildModDropdown(); renderLinealModuleTab(); }
+function selectLinealCmpProp(id) { linealCmpPropId = id; renderCompareView(); }
+function selectLinealSemProp(id) { linealSemPropId = id; renderSemaforoView(); }
+function selectLinealMod(id)     { linealModId = id;     renderLinealModuleTab(); }
+
+function navModStep(dir) {
+  const sel = $('linealModDrop'); if(!sel||!sel.options.length) return;
+  const next = (sel.selectedIndex + dir + sel.options.length) % sel.options.length;
+  sel.selectedIndex = next;
+  linealModId = sel.value;
+  renderLinealModuleTab();
+}
+
+// ── GLOBAL METRICS (header badges) ──────────────────
+function renderLinealGlobalMetrics() {
+  const el = $('linealGlobalMetrics'); if(!el) return;
+  const props = state.properties; if(!props.length) { el.innerHTML=''; return; }
+  const curWeeks = props.map(p => calcCurrentWeek(p.entry_date)).filter(Boolean);
+  const avgWeek  = curWeeks.length ? Math.round(curWeeks.reduce((s,w)=>s+w,0)/curWeeks.length) : 1;
+  const expected = expectedPctForWeek(avgWeek);
+  const real     = Math.round(props.reduce((s,p) => s + propRealPctForWeek(p, avgWeek), 0) / props.length);
+  const idx      = complianceIndex(real, expected);
+  const idxColor = idx === null ? '#94a3b8' : idx >= 100 ? '#00e57c' : idx >= 75 ? '#ffcc00' : '#ff5f5f';
+
+  el.innerHTML = [
+    { val: 'Sem. ' + avgWeek + '/8', lbl: 'Semana Promedio',      sub: Math.round((avgWeek/8)*100)+'% del período',   color: '#c77dff' },
+    { val: expected + '%',           lbl: 'Meta Esperada',         sub: '80% ÷ 8 semanas × ' + avgWeek,               color: '#fbbf24' },
+    { val: real + '%',               lbl: 'Avance Real',           sub: real >= expected ? '✅ Sobre la meta' : '⚠️ Por debajo', color: real>=expected?'#00e57c':'#fb7185' },
+    { val: (idx||0) + '%',           lbl: 'Índice Cumplimiento',   sub: idx>=100?'🟢 En ritmo':idx>=75?'🟡 Atención':'🔴 Rezagado', color: idxColor },
+  ].map(k =>
+    '<div class="sh-metric"><div class="sh-metric-val" style="color:'+k.color+'">'+k.val+'</div>'
+    +'<div class="sh-metric-lbl">'+k.lbl+'</div>'
+    +'<div class="sh-metric-sub" style="color:'+k.color+'">'+k.sub+'</div></div>'
+  ).join('');
+}
+
+// ── OVERVIEW TAB ─────────────────────────────────────
+function renderLinealOverview() {
+  const prop = state.properties.find(p => String(p.id) === String(linealPropId));
+  if(!prop) return;
+
+  const curWeek = calcCurrentWeek(prop.entry_date) || 1;
+  const weekLabels = Array.from({length:8}, (_,i) => 'Sem. '+(i+1));
+  const expected   = Array.from({length:8}, (_,i) => expectedPctForWeek(i+1));
+  const realVals   = Array.from({length:8}, (_,i) => propRealPctForWeek(prop, i+1) || (i+1 <= curWeek ? 0 : null));
+
+  // KPI row
+  const exp  = expectedPctForWeek(curWeek);
+  const real = propRealPctForWeek(prop, curWeek);
+  const idx  = complianceIndex(real, exp);
+  const idxC = idx===null?'#94a3b8':idx>=100?'#00b460':idx>=75?'#e67e00':'#e03030';
+  const kpiRow = $('linealKpiRow');
+  if(kpiRow) kpiRow.innerHTML = [
+    { val: 'Sem. '+curWeek+'/8', lbl: 'Semana Actual',      sub: prop.entry_date ? '📅 Inicio: '+prop.entry_date : '—',  color:'#c77dff', ok:'#c77dff' },
+    { val: exp+'%',              lbl: 'Meta Esperada',       sub: 'Lineal: '+curWeek+' × 10%',                             color:'#fbbf24', ok:'#fbbf24' },
+    { val: real+'%',             lbl: 'Avance Real',         sub: real>=exp?'✅ Por encima':'⚠️ Por debajo de meta',        color:real>=exp?'#00b460':'#e03030', ok:real>=exp?'#00b460':'#e03030' },
+    { val: (idx||0)+'%',         lbl: 'Índice Cumplimiento', sub: idx>=100?'🟢 En ritmo':idx>=75?'🟡 Atención':'🔴 Rezagado', color:idxC, ok:idxC },
+  ].map(k =>
+    '<div class="ov-kpi" style="--ok:'+k.ok+'"><div class="ov-kpi-val" style="color:'+k.color+'">'+k.val+'</div>'
+    +'<div class="ov-kpi-label">'+k.lbl+'</div><div class="ov-kpi-sub" style="color:'+k.color+'">'+k.sub+'</div></div>'
+  ).join('');
+
+  // Badge in dropdown area
+  if($('linealCurWeekBadge')) $('linealCurWeekBadge').textContent = curWeek;
+  if($('linealPropBadge')) $('linealPropBadge').innerHTML =
+    '<span class="prop-dd-dot" style="background:'+idxC+'"></span>'
+    +'<span class="prop-dd-pct" style="color:'+idxC+'">Sem. '+curWeek+'/8</span>';
+
+  // Sub label
+  if($('linealOverviewSub')) $('linealOverviewSub').textContent = prop.name + ' · ' + (prop.modules||[]).length + ' módulos activos · Sem. '+curWeek+'/8';
+
+  // ── Main line chart ──
+  destroyChart('chartLinealOverview');
+  const cv = $('chartLinealOverview'); if(!cv) return;
+  const dk = theme==='dark', tc=dk?'#9287b8':'#7c6fa0', gc=dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.05)';
+
+  // Build a dataset per module (only active ones)
+  const modColors = ['#820ad1','#e67e00','#00b460','#0088cc','#F7B500','#a34dde','#00ccaa','#ff6b6b'];
+  const activeMods = (prop.modules || []);
+  const modDatasets = activeMods.slice(0,5).map((mid, i) => {
+    const m = MODULES.find(x => x.id === mid);
+    const sim = simulateWeeklyValues(prop, mid);
+    const data = Array.from({length:8}, (_,w) => {
+      const v = sim.vals[w];
+      if(v === null) return null;
+      return sim.meta > 0 ? Math.min(100, Math.round((v/sim.meta)*100)) : 0;
+    });
+    return {
+      label: m.icon+' '+m.label,
+      data,
+      borderColor: modColors[i % modColors.length],
+      backgroundColor: modColors[i % modColors.length] + '22',
+      borderWidth: 2,
+      pointRadius: 4,
+      pointBackgroundColor: modColors[i % modColors.length],
+      tension: 0.35,
+      spanGaps: false,
+      fill: false,
+    };
+  });
+
+  charts['chartLinealOverview'] = new Chart(cv.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: weekLabels,
+      datasets: [
+        {
+          label: '— Meta Lineal (10%/sem)',
+          data: expected,
+          borderColor: '#ffffff55',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [6,4],
+          pointRadius: 3,
+          pointBackgroundColor: '#ffffff66',
+          tension: 0,
+          fill: false,
+          order: 0,
+        },
+        ...modDatasets
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode:'index', intersect:false },
+      plugins: {
+        legend: { position:'bottom', labels:{ color:tc, font:{family:'Montserrat',size:10}, boxWidth:12, padding:16 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const v = ctx.parsed.y;
+              if(v === null) return ctx.dataset.label + ': —';
+              return ctx.dataset.label + ': ' + v + '%';
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid:{color:gc}, ticks:{color:tc,font:{family:'Montserrat',size:10}} },
+        y: {
+          min:0, max:100,
+          grid:{color:gc},
+          ticks:{color:tc, font:{family:'Montserrat',size:10}, callback:v=>v+'%' },
+        }
+      },
+      // Mark current week with annotation-like dataset
+    }
+  });
+
+  // ── Week mini cards ──
+  const cardsEl = $('linealWeekCards'); if(!cardsEl) return;
+  cardsEl.innerHTML = Array.from({length:8}, (_,i) => {
+    const w = i + 1;
+    const rPct = propRealPctForWeek(prop, w);
+    const ePct = expectedPctForWeek(w);
+    const idx  = w <= curWeek ? complianceIndex(rPct, ePct) : null;
+    const isFuture = w > curWeek;
+    const isCur    = w === curWeek;
+    const idxCls = idx === null ? '' : idx >= 100 ? 'idx-green' : idx >= 75 ? 'idx-yellow' : 'idx-red';
+    const c       = rPct >= 80 ? '#00b460' : rPct >= 50 ? '#e67e00' : '#820ad1';
+    return '<div class="week-mini-card' + (isCur?' wmc-active':'') + '" style="opacity:' + (isFuture?.45:1) + '">'
+      + '<div class="wmc-header">'
+      +   '<div class="wmc-week">Semana ' + w + (isCur?' ★':'') + '</div>'
+      +   (idx !== null ? '<div class="wmc-index ' + idxCls + '">' + idx + '%</div>' : '<div class="wmc-index" style="background:var(--surface3);color:var(--text-muted)">—</div>')
+      + '</div>'
+      + '<div class="wmc-real" style="color:' + (isFuture?'var(--text-muted)':c) + '">' + (isFuture ? '—' : rPct + '%') + '</div>'
+      + '<div class="wmc-exp">Esperado: ' + ePct + '%</div>'
+      + '<div class="wmc-bar-track">'
+      +   '<div class="wmc-bar-fill" style="width:' + (isFuture?0:rPct) + '%;background:' + c + '"></div>'
+      +   '<div class="wmc-bar-marker" style="left:' + ePct + '%"></div>'
+      + '</div>'
+      + '<div style="display:flex;justify-content:space-between;font-size:clamp(8px,.75vw,9px);color:var(--text-muted);margin-top:5px">'
+      +   '<span>Real</span><span style="color:var(--domo)">▎ Meta</span>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+// ── MODULE TAB ───────────────────────────────────────
+function renderLinealModuleTab() {
+  const prop = state.properties.find(p => String(p.id) === String(linealModPropId));
+  if(!prop) return;
+  buildModDropdown(); // refresh
+
+  const m = MODULES.find(x => x.id === linealModId);
+  if(!m) return;
+
+  const curWeek = calcCurrentWeek(prop.entry_date) || 1;
+  const sim     = simulateWeeklyValues(prop, linealModId);
+  const { vals, meta, curVal } = sim;
+  const weekLabels = Array.from({length:8}, (_,i) => 'Sem. '+(i+1));
+  const expected   = Array.from({length:8}, (_,i) => expectedPctForWeek(i+1));
+  const realPcts   = Array.from({length:8}, (_,i) => {
+    const v = vals[i]; if(v === null) return null;
+    return meta > 0 ? Math.min(100, Math.round((v/meta)*100)) : 0;
+  });
+
+  // KPIs
+  const rNow = realPcts[curWeek-1] || 0;
+  const eNow = expectedPctForWeek(curWeek);
+  const idx  = complianceIndex(rNow, eNow);
+  const idxC = idx===null?'#94a3b8':idx>=100?'#00b460':idx>=75?'#e67e00':'#e03030';
+  const kpiEl = $('linealModKpis'); if(kpiEl) kpiEl.innerHTML = [
+    { val: m.icon+' '+m.label,      lbl:'Módulo',             sub:'', color:'var(--domo)' },
+    { val: curVal + ' '+m.unit.split('/')[0], lbl:'Valor Real Actual', sub:'Semana '+curWeek, color:'var(--text)' },
+    { val: meta + ' '+m.unit.split('/')[0],   lbl:'Meta Final',        sub:'100% en 8 semanas', color:'#fbbf24' },
+    { val: (idx||0)+'%',            lbl:'Índice Cumpl.', sub:idx>=100?'🟢 En ritmo':idx>=75?'🟡 Atención':'🔴 Rezagado', color:idxC },
+  ].map(k =>
+    '<div class="ov-kpi" style="--ok:'+k.color+'"><div class="ov-kpi-val" style="color:'+k.color+'">'+k.val+'</div>'
+    +'<div class="ov-kpi-label">'+k.lbl+'</div><div class="ov-kpi-sub" style="color:'+k.color+'">'+k.sub+'</div></div>'
+  ).join('');
+
+  // Labels
+  if($('linealModChartTitle')) $('linealModChartTitle').textContent = m.icon+' '+m.label+' — Progresión Semanal';
+  if($('linealModChartSub'))   $('linealModChartSub').textContent = prop.name + ' · Meta: ' + meta + ' ' + m.unit;
+  if($('linealModTableTitle')) $('linealModTableTitle').textContent = 'Desglose Semanal — ' + m.label;
+
+  // Line chart
+  destroyChart('chartLinealMod');
+  const cv = $('chartLinealMod'); if(!cv) return;
+  const dk = theme==='dark', tc=dk?'#9287b8':'#7c6fa0', gc=dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.05)';
+
+  charts['chartLinealMod'] = new Chart(cv.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: weekLabels,
+      datasets: [
+        {
+          label: '— Progreso Esperado (%)',
+          data: expected,
+          borderColor: 'rgba(247,181,0,.6)',
+          backgroundColor: 'rgba(247,181,0,.05)',
+          borderWidth: 2,
+          borderDash: [6,4],
+          pointRadius: 3,
+          pointBackgroundColor: 'rgba(247,181,0,.7)',
+          tension: 0,
+          fill: false,
+        },
+        {
+          label: m.icon+' '+m.label+' — Real (%)',
+          data: realPcts,
+          borderColor: '#820ad1',
+          backgroundColor: 'rgba(130,10,209,.12)',
+          borderWidth: 3,
+          pointRadius: 5,
+          pointBackgroundColor: '#820ad1',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          tension: 0.35,
+          fill: true,
+          spanGaps: false,
+        },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{position:'bottom',labels:{color:tc,font:{family:'Montserrat',size:11},boxWidth:12,padding:16}},
+        tooltip:{
+          callbacks:{
+            label: ctx => {
+              const v = ctx.parsed.y;
+              if(v===null) return ctx.dataset.label+': —';
+              return ctx.dataset.label+': '+v+'%';
+            },
+            afterLabel: ctx => {
+              if(ctx.datasetIndex !== 1) return '';
+              const w = ctx.dataIndex + 1;
+              if(w > curWeek) return 'Semana futura';
+              const idx2 = complianceIndex(ctx.parsed.y, expected[ctx.dataIndex]);
+              return 'Índice: ' + idx2 + '% (' + (idx2>=100?'✅ En ritmo':idx2>=75?'⚠️ Atención':'❌ Rezagado') + ')';
+            }
+          }
+        }
+      },
+      scales:{
+        x:{grid:{color:gc},ticks:{color:tc,font:{family:'Montserrat',size:10}}},
+        y:{min:0,max:100,grid:{color:gc},ticks:{color:tc,font:{family:'Montserrat',size:10},callback:v=>v+'%'}}
+      }
+    }
+  });
+
+  // Table
+  const tbody = $('linealModTableBody'); if(!tbody) return;
+  tbody.innerHTML = Array.from({length:8}, (_,i) => {
+    const w     = i + 1;
+    const rPct  = realPcts[i];
+    const ePct  = expected[i];
+    const rVal  = vals[i];
+    const idx2  = w <= curWeek ? complianceIndex(rPct, ePct) : null;
+    const isFut = w > curWeek;
+    const isCur = w === curWeek;
+    const c     = rPct===null?'var(--text-muted)': rPct>=80?'#00b460':rPct>=50?'#e67e00':'#e03030';
+    const idxC2 = idx2===null?'var(--text-muted)':idx2>=100?'#00b460':idx2>=75?'#e67e00':'#e03030';
+    const statusLabel = isFut ? '—' : idx2>=100 ? '✅ En Meta' : idx2>=75 ? '⚠️ Atención' : '🔴 Rezagado';
+    return '<tr style="'+(isCur?'background:rgba(130,10,209,.05)':'')+'border-bottom:1px solid var(--border)">'
+      + '<td style="padding:11px 14px;font-weight:800;color:'+(isCur?'var(--domo)':'var(--text)')+'">Semana '+w+(isCur?' ★':'')+''+(isFut?'<span style="font-size:9px;color:var(--text-muted);display:block">Futura</span>':'')+'</td>'
+      + '<td style="padding:11px 14px;font-family:JetBrains Mono,monospace;color:'+c+'">'+(rVal!==null?rVal+' '+m.unit.split('/')[0]:'—')+'</td>'
+      + '<td style="padding:11px 14px;font-family:JetBrains Mono,monospace">'+meta+' '+m.unit.split('/')[0]+'</td>'
+      + '<td style="padding:11px 14px"><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:5px;border-radius:3px;background:var(--surface2);overflow:hidden;min-width:40px"><div style="width:'+(rPct||0)+'%;height:100%;background:'+c+';border-radius:3px"></div></div><span style="font-weight:800;color:'+c+'">'+(rPct!==null?rPct+'%':'—')+'</span></div></td>'
+      + '<td style="padding:11px 14px;font-weight:700;color:#fbbf24">'+ePct+'%</td>'
+      + '<td style="padding:11px 14px;font-weight:800;color:'+idxC2+'">'+(idx2!==null?idx2+'%':'—')+'</td>'
+      + '<td style="padding:11px 14px">'+statusLabel+'</td>'
+      + '</tr>';
+  }).join('');
+}
+
+// ── COMPARE TAB ──────────────────────────────────────
+function renderCompareView() {
+  const prop = state.properties.find(p => String(p.id) === String(linealCmpPropId));
+  if(!prop) return;
+  const wA = parseInt($('cmpWeekA')?.value) || 1;
+  const wB = parseInt($('cmpWeekB')?.value) || 6;
+
+  if($('cmpChartTitle')) $('cmpChartTitle').textContent = 'Semana '+wA+' vs Semana '+wB+' — '+prop.name;
+  if($('cmpChartSub'))   $('cmpChartSub').textContent = 'Real vs Meta lineal · Índice de cumplimiento';
+
+  const mods    = (prop.modules || []);
+  const modLabels = mods.map(mid => { const m=MODULES.find(x=>x.id===mid); return m?m.icon+' '+m.label:mid; });
+  const dataA   = mods.map(mid => realPctForWeek(prop, mid, wA) || 0);
+  const dataB   = mods.map(mid => realPctForWeek(prop, mid, wB) || 0);
+  const expA    = expectedPctForWeek(wA);
+  const expB    = expectedPctForWeek(wB);
+
+  // Chart
+  destroyChart('chartLinealCmp');
+  const cv = $('chartLinealCmp'); if(!cv) return;
+  const dk = theme==='dark', tc=dk?'#9287b8':'#7c6fa0', gc=dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.05)';
+  charts['chartLinealCmp'] = new Chart(cv.getContext('2d'), {
+    type:'bar',
+    data:{
+      labels: modLabels,
+      datasets:[
+        { label:'Sem. '+wA+' Real',     data:dataA, backgroundColor:'rgba(130,10,209,.7)', borderRadius:5, borderSkipped:false, barThickness:18 },
+        { label:'Sem. '+wB+' Real',     data:dataB, backgroundColor:'rgba(0,180,100,.7)',  borderRadius:5, borderSkipped:false, barThickness:18 },
+        { label:'Meta Sem. '+wA+' ('+expA+'%)', data:mods.map(()=>expA), type:'line', borderColor:'rgba(247,181,0,.7)', backgroundColor:'transparent', borderWidth:2, borderDash:[5,4], pointRadius:3, tension:0 },
+        { label:'Meta Sem. '+wB+' ('+expB+'%)', data:mods.map(()=>expB), type:'line', borderColor:'rgba(255,182,93,.6)', backgroundColor:'transparent', borderWidth:2, borderDash:[3,3], pointRadius:3, tension:0 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{ legend:{ position:'bottom', labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:12,padding:14} } },
+      scales:{
+        x:{ticks:{color:tc,font:{family:'Montserrat',size:9}},grid:{color:gc}},
+        y:{min:0,max:100,ticks:{color:tc,font:{family:'Montserrat',size:10},callback:v=>v+'%'},grid:{color:gc}}
+      }
+    }
+  });
+
+  // Table
+  const head = $('cmpTableHead'); const body = $('cmpTableBody');
+  if(head) head.innerHTML = '<tr>'
+    + ['Módulo','Valor Sem.'+wA,'% Real Sem.'+wA,'Índice Sem.'+wA,'Valor Sem.'+wB,'% Real Sem.'+wB,'Índice Sem.'+wB,'Δ Índice'].map(h =>
+        '<th style="padding:9px 13px;font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap">'+h+'</th>'
+    ).join('') + '</tr>';
+
+  if(body) {
+    const curWeek = calcCurrentWeek(prop.entry_date) || 1;
+    body.innerHTML = mods.map(mid => {
+      const m = MODULES.find(x=>x.id===mid);
+      const rA = realPctForWeek(prop, mid, wA) || 0;
+      const rB = realPctForWeek(prop, mid, wB) || 0;
+      const iA = complianceIndex(rA, expA);
+      const iB = complianceIndex(rB, expB);
+      const delta = iB !== null && iA !== null ? iB - iA : null;
+      const sim = simulateWeeklyValues(prop, mid);
+      const valA = sim.vals[wA-1] !== null ? sim.vals[wA-1] : '—';
+      const valB = sim.vals[wB-1] !== null ? sim.vals[wB-1] : '—';
+      const cA = rA>=80?'#00b460':rA>=50?'#e67e00':'#e03030';
+      const cB = rB>=80?'#00b460':rB>=50?'#e67e00':'#e03030';
+      const iAC = iA===null?'#94a3b8':iA>=100?'#00b460':iA>=75?'#e67e00':'#e03030';
+      const iBC = iB===null?'#94a3b8':iB>=100?'#00b460':iB>=75?'#e67e00':'#e03030';
+      const dC  = delta===null?'#94a3b8':delta>0?'#00b460':delta<0?'#e03030':'#94a3b8';
+      return '<tr style="border-bottom:1px solid var(--border)">'
+        + '<td style="padding:10px 13px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">'+m.icon+'</span><strong>'+m.label+'</strong></div></td>'
+        + '<td style="padding:10px 13px;font-family:JetBrains Mono,monospace">'+valA+'</td>'
+        + '<td style="padding:10px 13px;font-weight:800;color:'+cA+'">'+rA+'%</td>'
+        + '<td style="padding:10px 13px;font-weight:800;color:'+iAC+'">'+(iA!==null?iA+'%':'—')+'</td>'
+        + '<td style="padding:10px 13px;font-family:JetBrains Mono,monospace">'+valB+'</td>'
+        + '<td style="padding:10px 13px;font-weight:800;color:'+cB+'">'+rB+'%</td>'
+        + '<td style="padding:10px 13px;font-weight:800;color:'+iBC+'">'+(iB!==null?iB+'%':'—')+'</td>'
+        + '<td style="padding:10px 13px;font-weight:800;color:'+dC+'">'+(delta!==null?(delta>=0?'+':'')+delta+'%':'—')+'</td>'
+        + '</tr>';
+    }).join('');
+  }
+}
+
+// ── SEMÁFORO TAB ─────────────────────────────────────
+function renderSemaforoView() {
+  const prop = state.properties.find(p => String(p.id) === String(linealSemPropId));
+  if(!prop) return;
+
+  const curWeek = calcCurrentWeek(prop.entry_date) || 1;
+  const mods    = prop.modules || [];
+  const ePct    = expectedPctForWeek(curWeek);
+
+  if($('semaforoRadarSub')) $('semaforoRadarSub').textContent = prop.name + ' · Semana '+curWeek+'/8 · Meta esperada: '+ePct+'%';
+
+  // Grid
+  const grid = $('semaforoGrid'); if(!grid) return;
+  if(!mods.length) {
+    grid.innerHTML = '<div style="color:var(--text-muted);padding:40px;text-align:center;grid-column:1/-1">Sin módulos activos</div>';
+    return;
+  }
+
+  const inactiveMods = MODULES.filter(m => !mods.includes(m.id));
+
+  grid.innerHTML = [
+    ...MODULES.filter(m => mods.includes(m.id)).map(m => {
+      const rPct = realPctForWeek(prop, m.id, curWeek) || 0;
+      const idx  = complianceIndex(rPct, ePct);
+      const lightColor = idx >= 100 ? 'green' : idx >= 75 ? 'yellow' : 'red';
+      const c = rPct>=80?'#00b460':rPct>=50?'#e67e00':'#e03030';
+      const idxC = idx>=100?'#00b460':idx>=75?'#e67e00':'#e03030';
+      const statusMsg = idx >= 100
+        ? 'En ritmo o adelantado'
+        : idx >= 75 ? 'Necesita atención'
+        : 'Requiere acción urgente';
+      const sim = simulateWeeklyValues(prop, m.id);
+      return '<div class="sem-card">'
+        + '<div class="sem-header">'
+        +   '<div class="sem-icon-name"><div class="sem-icon">'+m.icon+'</div><div class="sem-name">'+m.label+'</div></div>'
+        +   '<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">Sem. '+curWeek+'/8</div>'
+        + '</div>'
+        + '<div class="sem-light-wrap">'
+        +   '<div class="sem-light '+(lightColor==='red'?'sem-on-red':'sem-off')+'"></div>'
+        +   '<div class="sem-light '+(lightColor==='yellow'?'sem-on-yellow':'sem-off')+'"></div>'
+        +   '<div class="sem-light '+(lightColor==='green'?'sem-on-green':'sem-off')+'"></div>'
+        + '</div>'
+        + '<div class="sem-body">'
+        +   '<div class="sem-index-val" style="color:'+idxC+'">'+idx+'%</div>'
+        +   '<div class="sem-label">Índice de Cumplimiento</div>'
+        +   '<div class="sem-bar-row"><span class="sem-bar-label">Real</span><div class="sem-bar-track"><div class="sem-bar-fill" style="width:'+rPct+'%;background:'+c+'"></div></div><span class="sem-pct" style="color:'+c+'">'+rPct+'%</span></div>'
+        +   '<div class="sem-bar-row"><span class="sem-bar-label">Esperado</span><div class="sem-bar-track"><div class="sem-bar-fill" style="width:'+ePct+'%;background:#fbbf24"></div></div><span class="sem-pct" style="color:#fbbf24">'+ePct+'%</span></div>'
+        +   '<div class="sem-week-info">'+sim.curVal+'/'+sim.meta+' '+m.unit+' · '+statusMsg+'</div>'
+        + '</div>'
+        + '</div>';
+    }),
+    ...inactiveMods.map(m => '<div class="sem-card" style="opacity:.35">'
+      + '<div class="sem-header"><div class="sem-icon-name"><div class="sem-icon">'+m.icon+'</div><div class="sem-name">'+m.label+'</div></div><div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">Inactivo</div></div>'
+      + '<div class="sem-light-wrap"><div class="sem-light sem-off"></div><div class="sem-light sem-off"></div><div class="sem-light sem-off"></div></div>'
+      + '<div class="sem-body"><div class="sem-index-val" style="color:var(--text-muted)">—</div><div class="sem-label">Módulo sin activar</div></div>'
+      + '</div>'
+    )
+  ].join('');
+
+  // Radar
+  destroyChart('chartSemaforoRadar');
+  const cv = $('chartSemaforoRadar'); if(!cv) return;
+  const dk=theme==='dark', tc=dk?'#9287b8':'#7c6fa0', gc=dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.05)';
+  const idxVals = MODULES.map(m => {
+    if(!mods.includes(m.id)) return 0;
+    const rPct = realPctForWeek(prop, m.id, curWeek) || 0;
+    const idx  = complianceIndex(rPct, ePct);
+    return idx || 0;
+  });
+  charts['chartSemaforoRadar'] = new Chart(cv.getContext('2d'), {
+    type:'radar',
+    data:{
+      labels: MODULES.map(m=>m.icon+'  '+m.label),
+      datasets:[
+        { label:'Índice de Cumplimiento (%)', data:idxVals, backgroundColor:'rgba(130,10,209,.18)', borderColor:'#820ad1', pointBackgroundColor:'#820ad1', pointBorderColor:'#fff', pointBorderWidth:2, borderWidth:2.5, pointRadius:5, fill:true },
+        { label:'Meta (100%)', data:MODULES.map(()=>100), backgroundColor:'rgba(247,181,0,.05)', borderColor:'rgba(247,181,0,.4)', borderWidth:1.5, borderDash:[5,4], pointRadius:3, fill:true },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'top', labels:{color:tc,font:{family:'Montserrat',size:11,weight:'700'},boxWidth:12,padding:20} } },
+      scales:{ r:{
+        angleLines:{color:gc}, grid:{color:gc},
+        pointLabels:{color:tc,font:{family:'Montserrat',size:10,weight:'600'}},
+        ticks:{color:tc,font:{family:'Montserrat',size:9},backdropColor:'transparent',stepSize:25},
+        min:0, max:Math.max(150, ...idxVals.filter(Boolean))
+      }}
+    }
+  });
+}
+
+
 
 </script>
 </body>

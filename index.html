@@ -823,6 +823,18 @@ tr:hover td{background:var(--surface2)}
 
 .btn-secondary{padding:9px 18px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,13px);font-weight:700;cursor:pointer;transition:all .2s}
 .btn-secondary:hover{border-color:var(--domo);color:var(--domo)}
+
+/* ══ TASK CARD REDISEÑADA ══ */
+.tic-check-btn{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all .2s}
+.tic-check-btn.checked{background:#00b460;border-color:#00b460;color:#fff}
+.tic-check-btn:hover{border-color:#00b460}
+.tic-abismo-bar-wrap{flex:1;height:8px;border-radius:4px;background:var(--surface2);overflow:hidden;position:relative}
+.tic-abismo-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.tic-contrib-label{font-size:clamp(8px,.8vw,10px);font-weight:800;color:var(--text-muted);min-width:42px;text-align:right}
+.tic-weight-pill{font-size:clamp(8px,.75vw,9px);font-weight:800;padding:2px 7px;background:rgba(130,10,209,.1);color:var(--domo);border-radius:20px;border:1px solid rgba(130,10,209,.2);white-space:nowrap}
+.tic-abismo-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.tic-abismo-label{font-size:clamp(7px,.7vw,9px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+
 </style>
 </head>
 <body data-theme="light">
@@ -1469,15 +1481,21 @@ tr:hover td{background:var(--surface2)}
           <div class="tac-progress-wrap">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
               <span style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px">Cierre del Abismo</span>
-              <span style="font-size:clamp(10px,.9vw,12px);font-weight:800;color:var(--domo)" id="tacSealPct">0%</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:clamp(10px,.9vw,12px);font-weight:800;color:var(--domo)" id="tacSealPct">0%</span>
+                <span id="tacSealCheck" style="font-size:18px;display:none">✅</span>
+              </div>
             </div>
-            <div class="tac-bar-track">
+            <div class="tac-bar-track" style="height:12px;border-radius:6px">
               <div class="tac-bar-mods" id="tacBarMods" style="width:0%"></div>
               <div class="tac-bar-tasks" id="tacBarTasks" style="width:0%"></div>
             </div>
-            <div style="display:flex;gap:14px;margin-top:6px">
-              <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:2px;background:#820ad1"></div><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">Módulos</span></div>
-              <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:2px;background:#00b460"></div><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">Tareas</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <div style="display:flex;gap:14px">
+                <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:2px;background:#820ad1"></div><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">Módulos</span></div>
+                <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:2px;background:#00b460"></div><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">Tareas</span></div>
+              </div>
+              <div id="tacSealMsg" style="font-size:clamp(9px,.85vw,10px);font-weight:700;display:none"></div>
             </div>
           </div>
         </div>
@@ -1907,7 +1925,7 @@ const MODULES = [
   {id:'muro',label:'Muro',icon:'💬',unit:'publicaciones/mes',metaLabel:u=>`Meta fija: 8 publicaciones al mes`,metaFn:u=>8},
   {id:'alertas',label:'Alertas',icon:'🔔',unit:'alertas/mes',metaLabel:u=>`Meta: mínimo 2, ideal 5 alertas/mes`,metaFn:u=>2},
   {id:'solicitudes',label:'Solicitudes',icon:'📋',unit:'aptos con solicitudes',metaLabel:u=>`Meta: ${Math.round(u*0.30)} aptos (30% de ${u})`,metaFn:u=>Math.round(u*0.30)},
-  {id:'zonas',label:'Zonas Comunes',icon:'⬜',unit:'reservas/mes',metaLabel:u=>`Meta: ${Math.round(u/6)} reservas (80 de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'zonas',label:'Zonas Comunes',icon:'⬜',unit:'reservas/mes',metaLabel:u=>`Meta: ${Math.round(u/6)} reservas (1/6 de ${u})`,metaFn:u=>Math.round(u/6)},
   {id:'documentos',label:'Documentos',icon:'📄',unit:'aptos con acceso',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
   {id:'financiero',label:'Financiero',icon:'💰',unit:'aptos activos',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
   {id:'votaciones',label:'Votaciones',icon:'🗳️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
@@ -3404,6 +3422,16 @@ function renderTaskDetail(id) {
   const modsPct = Math.round(avgPct * 0.6);
   const tasksPct = Math.round(taskSeal * 0.4);
   if($('tacSealPct')) { $('tacSealPct').textContent = combined + '%'; $('tacSealPct').style.color = chasmColor; }
+  // Checkmark y mensaje de estado
+  const sealCheck = $('tacSealCheck');
+  const sealMsg   = $('tacSealMsg');
+  if(sealCheck) sealCheck.style.display = combined >= 80 ? 'inline' : 'none';
+  if(sealMsg) {
+    if(combined >= 100)      { sealMsg.style.display='block'; sealMsg.textContent='🎉 Abismo sellado'; sealMsg.style.color='#00b460'; }
+    else if(combined >= 80)  { sealMsg.style.display='block'; sealMsg.textContent='✅ Meta alcanzada'; sealMsg.style.color='#00b460'; }
+    else if(combined >= 50)  { sealMsg.style.display='block'; sealMsg.textContent='⚡ En progreso — falta '+(100-combined)+'%'; sealMsg.style.color='#e67e00'; }
+    else                     { sealMsg.style.display='block'; sealMsg.textContent='🔴 Crítico — falta '+(100-combined)+'%'; sealMsg.style.color='#e03030'; }
+  }
   setTimeout(() => {
     if($('tacBarMods')) $('tacBarMods').style.width = modsPct + '%';
     if($('tacBarTasks')) $('tacBarTasks').style.width = tasksPct + '%';
@@ -3486,14 +3514,8 @@ function updateTaskItemProgress(propId, taskId, val) {
   t.progress = val;
   savePropTasks();
   // Update UI inline (no full re-render for smoothness)
-  const barColor = val===100?'#00b460':val>=50?'#e67e00':'#820ad1';
-  const bar = $('ticbar-'+taskId); if(bar){bar.style.width=val+'%;';bar.style.background=barColor;}
-  const pct = $('ticpct-'+taskId); if(pct){pct.textContent=val+'%';pct.style.color=barColor;}
-  const card = $('tic-'+taskId);
-  if(card){if(val===100)card.classList.add('tic-done');else card.classList.remove('tic-done');}
-  // Update the adoption curve + bars
+  renderTaskList(propId);
   renderTaskDetail(propId);
-  // Refresh prop list sidebar bars
   renderTasksSection();
 }
 
@@ -4695,6 +4717,24 @@ function saveQuickDate() {
   showToast('📅 Fecha actualizada — Sem. ' + getPropWeek(p) + '/8', 'success');
   // Re-render current section
   if(currentSection !== 'connect') renderSection(currentSection);
+}
+
+
+// ══ TASK CHECK TOGGLE ══
+function checkToggleTask(propId, taskId) {
+  const tasks = propTasks[String(propId)];
+  if(!tasks) return;
+  const t = tasks.find(x => x.id === taskId);
+  if(!t) return;
+  t.progress = t.progress === 100 ? 0 : 100;
+  savePropTasks();
+  // Re-render suave
+  renderTaskList(propId);
+  renderTaskDetail(propId);
+  renderTasksSection();
+  // También actualizar badge en abismo cards si existe
+  renderAbismoTaskBadge && renderAbismoTaskBadge(propId);
+  showToast(t.progress===100 ? '✅ Tarea completada — abismo actualizado' : '↩️ Tarea marcada pendiente', t.progress===100?'success':'info');
 }
 
 </script>

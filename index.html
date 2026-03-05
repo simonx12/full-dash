@@ -1964,6 +1964,7 @@ function savePropTasks(){localStorage.setItem('dn_prop_tasks',JSON.stringify(pro
 
 // ── Persistencia de propiedades (modo offline/demo) ──
 function saveStateLocal(){
+  if(sb) return; // Con Supabase activo, no guardar localmente
   try { localStorage.setItem('dn_state_props', JSON.stringify(state.properties)); } catch(e){}
 }
 function loadStateLocal(){
@@ -3233,30 +3234,30 @@ function renderRoadTaskList(propId) {
   if(!el) return;
   const tasks = propTasks[propId] || [];
   if(!tasks.length) {
-    el.innerHTML = '<div class="prop-chasm-chart-card" style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">📋 Agrega tareas para comenzar a sellar el abismo.</div>';
+    el.innerHTML = `<div class="prop-chasm-chart-card" style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px">📋 Agrega tareas para comenzar a sellar el abismo.</div>`;
     return;
   }
   el.innerHTML = tasks.map(t => {
-    const barColor = t.progress === 100 ? '#00b460' : t.progress >= 50 ? '#e67e00' : '#820ad1';
+    const bc = t.progress === 100 ? '#00b460' : t.progress >= 50 ? '#e67e00' : '#820ad1';
     const isDone = t.progress === 100;
-    const safeId = String(t.id);
-    const safeProp = String(propId).replace(/'/g,'');
-    return '<div class="road-task-card' + (isDone?' rtc-done':'') + '" data-tid="' + safeId + '" data-pid="' + safeProp + '">'
-      + '<div class="rtc-top">'
-      + '<span class="rtc-cat">' + t.category + '</span>'
-      + '<div class="rtc-text">' + t.text + '</div>'
-      + '<div class="rtc-weight">Peso: ' + t.weight + '</div>'
-      + '<button class="rtc-del-btn" data-tid="' + safeId + '" data-pid="' + safeProp + '" style="color:var(--text-muted);background:none;border:none;cursor:pointer;font-size:clamp(11px,1vw,14px);padding:0 4px">✕</button>'
-      + '</div>'
-      + '<div class="rtc-progress-row">'
-      + '<span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);font-weight:700;min-width:60px">PROGRESO</span>'
-      + '<div class="rtc-bar-wrap"><div class="rtc-bar-fill" id="rtc-bar-' + safeId + '" style="width:' + t.progress + '%;background:' + barColor + '"></div></div>'
-      + '<input type="range" min="0" max="100" value="' + t.progress + '" class="rtc-slider" data-tid="' + safeId + '" data-pid="' + safeProp + '" style="width:80px;accent-color:' + barColor + '"/>'
-      + '<div class="rtc-pct-lbl" id="rtc-pct-' + safeId + '" style="color:' + barColor + '">' + t.progress + '%</div>'
-      + '</div>'
-      + '</div>';
+    const sid = String(t.id);
+    const spid = String(propId);
+    const doneClass = isDone ? ' rtc-done' : '';
+    return `<div class="road-task-card${doneClass}" data-tid="${sid}" data-pid="${spid}">
+      <div class="rtc-top">
+        <span class="rtc-cat">${t.category}</span>
+        <div class="rtc-text">${t.text}</div>
+        <div class="rtc-weight">Peso: ${t.weight}</div>
+        <button class="rtc-del-btn" data-tid="${sid}" data-pid="${spid}" style="color:var(--text-muted);background:none;border:none;cursor:pointer;font-size:13px;padding:0 4px">✕</button>
+      </div>
+      <div class="rtc-progress-row">
+        <span style="font-size:10px;color:var(--text-muted);font-weight:700;min-width:60px">PROGRESO</span>
+        <div class="rtc-bar-wrap"><div class="rtc-bar-fill" id="rtc-bar-${sid}" style="width:${t.progress}%;background:${bc}"></div></div>
+        <input type="range" min="0" max="100" value="${t.progress}" class="rtc-slider" data-tid="${sid}" data-pid="${spid}" style="width:80px;accent-color:${bc}"/>
+        <div class="rtc-pct-lbl" id="rtc-pct-${sid}" style="color:${bc}">${t.progress}%</div>
+      </div>
+    </div>`;
   }).join('');
-  // Attach event listeners after DOM update
   el.querySelectorAll('.rtc-del-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       deleteRoadTask(this.dataset.pid, parseInt(this.dataset.tid));
@@ -3349,7 +3350,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       sb=window.supabase.createClient(savedUrl,savedKey);
       const{error}=await sb.from('properties').select('id',{count:'exact',head:true});
       if(error)throw error;
-      isConnected=true;await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
+      isConnected=true;localStorage.removeItem('dn_state_props');await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
     }catch(e){localStorage.removeItem('dn_sb_url');localStorage.removeItem('dn_sb_key');}
   } else {
     // Sin Supabase: si hay datos locales guardados, restaurar automáticamente

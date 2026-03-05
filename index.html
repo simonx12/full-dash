@@ -815,6 +815,14 @@ tr:hover td{background:var(--surface2)}
 .abt-add-btn:hover{opacity:.85}
 .abt-empty{font-size:clamp(9px,.85vw,11px);color:var(--text-muted);text-align:center;padding:8px 0;font-style:italic}
 
+
+/* ══ DATE ADJUST BUTTONS ══ */
+.date-adj-btn{padding:4px 10px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:clamp(9px,.85vw,11px);font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .18s}
+.date-adj-btn:hover{border-color:var(--domo);color:var(--domo);background:rgba(130,10,209,.07)}
+.date-adj-today{border-color:var(--domo)!important;color:var(--domo)!important;background:rgba(130,10,209,.08)!important}
+
+.btn-secondary{padding:9px 18px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:clamp(10px,.9vw,13px);font-weight:700;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:var(--domo);color:var(--domo)}
 </style>
 </head>
 <body data-theme="light">
@@ -1864,7 +1872,17 @@ tr:hover td{background:var(--surface2)}
           <input class="form-input" id="fUnits" type="number" min="1" value="50" oninput="rebuildModuleChecks()"/>
           <div class="form-hint">Las metas se calculan sobre el 80% de este número</div>
         </div>
-        <div class="form-group"><label class="form-label">Fecha de Entrada</label><input class="form-input" id="fEntryDate" type="date" onchange="autoCalcDays()"/></div>
+        <div class="form-group">
+          <label class="form-label">📅 Fecha de Ingreso <span style="font-size:10px;color:var(--text-muted);font-weight:400">(modifica si hay retraso o adelanto)</span></label>
+          <input class="form-input" id="fEntryDate" type="date" onchange="autoCalcDays()"/>
+          <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+            <button type="button" class="date-adj-btn" onclick="adjustEntryDate(-7)">− 1 semana</button>
+            <button type="button" class="date-adj-btn" onclick="adjustEntryDate(-1)">− 1 día</button>
+            <button type="button" class="date-adj-btn date-adj-today" onclick="setEntryDateToday()">Hoy</button>
+            <button type="button" class="date-adj-btn" onclick="adjustEntryDate(1)">+ 1 día</button>
+            <button type="button" class="date-adj-btn" onclick="adjustEntryDate(7)">+ 1 semana</button>
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <div class="mod-section-label">Módulos activos — ingresa el valor real alcanzado</div>
@@ -2075,7 +2093,7 @@ function renderPropertiesTable(){
     const cfg=PHASES[p.phase]||PHASES.implementation;
     const overall=getPropProgress(p);
     const clr=pctColor(overall);
-    return `<tr><td><strong>${p.name}</strong>${p.entry_date?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">📅 ${p.entry_date}</div>`:''}</td><td>${p.city||'—'}</td><td><span class="pill ${cfg.pill}">${cfg.label}</span></td><td style="font-family:JetBrains Mono,monospace">${p.units||0}</td><td><strong>${(p.modules||[]).length}</strong>/${MODULES.length}</td><td style="font-family:JetBrains Mono,monospace">${p.days||0}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${overall}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${overall}%</span></div></td><td><div class="actions-cell"><button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Editar</button><button class="btn-del" onclick="deleteProp('${p.id}')">🗑️</button></div></td></tr>`;
+    return `<tr><td><strong>${p.name}</strong>${p.entry_date?`<div style="display:flex;align-items:center;gap:4px;margin-top:2px"><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">📅 ${p.entry_date}</span><button style="font-size:9px;padding:1px 6px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;font-family:'Montserrat',sans-serif" onclick="openQuickDateEdit('${p.id}','${p.entry_date}')">✏️</button></div>`:''}</td><td>${p.city||'—'}</td><td><span class="pill ${cfg.pill}">${cfg.label}</span></td><td style="font-family:JetBrains Mono,monospace">${p.units||0}</td><td><strong>${(p.modules||[]).length}</strong>/${MODULES.length}</td><td style="font-family:JetBrains Mono,monospace">${p.days||0}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${overall}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${overall}%</span></div></td><td><div class="actions-cell"><button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Editar</button><button class="btn-del" onclick="deleteProp('${p.id}')">🗑️</button></div></td></tr>`;
   }).join('');
 }
 
@@ -4612,6 +4630,106 @@ function autoCalcDays() {
   if($('fDaysHint')) $('fDaysHint').textContent = '→ Semana ' + w + '/8 (' + d + ' días desde el inicio)';
 }
 
+
+// ══ ENTRY DATE ADJUST ══
+function adjustEntryDate(days) {
+  const inp = $('fEntryDate');
+  if(!inp || !inp.value) return;
+  const d = new Date(inp.value);
+  if(isNaN(d.getTime())) return;
+  d.setDate(d.getDate() + days);
+  inp.value = d.toISOString().split('T')[0];
+  autoCalcDays();
+}
+function setEntryDateToday() {
+  const inp = $('fEntryDate');
+  if(!inp) return;
+  inp.value = new Date().toISOString().split('T')[0];
+  autoCalcDays();
+}
+
+
+// ══ QUICK DATE EDIT MODAL JS ══
+function openQuickDateEdit(propId, currentDate) {
+  const p = state.properties.find(x => String(x.id) === String(propId));
+  if(!p) return;
+  $('qdPropId').value = propId;
+  $('qdPropName').textContent = p.name + ' — ' + (p.city || '');
+  $('qdDate').value = currentDate || new Date().toISOString().split('T')[0];
+  updateQuickDateHint();
+  $('quickDateModal').style.display = 'flex';
+}
+function closeQuickDateModal(e) {
+  if(e.target === $('quickDateModal')) $('quickDateModal').style.display = 'none';
+}
+function adjustQD(days) {
+  const inp = $('qdDate');
+  if(!inp) return;
+  if(days === 0) { inp.value = new Date().toISOString().split('T')[0]; }
+  else {
+    const d = new Date(inp.value || new Date());
+    d.setDate(d.getDate() + days);
+    inp.value = d.toISOString().split('T')[0];
+  }
+  updateQuickDateHint();
+}
+function updateQuickDateHint() {
+  const v = $('qdDate') ? $('qdDate').value : '';
+  const hint = $('qdHint');
+  if(!hint || !v) return;
+  const p = {entry_date: v, days: 0};
+  const d = getDaysFromEntry(p), w = getPropWeek(p);
+  hint.textContent = '→ Semana ' + w + '/8 · ' + d + ' días desde el ingreso';
+  hint.style.color = w <= 2 ? '#34d399' : w <= 5 ? '#fbbf24' : '#fb7185';
+}
+function saveQuickDate() {
+  const propId = $('qdPropId').value;
+  const newDate = $('qdDate') ? $('qdDate').value : '';
+  if(!propId || !newDate) return;
+  const p = state.properties.find(x => String(x.id) === String(propId));
+  if(!p) return;
+  p.entry_date = newDate;
+  p.days = getDaysFromEntry(p);
+  // Persist to Supabase if connected
+  updateSupabase(propId, p);
+  $('quickDateModal').style.display = 'none';
+  showToast('📅 Fecha actualizada — Sem. ' + getPropWeek(p) + '/8', 'success');
+  // Re-render current section
+  if(currentSection !== 'connect') renderSection(currentSection);
+}
+
 </script>
+
+<!-- ══ QUICK DATE EDIT MODAL ══ -->
+<div class="modal-overlay" id="quickDateModal" style="display:none" onclick="closeQuickDateModal(event)">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header">
+      <div class="modal-title">📅 Cambiar Fecha de Ingreso</div>
+      <div class="modal-close" onclick="document.getElementById('quickDateModal').style.display='none'">✕</div>
+    </div>
+    <div class="modal-body" style="padding:20px">
+      <input type="hidden" id="qdPropId"/>
+      <div class="form-group">
+        <label class="form-label" id="qdPropName" style="color:var(--domo);font-size:13px">Propiedad</label>
+        <input class="form-input" id="qdDate" type="date" onchange="updateQuickDateHint()"/>
+        <div id="qdHint" style="font-size:11px;color:var(--domo);font-weight:600;margin-top:6px"></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
+        <button type="button" class="date-adj-btn" onclick="adjustQD(-14)">− 2 sem.</button>
+        <button type="button" class="date-adj-btn" onclick="adjustQD(-7)">− 1 sem.</button>
+        <button type="button" class="date-adj-btn" onclick="adjustQD(-1)">− 1 día</button>
+        <button type="button" class="date-adj-btn date-adj-today" onclick="adjustQD(0)">Hoy</button>
+        <button type="button" class="date-adj-btn" onclick="adjustQD(1)">+ 1 día</button>
+        <button type="button" class="date-adj-btn" onclick="adjustQD(7)">+ 1 sem.</button>
+        <button type="button" class="date-adj-btn" onclick="adjustQD(14)">+ 2 sem.</button>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-primary" style="flex:1" onclick="saveQuickDate()">💾 Guardar</button>
+        <button class="btn-secondary" onclick="document.getElementById('quickDateModal').style.display='none'">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

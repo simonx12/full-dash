@@ -1460,6 +1460,14 @@ tr:hover td{background:var(--surface2)}
         <!-- Add task form -->
         <div class="task-add-form" id="taskAddForm">
           <div class="taf-title">+ Nueva Tarea</div>
+          <div class="taf-row" style="margin-bottom:10px">
+            <div class="taf-field" style="min-width:200px;max-width:300px">
+              <div class="taf-label">🏢 Propiedad</div>
+              <select id="tafPropSelect" class="form-select" style="font-family:'Montserrat',sans-serif;font-size:clamp(10px,.95vw,13px);font-weight:600;border:1.5px solid var(--domo);background:var(--surface2);color:var(--text)" onchange="selectTaskPropFromDropdown(this.value)">
+                <option value="">— Selecciona propiedad —</option>
+              </select>
+            </div>
+          </div>
           <div class="taf-row">
             <div class="taf-field">
               <div class="taf-label">Categoría</div>
@@ -3399,6 +3407,8 @@ function renderTasksSection() {
       + '</div>';
   }).join('');
 
+  // Populate dropdown
+  populateTafPropDropdown();
   // Auto-select first
   if(!taskSelectedPropId && props.length) selectTaskProp(String(props[0].id));
   else if(taskSelectedPropId) renderTaskDetail(taskSelectedPropId);
@@ -3411,10 +3421,33 @@ function selectTaskProp(id) {
     if(String(c.dataset.pid) === String(id)) c.classList.add('tpl-active');
     else c.classList.remove('tpl-active');
   });
+  // Sync dropdown
+  const sel = $('tafPropSelect');
+  if(sel) sel.value = String(id);
   // Show detail panel
   const empty = $('tasksEmptyState'); if(empty) empty.style.display='none';
   const detail = $('tasksPropDetail'); if(detail) detail.style.display='block';
   renderTaskDetail(id);
+}
+
+function selectTaskPropFromDropdown(id) {
+  if(!id) return;
+  selectTaskProp(String(id));
+}
+
+function populateTafPropDropdown() {
+  const sel = $('tafPropSelect');
+  if(!sel) return;
+  const props = state.properties;
+  sel.innerHTML = '<option value="">\u2014 Selecciona propiedad \u2014</option>'
+    + props.map(p => {
+        const seal = getCombinedSealPct(p);
+        const tasks = propTasks[String(p.id)] || [];
+        const selected = String(p.id) === String(taskSelectedPropId) ? ' selected' : '';
+        return '<option value="' + p.id + '"' + selected + '>'
+          + p.name + ' \u2014 ' + seal + '% \u00b7 ' + tasks.length + ' tarea' + (tasks.length !== 1 ? 's' : '')
+          + '</option>';
+      }).join('');
 }
 
 function renderTaskDetail(id) {

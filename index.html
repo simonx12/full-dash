@@ -791,6 +791,30 @@ tr:hover td{background:var(--surface2)}
 .speed-gauge-svg  { width: 100%; height: 100%; }
 
 
+
+/* ══ ABISMO CARD TASKS PANEL ══ */
+.abismo-tasks-panel{border-top:1px solid var(--border);padding:14px 20px 16px}
+.abismo-tasks-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:0}
+.abismo-tasks-toggle:hover .att-label{color:var(--domo)}
+.att-label{font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;display:flex;align-items:center;gap:6px;transition:color .2s}
+.att-badge{background:var(--domo);color:#fff;border-radius:999px;padding:1px 7px;font-size:10px;font-weight:700;min-width:18px;text-align:center}
+.att-arrow{font-size:10px;color:var(--text-muted);transition:transform .2s}
+.att-arrow.open{transform:rotate(180deg)}
+.abismo-tasks-body{margin-top:12px}
+.abt-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;max-height:200px;overflow-y:auto}
+.abt-item{display:flex;align-items:center;gap:8px;background:var(--surface2);border-radius:8px;padding:7px 10px;border:1px solid var(--border)}
+.abt-check{width:16px;height:16px;accent-color:var(--domo);cursor:pointer;flex-shrink:0}
+.abt-text{flex:1;font-size:clamp(10px,.9vw,12px);color:var(--text);line-height:1.3}
+.abt-text.done{text-decoration:line-through;color:var(--text-muted)}
+.abt-del{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:0 2px;line-height:1;opacity:.5;transition:opacity .2s}
+.abt-del:hover{opacity:1;color:#e03030}
+.abt-add-row{display:flex;gap:6px;margin-top:6px}
+.abt-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:clamp(10px,.9vw,12px);color:var(--text);font-family:'Montserrat',sans-serif;outline:none}
+.abt-input:focus{border-color:var(--domo)}
+.abt-add-btn{background:var(--domo);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:clamp(10px,.9vw,12px);font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Montserrat',sans-serif;transition:opacity .2s}
+.abt-add-btn:hover{opacity:.85}
+.abt-empty{font-size:clamp(9px,.85vw,11px);color:var(--text-muted);text-align:center;padding:8px 0;font-style:italic}
+
 </style>
 </head>
 <body data-theme="light">
@@ -1458,10 +1482,11 @@ tr:hover td{background:var(--surface2)}
             <div class="taf-field">
               <div class="taf-label">Categoría</div>
               <div class="taf-cats" id="tafCatBtns">
-                <button class="taf-cat taf-cat-active" onclick="setTaskCat('Administradores',this)">Admins</button>
-                <button class="taf-cat" onclick="setTaskCat('Multiplicadores',this)">Multiplicadores</button>
-                <button class="taf-cat" onclick="setTaskCat('Comunidad',this)">Comunidad</button>
-                <button class="taf-cat" onclick="setTaskCat('Junta',this)">Junta</button>
+                <button class="taf-cat taf-cat-active" style="border-color:#34d399;color:#34d399" onclick="setTaskCat('Innovadores',this)">🟢 Innovadores</button>
+                <button class="taf-cat" style="" onclick="setTaskCat('Visionarios',this)">🟩 Visionarios</button>
+                <button class="taf-cat" onclick="setTaskCat('Pragmáticos',this)">🟡 Pragmáticos</button>
+                <button class="taf-cat" onclick="setTaskCat('Conservadores',this)">🔴 Conservadores</button>
+                <button class="taf-cat" onclick="setTaskCat('Escépticos',this)">⬜ Escépticos</button>
               </div>
             </div>
             <div class="taf-field" style="flex:2">
@@ -1831,15 +1856,15 @@ tr:hover td{background:var(--surface2)}
             <option value="done">Completado</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Días en Fase</label><input class="form-input" id="fDays" type="number" min="0" value="0"/></div>
+        <div class="form-group"><label class="form-label">Días en Fase</label><input class="form-input" id="fDays" readonly style="background:var(--surface2);color:var(--text-muted)" type="number" min="0" value="0"/></div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Total Unidades (apartamentos)</label>
+          <div id="fDaysHint" style="font-size:11px;color:var(--domo);font-weight:600;margin:-4px 0 10px"></div><label class="form-label">Total Unidades (apartamentos)</label>
           <input class="form-input" id="fUnits" type="number" min="1" value="50" oninput="rebuildModuleChecks()"/>
           <div class="form-hint">Las metas se calculan sobre el 80% de este número</div>
         </div>
-        <div class="form-group"><label class="form-label">Fecha de Entrada</label><input class="form-input" id="fEntryDate" type="date"/></div>
+        <div class="form-group"><label class="form-label">Fecha de Entrada</label><input class="form-input" id="fEntryDate" type="date" onchange="autoCalcDays()"/></div>
       </div>
       <div class="form-group">
         <div class="mod-section-label">Módulos activos — ingresa el valor real alcanzado</div>
@@ -1861,14 +1886,18 @@ tr:hover td{background:var(--surface2)}
 //  MODULE DEFINITIONS
 // ══════════════════════════════════════════════════════
 const MODULES = [
-  {id:'acceso',label:'Acceso',icon:'🔑',unit:'aptos con acceso',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'acceso',label:'Acceso',icon:'🔑',unit:'pases de acceso',metaLabel:u=>`Meta: ${Math.round(u*0.80)} pases (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
   {id:'muro',label:'Muro',icon:'💬',unit:'publicaciones/mes',metaLabel:u=>`Meta fija: 8 publicaciones al mes`,metaFn:u=>8},
   {id:'alertas',label:'Alertas',icon:'🔔',unit:'alertas/mes',metaLabel:u=>`Meta: mínimo 2, ideal 5 alertas/mes`,metaFn:u=>2},
   {id:'solicitudes',label:'Solicitudes',icon:'📋',unit:'aptos con solicitudes',metaLabel:u=>`Meta: ${Math.round(u*0.30)} aptos (30% de ${u})`,metaFn:u=>Math.round(u*0.30)},
   {id:'zonas',label:'Zonas Comunes',icon:'⬜',unit:'reservas/mes',metaLabel:u=>`Meta: ${Math.round(u/6)} reservas (1/6 de ${u})`,metaFn:u=>Math.round(u/6)},
   {id:'documentos',label:'Documentos',icon:'📄',unit:'aptos con acceso',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
   {id:'financiero',label:'Financiero',icon:'💰',unit:'aptos activos',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
-  {id:'votaciones',label:'Votaciones',icon:'🗳️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)}
+  {id:'votaciones',label:'Votaciones',icon:'🗳️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'superadmin',label:'Superadministrador',icon:'👑',unit:'usuarios superadmin activos',metaLabel:u=>`Meta: 1 superadmin configurado`,metaFn:u=>1},
+  {id:'normativo',label:'Normativo',icon:'📜',unit:'documentos normativos publicados',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos con acceso (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'asambleas',label:'Asambleas',icon:'🏛️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'encuestas',label:'Encuestas',icon:'📊',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)}
 ];
 
 function calcMeta(mid,units){const m=MODULES.find(x=>x.id===mid);if(!m)return 0;return m.metaFn(units);}
@@ -2025,8 +2054,8 @@ function renderPhases(){
   $('phasesGrid').innerHTML=Object.entries(PHASES).map(([k,cfg])=>{
     const cnt=state.properties.filter(p=>p.phase===k).length;
     const pct=Math.round((cnt/total)*100);
-    const avg=cnt?Math.round(state.properties.filter(p=>p.phase===k).reduce((s,p)=>s+(p.days||0),0)/cnt):0;
-    return `<div class="phase-card"><div class="phase-header"><div style="display:flex;align-items:center"><div class="phase-dot" style="background:${cfg.color}"></div><div class="phase-name">${cfg.label}</div></div><div class="phase-count" style="background:${cfg.bg};color:${cfg.color}">${cnt}</div></div><div class="phase-body"><div class="phase-pct" style="color:${cfg.color}">${pct}%</div><div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${cfg.color}"></div></div><div class="phase-days">⏱ ${avg} días prom.</div></div></div>`;
+    const avg=cnt?Math.round(state.properties.filter(p=>p.phase===k).reduce((s,p)=>s+getDaysFromEntry(p),0)/cnt):0;
+    return `<div class="phase-card"><div class="phase-header"><div style="display:flex;align-items:center"><div class="phase-dot" style="background:${cfg.color}"></div><div class="phase-name">${cfg.label}</div></div><div class="phase-count" style="background:${cfg.bg};color:${cfg.color}">${cnt}</div></div><div class="phase-body"><div class="phase-pct" style="color:${cfg.color}">${pct}%</div><div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${cfg.color}"></div></div><div class="phase-days">⏱ Sem. ${Math.min(8,Math.max(1,Math.floor(avg/7)+1))} · ${avg}d prom.</div></div></div>`;
   }).join('');
 }
 
@@ -2096,7 +2125,8 @@ function openEditModal(id){
   const p=state.properties.find(x=>String(x.id)===String(id));if(!p)return;
   $('modalTitle').textContent='Editar Propiedad';$('editPropId').value=id;
   $('fName').value=p.name||'';$('fCity').value=p.city||'';$('fPhase').value=p.phase||'implementation';
-  $('fDays').value=p.days||0;$('fUnits').value=p.units||0;$('fEntryDate').value=p.entry_date||'';$('fNotes').value=p.notes||'';
+  $('fDays').value=p.days||0;$('fUnits').value=p.units||0;$('fEntryDate').value=p.entry_date||'';
+  autoCalcDays();$('fNotes').value=p.notes||'';
   buildModuleChecks(p.modules||[],p.module_values||{});$('propModal').style.display='flex';
 }
 function rebuildModuleChecks(){
@@ -2196,7 +2226,7 @@ function renderPropertyProgressCards(){
     const overall=getPropProgress(p);const clr=pctColor(overall);
     const activeMods=p.modules||[];const inactiveMods=MODULES.filter(m=>!activeMods.includes(m.id));
     const modRows=MODULES.filter(m=>activeMods.includes(m.id)).map(m=>{const val=mv[m.id]||0;const meta=m.metaFn(units);const pct=calcPct(m.id,val,units);const mc=pctColor(pct);return `<div class="pp-mod-row"><div class="pp-mod-icon">${m.icon}</div><div class="pp-mod-name">${m.label}</div><div class="pp-mod-num">${val}/${meta}</div><div class="pp-mod-pct" style="color:${mc}">${pct}%</div></div><div class="pp-mod-bar-wrap"><div class="pp-mod-fill" style="width:${Math.min(100,pct)}%;background:${mc}"></div></div>`;}).join('');
-    return `<div class="pp-card"><div class="pp-header"><div><div class="pp-name">${p.name}</div><div class="pp-city">📍 ${p.city||'—'} · ${units} unid.</div>${p.entry_date?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:2px">📅 ${p.entry_date}</div>`:''}</div><div style="text-align:right"><div class="pp-pct-big" style="color:${clr}">${overall}%</div><span class="pill ${cfg.pill}" style="margin-top:4px;display:inline-flex">${cfg.label}</span></div></div><div class="pp-body"><div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:4px"><span>Avance ponderado</span><span style="font-weight:700;color:${clr}">${overall}%</span></div><div class="pp-overall-bar"><div class="pp-overall-fill" style="width:${overall}%;background:${clr}"></div></div></div>${activeMods.length?`<div style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Módulos activos (${activeMods.length}/${MODULES.length})</div><div class="pp-mod-list">${modRows}</div>`:`<div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted);padding:10px 0;text-align:center">Sin módulos activos</div>`}${inactiveMods.length?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:8px">Pendientes: ${inactiveMods.map(m=>m.icon+' '+m.label).join(', ')}</div>`:''}</div><div class="pp-footer"><div class="pp-days">⏱ ${p.days||0} días</div><button class="pp-edit-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button></div></div>`;
+    return `<div class="pp-card"><div class="pp-header"><div><div class="pp-name">${p.name}</div><div class="pp-city">📍 ${p.city||'—'} · ${units} unid.</div>${p.entry_date?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:2px">📅 ${p.entry_date}</div>`:''}</div><div style="text-align:right"><div class="pp-pct-big" style="color:${clr}">${overall}%</div><span class="pill ${cfg.pill}" style="margin-top:4px;display:inline-flex">${cfg.label}</span></div></div><div class="pp-body"><div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:4px"><span>Avance ponderado</span><span style="font-weight:700;color:${clr}">${overall}%</span></div><div class="pp-overall-bar"><div class="pp-overall-fill" style="width:${overall}%;background:${clr}"></div></div></div>${activeMods.length?`<div style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Módulos activos (${activeMods.length}/${MODULES.length})</div><div class="pp-mod-list">${modRows}</div>`:`<div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted);padding:10px 0;text-align:center">Sin módulos activos</div>`}${inactiveMods.length?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:8px">Pendientes: ${inactiveMods.map(m=>m.icon+' '+m.label).join(', ')}</div>`:''}</div><div class="pp-footer"><div class="pp-days">⏱ Sem. ${getPropWeek(p)}/8 · ${getDaysFromEntry(p)} días</div><button class="pp-edit-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button></div></div>`;
   }).join('');
 }
 function renderModuleProgressChart(){
@@ -2374,7 +2404,7 @@ function renderStrategyOverview() {
           +'<td style="padding:11px 14px"><span class="pill '+cfg.pill+'">'+cfg.label+'</span></td>'
           +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-family:JetBrains Mono,monospace">'+( p.units||0)+'</td>'
           +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-weight:700;color:var(--domo)">'+(p.modules||[]).length+'/'+MODULES.length+'</td>'
-          +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-family:JetBrains Mono,monospace">'+(p.days||0)+'</td>'
+          +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-family:JetBrains Mono,monospace">S'+getPropWeek(p)+'/8 · '+getDaysFromEntry(p)+'d</td>'
           +'<td style="padding:11px 14px"><div style="display:flex;align-items:center;gap:8px">'
           +'<div style="flex:1;height:5px;border-radius:3px;background:var(--surface2);overflow:hidden;min-width:50px"><div style="height:100%;width:'+pct+'%;background:'+c+';border-radius:3px"></div></div>'
           +'<span style="font-size:clamp(9px,.85vw,11px);font-weight:800;color:'+c+';min-width:34px">'+pct+'%</span>'
@@ -2469,6 +2499,7 @@ function renderAbismoCards() {
   // Sort by gap descending (most critical first)
   const sorted = [...props].sort((a,b) => getPropProgress(a) - getPropProgress(b));
   $('abismoGrid').innerHTML = sorted.map(p => buildAbismoCard(p)).join('');
+  sorted.forEach(p => renderAbismoTaskBadge(p.id));
 }
 
 function buildAbismoCard(p) {
@@ -2552,8 +2583,29 @@ function buildAbismoCard(p) {
           <div class="abismo-gap-total-val ${gapBadge}">${avgGapPct}% hacia meta</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
-          <span style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted)">⏱ ${p.days||0} días</span>
+          <span style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted)">⏱ Sem. ${getPropWeek(p)}/8 · ${getDaysFromEntry(p)}d</span>
           <button class="abismo-action-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button>
+        </div>
+      </div>
+      <div class="abismo-tasks-panel">
+        <div class="abismo-tasks-toggle" onclick="toggleAbismoTasks('${p.id}')">
+          <span class="att-label">📋 Tareas <span class="att-badge" id="abt-badge-${p.id}">${(propTasks[String(p.id)]||[]).length}</span></span>
+          <span id="abt-seal-${p.id}" style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:${getCombinedSealPct(p)>=80?'#00b460':getCombinedSealPct(p)>=50?'#e67e00':'#e03030'}">${getCombinedSealPct(p)}% sellado</span>
+          <span class="att-arrow" id="abt-arrow-${p.id}">▼</span>
+        </div>
+        <div class="abismo-tasks-body" id="abt-body-${p.id}" style="display:none">
+          <div class="abt-list" id="abt-list-${p.id}"></div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">
+            <button style="padding:3px 8px;border-radius:6px;border:1.5px solid #34d399;color:#34d399;background:transparent;font-size:9px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif" onclick="setAbismoZone('${p.id}','Innovadores',this)">🟢 Innov.</button>
+            <button style="padding:3px 8px;border-radius:6px;border:1.5px solid #84cc16;color:#84cc16;background:transparent;font-size:9px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif" onclick="setAbismoZone('${p.id}','Visionarios',this)">🟩 Vision.</button>
+            <button style="padding:3px 8px;border-radius:6px;border:1.5px solid #fbbf24;color:#fbbf24;background:transparent;font-size:9px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif" onclick="setAbismoZone('${p.id}','Pragmáticos',this)">🟡 Pragm.</button>
+            <button style="padding:3px 8px;border-radius:6px;border:1.5px solid #fb7185;color:#fb7185;background:transparent;font-size:9px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif" onclick="setAbismoZone('${p.id}','Conservadores',this)">🔴 Conserv.</button>
+            <button style="padding:3px 8px;border-radius:6px;border:1.5px solid #94a3b8;color:#94a3b8;background:transparent;font-size:9px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif" onclick="setAbismoZone('${p.id}','Escépticos',this)">⬜ Escép.</button>
+          </div>
+          <div class="abt-add-row">
+            <input class="abt-input" id="abt-input-${p.id}" placeholder="Nueva tarea (zona seleccionada arriba)..." onkeydown="handleAbismoTaskKey(event,'${p.id}')">
+            <button class="abt-add-btn" onclick="addAbismoTask('${p.id}')">+ Agregar</button>
+          </div>
         </div>
       </div>
     </div>`;
@@ -2903,7 +2955,7 @@ function renderPropKpis(p, avgPct, avgGapPct) {
     <div style="margin-top:12px;padding:10px 12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
       <div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Fase actual</div>
       <span class="pill ${cfg.pill}">${cfg.label}</span>
-      <div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-top:6px">⏱ ${p.days||0} días · ${p.units||0} unidades</div>
+      <div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-top:6px">⏱ Sem. ${getPropWeek(p)}/8 · ${getDaysFromEntry(p)} días · ${p.units||0} unidades</div>
     </div>`;
 }
 
@@ -3209,7 +3261,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
 // ══════════════════════════════════════════════
 // TASKS SECTION
 // ══════════════════════════════════════════════
-let taskCat = 'Administradores';
+let taskCat = 'Innovadores';
 let taskSelectedPropId = null;
 
 const TASK_SEGS = [
@@ -3324,8 +3376,8 @@ function renderTaskDetail(id) {
           + '<div class="tac-gap-pct">' + remaining + '%</div>'
           + '</div>';
       }
-      return '<div class="tac-seg">'
-        + '<div class="tac-bar" style="height:' + seg.h + ';background:' + seg.color + '"></div>'
+      return '<div class="tac-seg" style="cursor:pointer" onclick="selectZoneFromCurve(' + JSON.stringify(seg.name) + ')" title="Agregar tarea para ' + seg.name + '">'
+        + '<div class="tac-bar" style="height:' + seg.h + ';background:' + seg.color + ';transition:opacity .2s" onmouseover="this.style.opacity=.75" onmouseout="this.style.opacity=1"></div>'
         + '<div class="tac-label" style="color:' + seg.color + '">' + seg.name + '</div>'
         + '</div>';
     }).join('');
@@ -3365,9 +3417,11 @@ function renderTaskList(propId) {
         const share = totalW>0 ? Math.round((t.weight/totalW)*100) : 0;
         const contrib = Math.round(share*(t.progress/100));
         const isDone = t.progress===100;
+        const zoneCols = {'Innovadores':'#34d399','Visionarios':'#84cc16','Pragmáticos':'#fbbf24','Conservadores':'#fb7185','Escépticos':'#94a3b8'};
+        const zoneCol = zoneCols[t.category] || 'var(--domo)';
         return '<div class="task-item-card' + (isDone?' tic-done':'') + '" id="tic-' + t.id + '">'
           + '<div class="tic-top">'
-          + '<span class="tic-cat-badge">' + t.category + '</span>'
+          + '<span class="tic-cat-badge" style="background:' + zoneCol + '20;border-color:' + zoneCol + ';color:' + zoneCol + '">' + t.category + '</span>'
           + '<div class="tic-text">' + t.text + '</div>'
           + '<span class="tic-weight">Peso ' + t.weight + '</span>'
           + '<button class="tic-del" data-pid="' + propId + '" data-tid="' + t.id + '" onclick="deleteTaskItem(this)">✕</button>'
@@ -3485,6 +3539,7 @@ function renderAbismoCards2() {
   const el = $('abismoGrid2'); if(!el) return;
   const props = getStrategyProps();
   el.innerHTML = props.length ? props.map(p => buildAbismoCard(p)).join('') : '<div style="color:var(--text-muted);padding:40px;text-align:center">Sin propiedades</div>';
+  if(props.length) props.forEach(p => renderAbismoTaskBadge(p.id));
 }
 
 function renderAbismoHeatMap2() {
@@ -3750,6 +3805,19 @@ let linealTab           = 'overview';
  * Week 1 = days 1–7, Week 2 = days 8–14, etc.
  * Returns null if no entry_date or entry_date is in the future.
  */
+
+function getDaysFromEntry(p) {
+  if(!p.entry_date) return p.days || 0;
+  const start = new Date(p.entry_date);
+  if(isNaN(start.getTime())) return p.days || 0;
+  const s = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const t = new Date(); const today = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  return Math.max(0, Math.floor((today - s) / 86400000));
+}
+function getPropWeek(p) {
+  const d = getDaysFromEntry(p);
+  return Math.min(8, Math.max(1, Math.floor(d / 7) + 1));
+}
 function calcCurrentWeek(entryDate) {
   if(!entryDate) return null;
   const start = new Date(entryDate);
@@ -4389,6 +4457,160 @@ function renderSemaforoView() {
 }
 
 
+
+
+// ══ ABISMO CARD INLINE TASKS ══
+function toggleAbismoTasks(propId) {
+  const body = document.getElementById('abt-body-' + propId);
+  const arrow = document.getElementById('abt-arrow-' + propId);
+  if (!body) return;
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.className = 'att-arrow' + (open ? '' : ' open');
+}
+
+function renderAbismoTaskBadge(propId) {
+  const tasks = propTasks[String(propId)] || [];
+  const badge = document.getElementById('abt-badge-' + propId);
+  if (badge) badge.textContent = tasks.length;
+  const list = document.getElementById('abt-list-' + propId);
+  if (!list) return;
+  if (!tasks.length) {
+    list.innerHTML = '<div class="abt-empty">Sin tareas — agrega una abajo ↓</div>';
+    return;
+  }
+  const _zc = {'Innovadores':'#34d399','Visionarios':'#84cc16','Pragmáticos':'#fbbf24','Conservadores':'#fb7185','Escépticos':'#94a3b8'};
+  list.innerHTML = tasks.map(t => {
+    const zc = _zc[t.category] || '#820ad1';
+    return `<div class="abt-item" id="abt-item-${propId}-${t.id}">
+      <input type="checkbox" class="abt-check" ${t.progress===100?'checked':''} onchange="toggleAbismoTask('${propId}',${t.id},this.checked)">
+      <span style="font-size:9px;font-weight:700;color:${zc};white-space:nowrap;flex-shrink:0">${t.category||''}</span>
+      <span class="abt-text${t.progress===100?' done':''}">${t.text}</span>
+      <button class="abt-del" onclick="deleteAbismoTask('${propId}',${t.id})" title="Eliminar">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function addAbismoTask(propId) {
+  const input = document.getElementById('abt-input-' + propId);
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  const zone = abismoZoneSelected[propId] || 'Innovadores';
+  if (!propTasks[String(propId)]) propTasks[String(propId)] = [];
+  propTasks[String(propId)].push({ id: Date.now(), category: zone, text, weight: 5, progress: 0 });
+  savePropTasks();
+  input.value = '';
+  input.placeholder = 'Tarea para ' + zone + '...';
+  renderAbismoTaskBadge(propId);
+}
+
+function toggleAbismoTask(propId, taskId, checked) {
+  const tasks = propTasks[String(propId)] || [];
+  const t = tasks.find(x => x.id === taskId);
+  if (t) { t.progress = checked ? 100 : 0; savePropTasks(); }
+  renderAbismoTaskBadge(propId);
+  // refresh combined seal in the card header if visible
+  const pct = document.getElementById('abt-seal-' + propId);
+  if (pct) {
+    const p = state.properties.find(x => String(x.id) === String(propId));
+    if (p) {
+      const v = getCombinedSealPct(p);
+      pct.textContent = v + '% sellado';
+      pct.style.color = v >= 80 ? '#00b460' : v >= 50 ? '#e67e00' : '#e03030';
+    }
+  }
+}
+
+function deleteAbismoTask(propId, taskId) {
+  if (!propTasks[String(propId)]) return;
+  propTasks[String(propId)] = propTasks[String(propId)].filter(x => x.id !== taskId);
+  savePropTasks();
+  renderAbismoTaskBadge(propId);
+}
+
+function handleAbismoTaskKey(e, propId) {
+  if (e.key === 'Enter') addAbismoTask(propId);
+}
+
+
+// ══ ZONE SELECT FROM CURVE ══
+function selectZoneFromCurve(zoneName) {
+  taskCat = zoneName;
+  // Highlight el botón correcto en tafCatBtns
+  document.querySelectorAll('#tafCatBtns .taf-cat').forEach(b => {
+    b.className = 'taf-cat';
+    b.style.removeProperty('border-color');
+    b.style.removeProperty('color');
+  });
+  const zoneCols = {'Innovadores':'#34d399','Visionarios':'#84cc16','Pragmáticos':'#fbbf24','Conservadores':'#fb7185','Escépticos':'#94a3b8'};
+  const col = zoneCols[zoneName] || 'var(--domo)';
+  document.querySelectorAll('#tafCatBtns .taf-cat').forEach(b => {
+    if(b.textContent.includes(zoneName)) {
+      b.className = 'taf-cat taf-cat-active';
+      b.style.borderColor = col;
+      b.style.color = col;
+    }
+  });
+  // Scroll al formulario y hacer focus
+  const inp = $('tafTaskText');
+  if(inp) {
+    inp.focus();
+    inp.placeholder = 'Tarea para ' + zoneName + '...';
+  }
+  showToast('📍 Zona: ' + zoneName + ' — escribe la tarea abajo', 'success');
+}
+
+// Override setTaskCat para manejar colores de zona
+const _origSetTaskCat = setTaskCat;
+function setTaskCat(cat, el) {
+  taskCat = cat;
+  const zoneCols = {'Innovadores':'#34d399','Visionarios':'#84cc16','Pragmáticos':'#fbbf24','Conservadores':'#fb7185','Escépticos':'#94a3b8'};
+  const col = zoneCols[cat] || 'var(--domo)';
+  document.querySelectorAll('#tafCatBtns .taf-cat').forEach(b => {
+    b.className = 'taf-cat';
+    b.style.removeProperty('border-color');
+    b.style.removeProperty('color');
+  });
+  if(el) {
+    el.className = 'taf-cat taf-cat-active';
+    el.style.borderColor = col;
+    el.style.color = col;
+  }
+  const inp = $('tafTaskText');
+  if(inp) inp.placeholder = 'Tarea para ' + cat + '...';
+}
+
+
+// ══ ABISMO CARD ZONA SELECTION ══
+let abismoZoneSelected = {};  // propId → zoneName
+
+function setAbismoZone(propId, zone, el) {
+  abismoZoneSelected[propId] = zone;
+  const zoneCols = {'Innovadores':'#34d399','Visionarios':'#84cc16','Pragmáticos':'#fbbf24','Conservadores':'#fb7185','Escépticos':'#94a3b8'};
+  const col = zoneCols[zone];
+  // Reset all zone buttons en este card
+  if(el && el.parentElement) {
+    el.parentElement.querySelectorAll('button').forEach(b => {
+      b.style.fontWeight = '700';
+      b.style.opacity = '0.55';
+    });
+    el.style.opacity = '1';
+    el.style.background = col + '20';
+  }
+  const inp = document.getElementById('abt-input-' + propId);
+  if(inp) { inp.focus(); inp.placeholder = 'Tarea para ' + zone + '...'; }
+}
+
+
+function autoCalcDays() {
+  const v = $('fEntryDate') ? $('fEntryDate').value : '';
+  if(!v) return;
+  const p = {entry_date: v, days: 0};
+  const d = getDaysFromEntry(p), w = getPropWeek(p);
+  if($('fDays')) $('fDays').value = d;
+  if($('fDaysHint')) $('fDaysHint').textContent = '→ Semana ' + w + '/8 (' + d + ' días desde el inicio)';
+}
 
 </script>
 </body>

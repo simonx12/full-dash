@@ -911,9 +911,9 @@ tr:hover td{background:var(--surface2)}
 <div id="sec-dashboard" style="display:none" class="fade-in">
   <div class="kpi-grid">
     <div class="kpi-card" style="--kc:#820ad1;--kbg:rgba(130,10,209,.1)"><div class="kpi-icon">🏘️</div><div class="kpi-label">Total Propiedades</div><div class="kpi-value" id="kpiTotal">0</div><div class="kpi-sub">En plataforma</div></div>
-    <div class="kpi-card" style="--kc:#820ad1;--kbg:rgba(130,10,209,.1)"><div class="kpi-icon">1️⃣</div><div class="kpi-label">Fase 1</div><div class="kpi-value" id="kpiImpl">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiImplDays">0</span> días</div></div>
-    <div class="kpi-card" style="--kc:#e67e00;--kbg:rgba(247,181,0,.12)"><div class="kpi-icon">2️⃣</div><div class="kpi-label">Fase 2</div><div class="kpi-value" id="kpiPilot">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiPilotDays">0</span> días</div></div>
-    <div class="kpi-card" style="--kc:#00b460;--kbg:rgba(0,180,100,.1)"><div class="kpi-icon">3️⃣</div><div class="kpi-label">Fase 3</div><div class="kpi-value" id="kpiSupport">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiSupportDays">0</span> días</div></div>
+    <div class="kpi-card" style="--kc:#e67e00;--kbg:rgba(247,181,0,.12)"><div class="kpi-icon">⚙️</div><div class="kpi-label">En Implementación</div><div class="kpi-value" id="kpiImpl">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiImplDays">0</span> días</div></div>
+    <div class="kpi-card" style="--kc:#0088cc;--kbg:rgba(0,136,204,.1)"><div class="kpi-icon">🧪</div><div class="kpi-label">Piloto</div><div class="kpi-value" id="kpiPilot">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiPilotDays">0</span> días</div></div>
+    <div class="kpi-card" style="--kc:#00b460;--kbg:rgba(0,180,100,.1)"><div class="kpi-icon">🛡️</div><div class="kpi-label">Soporte Continuo</div><div class="kpi-value" id="kpiSupport">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiSupportDays">0</span> días</div></div>
   </div>
   <div class="week-compare">
     <div class="wc-header"><div class="wc-title">Esta semana vs semana pasada</div><div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted)" id="wcDateRange"></div></div>
@@ -937,9 +937,10 @@ tr:hover td{background:var(--surface2)}
         <input class="table-search" id="propSearch" placeholder="🔍 Buscar..." oninput="filterProperties()"/>
         <div class="filter-tabs">
           <div class="filter-tab active" onclick="setFilter('all',this)">Todas</div>
-          <div class="filter-tab" onclick="setFilter('fase1',this)">Fase 1</div>
-          <div class="filter-tab" onclick="setFilter('fase2',this)">Fase 2</div>
-          <div class="filter-tab" onclick="setFilter('fase3',this)">Fase 3</div>
+          <div class="filter-tab" onclick="setFilter('implementation',this)">Implementación</div>
+          <div class="filter-tab" onclick="setFilter('pilot',this)">Piloto</div>
+          <div class="filter-tab" onclick="setFilter('support',this)">Soporte</div>
+          <div class="filter-tab" onclick="setFilter('done',this)">Completado</div>
         </div>
         <button class="btn-primary btn-sm" onclick="openAddModal()">+ Agregar</button>
       </div>
@@ -999,9 +1000,10 @@ tr:hover td{background:var(--surface2)}
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
       <div class="filter-tabs" id="progressFilterTabs">
         <div class="filter-tab active" onclick="setPFilter('all',this)">Todas</div>
-        <div class="filter-tab" onclick="setPFilter('fase1',this)">Fase 1</div>
-        <div class="filter-tab" onclick="setPFilter('fase2',this)">Fase 2</div>
-        <div class="filter-tab" onclick="setPFilter('fase3',this)">Fase 3</div>
+        <div class="filter-tab" onclick="setPFilter('implementation',this)">Implementación</div>
+        <div class="filter-tab" onclick="setPFilter('pilot',this)">Piloto</div>
+        <div class="filter-tab" onclick="setPFilter('support',this)">Soporte</div>
+        <div class="filter-tab" onclick="setPFilter('done',this)">Completado</div>
       </div>
       <select class="lang-sel" id="progressSort" onchange="renderPropertyProgressCards()" style="font-size:clamp(10px,.9vw,12px)">
         <option value="pct_desc">Mayor avance</option>
@@ -1091,9 +1093,10 @@ tr:hover td{background:var(--surface2)}
       <span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);white-space:nowrap">FILTRAR:</span>
       <div class="filter-tabs" id="strategyPhaseTabs">
         <div class="filter-tab active" onclick="setStratPhase('all',this)">Todas</div>
-        <div class="filter-tab" onclick="setStratPhase('fase1',this)">Fase 1</div>
-        <div class="filter-tab" onclick="setStratPhase('fase2',this)">Fase 2</div>
-        <div class="filter-tab" onclick="setStratPhase('fase3',this)">Fase 3</div>
+        <div class="filter-tab" onclick="setStratPhase('implementation',this)">Implementación</div>
+        <div class="filter-tab" onclick="setStratPhase('pilot',this)">Piloto</div>
+        <div class="filter-tab" onclick="setStratPhase('support',this)">Soporte</div>
+        <div class="filter-tab" onclick="setStratPhase('done',this)">Completado</div>
       </div>
     </div>
     <div class="abismo-legend">
@@ -1516,9 +1519,10 @@ tr:hover td{background:var(--surface2)}
       <span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted)">FILTRAR:</span>
       <div class="filter-tabs" id="strategyPhaseTabs2">
         <div class="filter-tab active" onclick="setStratPhaseNav('all',this,'2')">Todas</div>
-        <div class="filter-tab" onclick="setStratPhaseNav('fase1',this,'2')">Fase 1</div>
-        <div class="filter-tab" onclick="setStratPhaseNav('fase2',this,'2')">Fase 2</div>
-        <div class="filter-tab" onclick="setStratPhaseNav('fase3',this,'2')">Fase 3</div>
+        <div class="filter-tab" onclick="setStratPhaseNav('implementation',this,'2')">Implementación</div>
+        <div class="filter-tab" onclick="setStratPhaseNav('pilot',this,'2')">Piloto</div>
+        <div class="filter-tab" onclick="setStratPhaseNav('support',this,'2')">Soporte</div>
+        <div class="filter-tab" onclick="setStratPhaseNav('done',this,'2')">Completado</div>
       </div>
     </div>
     <div class="abismo-legend">
@@ -1835,10 +1839,11 @@ tr:hover td{background:var(--surface2)}
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Fase *</label>
-          <select class="form-select" id="fPhase" onchange="onPhaseChange()">
-            <option value="fase1">Fase 1 — Acceso, Pánico, Muro, Solicitudes</option>
-            <option value="fase2">Fase 2 — Zonas, Encuestas, Votaciones, Eventos</option>
-            <option value="fase3">Fase 3 — Asambleas, Normativo, Documental, Financiero, SuperAdmin</option>
+          <select class="form-select" id="fPhase">
+            <option value="implementation">En Implementación</option>
+            <option value="pilot">Piloto</option>
+            <option value="support">Soporte Continuo</option>
+            <option value="done">Completado</option>
           </select>
         </div>
         <div class="form-group"><label class="form-label">Días en Fase</label><input class="form-input" id="fDays" readonly style="background:var(--surface2);color:var(--text-muted)" type="number" min="0" value="0"/></div>
@@ -1881,42 +1886,28 @@ tr:hover td{background:var(--surface2)}
 //  MODULE DEFINITIONS
 // ══════════════════════════════════════════════════════
 const MODULES = [
-  {id:'acceso',label:'Acceso',icon:'🔑',unit:'pases de acceso',metaLabel:u=>`Meta: ${Math.round(u*0.50)} pases (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'panico',label:'Botón de Pánico',icon:'🆘',unit:'aptos con botón activo',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
+  {id:'acceso',label:'Acceso',icon:'🔑',unit:'pases de acceso',metaLabel:u=>`Meta: ${Math.round(u*0.80)} pases (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
   {id:'muro',label:'Muro',icon:'💬',unit:'publicaciones/mes',metaLabel:u=>`Meta fija: 8 publicaciones al mes`,metaFn:u=>8},
-  {id:'solicitudes',label:'Solicitudes',icon:'📋',unit:'aptos con solicitudes',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'zonas',label:'Zonas Comunes',icon:'⬜',unit:'reservas/mes',metaLabel:u=>`Meta: ${Math.round(u*0.50)} reservas (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'encuestas',label:'Encuestas',icon:'📊',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'votaciones',label:'Votaciones',icon:'🗳️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'eventos',label:'Eventos',icon:'📅',unit:'eventos publicados',metaLabel:u=>`Meta: 4 eventos al mes`,metaFn:u=>4},
-  {id:'asambleas',label:'Asambleas',icon:'🏛️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'normativo',label:'Normativo',icon:'📜',unit:'documentos normativos publicados',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos con acceso (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'documentos',label:'Documental',icon:'📄',unit:'aptos con acceso',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'financiero',label:'Financiero',icon:'💰',unit:'aptos activos',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'superadmin',label:'Superadministrador',icon:'👑',unit:'usuarios superadmin activos',metaLabel:u=>`Meta: 1 superadmin configurado`,metaFn:u=>1}
+  {id:'alertas',label:'Alertas',icon:'🔔',unit:'alertas/mes',metaLabel:u=>`Meta: mínimo 2, ideal 5 alertas/mes`,metaFn:u=>2},
+  {id:'solicitudes',label:'Solicitudes',icon:'📋',unit:'aptos con solicitudes',metaLabel:u=>`Meta: ${Math.round(u*0.30)} aptos (30% de ${u})`,metaFn:u=>Math.round(u*0.30)},
+  {id:'zonas',label:'Zonas Comunes',icon:'⬜',unit:'reservas/mes',metaLabel:u=>`Meta: ${Math.round(u/6)} reservas (1/6 de ${u})`,metaFn:u=>Math.round(u/6)},
+  {id:'documentos',label:'Documentos',icon:'📄',unit:'aptos con acceso',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'financiero',label:'Financiero',icon:'💰',unit:'aptos activos',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'votaciones',label:'Votaciones',icon:'🗳️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'superadmin',label:'Superadministrador',icon:'👑',unit:'usuarios superadmin activos',metaLabel:u=>`Meta: 1 superadmin configurado`,metaFn:u=>1},
+  {id:'normativo',label:'Normativo',icon:'📜',unit:'documentos normativos publicados',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos con acceso (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'asambleas',label:'Asambleas',icon:'🏛️',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)},
+  {id:'encuestas',label:'Encuestas',icon:'📊',unit:'aptos participantes',metaLabel:u=>`Meta: ${Math.round(u*0.80)} aptos (80% de ${u})`,metaFn:u=>Math.round(u*0.80)}
 ];
 
 function calcMeta(mid,units){const m=MODULES.find(x=>x.id===mid);if(!m)return 0;return m.metaFn(units);}
 function calcPct(mid,value,units){const meta=calcMeta(mid,units);if(!meta||meta<=0)return 0;return Math.min(100,Math.round((value/meta)*100));}
 
-// Phase → modules mapping
-const PHASE_MODULES = {
-  fase1: ['acceso','panico','muro','solicitudes'],
-  fase2: ['zonas','encuestas','votaciones','eventos'],
-  fase3: ['asambleas','normativo','documentos','financiero','superadmin']
-};
-// All modules for a given phase (cumulative: fase2 includes fase1, etc.)
-function getModulesForPhase(phase) {
-  if(phase==='fase1') return [...PHASE_MODULES.fase1];
-  if(phase==='fase2') return [...PHASE_MODULES.fase1,...PHASE_MODULES.fase2];
-  if(phase==='fase3') return [...PHASE_MODULES.fase1,...PHASE_MODULES.fase2,...PHASE_MODULES.fase3];
-  return [];
-}
-
 const PHASES={
-  fase1:{label:'Fase 1',color:'#820ad1',bg:'rgba(130,10,209,.1)',pill:'pill-impl'},
-  fase2:{label:'Fase 2',color:'#e67e00',bg:'rgba(247,181,0,.12)',pill:'pill-pilot'},
-  fase3:{label:'Fase 3',color:'#00b460',bg:'rgba(0,180,100,.1)',pill:'pill-support'}
+  implementation:{label:'En Implementación',color:'#820ad1',bg:'rgba(130,10,209,.1)',pill:'pill-impl'},
+  pilot:{label:'Piloto',color:'#e67e00',bg:'rgba(247,181,0,.12)',pill:'pill-pilot'},
+  support:{label:'Soporte Continuo',color:'#00b460',bg:'rgba(0,180,100,.1)',pill:'pill-support'},
+  done:{label:'Completado',color:'#0088cc',bg:'rgba(0,136,204,.1)',pill:'pill-done'}
 };
 
 // ══════ STATE ══════
@@ -1969,11 +1960,12 @@ function useDemoData(){
   const loaded = loadStateLocal();
   if(!loaded){
     state.properties=[
-      {id:'1',name:'Torres del Parque',city:'Bogotá',phase:'fase1',days:45,units:120,modules:['acceso','panico','muro','solicitudes'],module_values:{acceso:80,panico:60,muro:5,solicitudes:25},notes:'Iniciando',entry_date:'2024-11-01'},
-      {id:'2',name:'Conjunto Los Andes',city:'Medellín',phase:'fase2',days:30,units:85,modules:['acceso','panico','muro','solicitudes','zonas','encuestas','votaciones','eventos'],module_values:{acceso:68,panico:50,muro:8,solicitudes:18,zonas:10,encuestas:40,votaciones:30,eventos:2},notes:'Fase 2 activa',entry_date:'2024-10-15'},
-      {id:'3',name:'Residencias Bolívar',city:'Cali',phase:'fase3',days:180,units:200,modules:['acceso','panico','muro','solicitudes','zonas','encuestas','votaciones','eventos','asambleas','normativo','documentos','financiero','superadmin'],module_values:{acceso:160,panico:130,muro:9,solicitudes:40,zonas:35,encuestas:80,votaciones:100,eventos:4,asambleas:120,normativo:100,documentos:120,financiero:100,superadmin:1},notes:'Consolidado',entry_date:'2024-05-01'},
-      {id:'4',name:'Ciudad Verde',city:'Pereira',phase:'fase1',days:15,units:75,modules:['acceso','panico'],module_values:{acceso:20,panico:10},notes:'Inicio',entry_date:'2024-12-15'},
-      {id:'5',name:'Altos del Prado',city:'Bucaramanga',phase:'fase2',days:22,units:95,modules:['acceso','panico','muro','solicitudes','zonas','votaciones'],module_values:{acceso:76,panico:60,muro:7,solicitudes:16,zonas:12,votaciones:30},notes:'Buen avance',entry_date:'2024-12-01'}
+      {id:'1',name:'Torres del Parque',city:'Bogotá',phase:'implementation',days:45,units:120,modules:['acceso','muro','alertas'],module_values:{acceso:8,muro:5,alertas:3},notes:'Iniciando',entry_date:'2024-11-01'},
+      {id:'2',name:'Conjunto Los Andes',city:'Medellín',phase:'pilot',days:30,units:85,modules:['acceso','muro','solicitudes','zonas'],module_values:{acceso:7,muro:8,solicitudes:18,zonas:10},notes:'Piloto activo',entry_date:'2024-10-15'},
+      {id:'3',name:'Residencias Bolívar',city:'Cali',phase:'support',days:180,units:200,modules:['acceso','muro','alertas','solicitudes','zonas','documentos','financiero'],module_values:{acceso:16,muro:9,alertas:4,solicitudes:40,zonas:35,documentos:120,financiero:100},notes:'Consolidado',entry_date:'2024-05-01'},
+      {id:'4',name:'Park Reservado',city:'Barranquilla',phase:'done',days:365,units:60,modules:['acceso','muro','alertas','solicitudes','zonas','documentos','financiero','votaciones'],module_values:{acceso:5,muro:8,alertas:5,solicitudes:15,zonas:15,documentos:39,financiero:39,votaciones:39},notes:'Completo',entry_date:'2024-01-01'},
+      {id:'5',name:'Ciudad Verde',city:'Pereira',phase:'implementation',days:15,units:75,modules:['acceso'],module_values:{acceso:2},notes:'Inicio',entry_date:'2024-12-15'},
+      {id:'6',name:'Altos del Prado',city:'Bucaramanga',phase:'pilot',days:22,units:95,modules:['acceso','muro','alertas','solicitudes'],module_values:{acceso:6,muro:7,alertas:3,solicitudes:16},notes:'Buen avance',entry_date:'2024-12-01'}
     ];
     saveStateLocal();
   }
@@ -2041,7 +2033,7 @@ async function fetchAllData(){
   try{
     const{data:props,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
     if(error)throw error;
-    state.properties=(props||[]).map(p=>({id:p.id,name:p.name||'',city:p.city||'',phase:p.phase||'fase1',days:p.days_elapsed||0,units:p.units||0,modules:Array.isArray(p.active_modules)?p.active_modules:[],module_values:(p.module_values&&typeof p.module_values==='object')?p.module_values:{},notes:p.notes||'',entry_date:p.entry_date||''}));
+    state.properties=(props||[]).map(p=>({id:p.id,name:p.name||'',city:p.city||'',phase:p.phase||'implementation',days:p.days_elapsed||0,units:p.units||0,modules:Array.isArray(p.active_modules)?p.active_modules:[],module_values:(p.module_values&&typeof p.module_values==='object')?p.module_values:{},notes:p.notes||'',entry_date:p.entry_date||''}));
     state.lastUpdated=new Date();
     if(currentSection!=='connect')renderSection(currentSection);
   }catch(e){showToast('Error al cargar datos','error');}
@@ -2061,9 +2053,9 @@ function renderKPIs(){
   const byPhase=ph=>p.filter(x=>x.phase===ph);
   const avg=ph=>{const a=byPhase(ph);return a.length?Math.round(a.reduce((s,x)=>s+(x.days||0),0)/a.length):0;};
   $('kpiTotal').textContent=p.length;
-  $('kpiImpl').textContent=byPhase('fase1').length;$('kpiImplDays').textContent=avg('fase1');
-  $('kpiPilot').textContent=byPhase('fase2').length;$('kpiPilotDays').textContent=avg('fase2');
-  $('kpiSupport').textContent=byPhase('fase3').length;$('kpiSupportDays').textContent=avg('fase3');
+  $('kpiImpl').textContent=byPhase('implementation').length;$('kpiImplDays').textContent=avg('implementation');
+  $('kpiPilot').textContent=byPhase('pilot').length;$('kpiPilotDays').textContent=avg('pilot');
+  $('kpiSupport').textContent=byPhase('support').length;$('kpiSupportDays').textContent=avg('support');
 }
 
 function getLastFriday(offset=0){const d=new Date();const day=d.getDay();const diff=day>=5?day-5:day+2;d.setDate(d.getDate()-diff+offset);return d.toISOString().split('T')[0];}
@@ -2104,7 +2096,7 @@ function renderPropertiesTable(){
   const tbody=$('propsBody'),list=getFilteredProps();
   if(!list.length){tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state">📭 Sin propiedades. ¡Agrega la primera!</div></td></tr>`;return;}
   tbody.innerHTML=list.map(p=>{
-    const cfg=PHASES[p.phase]||PHASES.fase1;
+    const cfg=PHASES[p.phase]||PHASES.implementation;
     const overall=getPropProgress(p);
     const clr=pctColor(overall);
     return `<tr><td><strong>${p.name}</strong>${p.entry_date?`<div style="display:flex;align-items:center;gap:4px;margin-top:2px"><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">📅 ${p.entry_date}</span><button style="font-size:9px;padding:1px 6px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;font-family:'Montserrat',sans-serif" onclick="openQuickDateEdit('${p.id}','${p.entry_date}')">✏️</button></div>`:''}</td><td>${p.city||'—'}</td><td><span class="pill ${cfg.pill}">${cfg.label}</span></td><td style="font-family:JetBrains Mono,monospace">${p.units||0}</td><td><strong>${(p.modules||[]).length}</strong>/${MODULES.length}</td><td style="font-family:JetBrains Mono,monospace">${p.days||0}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${overall}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${overall}%</span></div></td><td><div class="actions-cell"><button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Editar</button><button class="btn-del" onclick="deleteProp('${p.id}')">🗑️</button></div></td></tr>`;
@@ -2133,7 +2125,7 @@ function renderModulesTable(){
     const avgVal=active.length?Math.round(active.reduce((s,p)=>s+((p.module_values||{})[m.id]||0),0)/active.length):0;
     const clr=pctColor(avgPct);
     const refMeta=calcMeta(m.id,80);
-    return `<tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${m.icon}</span><strong>${m.label}</strong></div></td><td><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">${m.unit}</span></td><td><span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--domo)">${refMeta} <span style="font-weight:400;color:var(--text-muted)">(ref. 80 unid.)</span></span></td><td><strong style="font-family:JetBrains Mono,monospace">${avgVal}</strong> ${m.unit}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${avgPct}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${avgPct}%</span></div></td><td><span class="pill pill-impl">${withMod('fase1')}</span></td><td><span class="pill pill-pilot">${withMod('fase2')}</span></td><td><span class="pill pill-support">${withMod('fase3')}</span></td></tr>`;
+    return `<tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${m.icon}</span><strong>${m.label}</strong></div></td><td><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">${m.unit}</span></td><td><span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--domo)">${refMeta} <span style="font-weight:400;color:var(--text-muted)">(ref. 80 unid.)</span></span></td><td><strong style="font-family:JetBrains Mono,monospace">${avgVal}</strong> ${m.unit}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${avgPct}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${avgPct}%</span></div></td><td><span class="pill pill-impl">${withMod('implementation')}</span></td><td><span class="pill pill-pilot">${withMod('pilot')}</span></td><td><span class="pill pill-support">${withMod('support')}</span></td><td><span class="pill pill-done">${withMod('done')}</span></td></tr>`;
   }).join('');
 }
 
@@ -2148,28 +2140,18 @@ function renderModuleCharts(){
 // ══════ MODAL ══════
 function openAddModal(){
   $('modalTitle').textContent='Agregar Propiedad';$('editPropId').value='';
-  $('fName').value='';$('fCity').value='';$('fPhase').value='fase1';
+  $('fName').value='';$('fCity').value='';$('fPhase').value='implementation';
   $('fDays').value='0';$('fUnits').value='50';$('fNotes').value='';
   $('fEntryDate').value=new Date().toISOString().split('T')[0];
-  // Auto-activate phase 1 modules
-  setTimeout(()=>onPhaseChange(),0);
-  $('propModal').style.display='flex';
+  buildModuleChecks([],{});$('propModal').style.display='flex';
 }
 function openEditModal(id){
   const p=state.properties.find(x=>String(x.id)===String(id));if(!p)return;
   $('modalTitle').textContent='Editar Propiedad';$('editPropId').value=id;
-  $('fName').value=p.name||'';$('fCity').value=p.city||'';$('fPhase').value=p.phase||'fase1';
+  $('fName').value=p.name||'';$('fCity').value=p.city||'';$('fPhase').value=p.phase||'implementation';
   $('fDays').value=p.days||0;$('fUnits').value=p.units||0;$('fEntryDate').value=p.entry_date||'';
   autoCalcDays();$('fNotes').value=p.notes||'';
-  // Use the property's existing modules & values (they were set for their phase)
   buildModuleChecks(p.modules||[],p.module_values||{});$('propModal').style.display='flex';
-}
-function onPhaseChange(){
-  const phase = $('fPhase').value;
-  const phaseModules = getModulesForPhase(phase);
-  const currentVals = {};
-  MODULES.forEach(m=>{const el=document.getElementById('mp-num-'+m.id);if(el&&el.value)currentVals[m.id]=parseInt(el.value)||0;});
-  buildModuleChecks(phaseModules, currentVals);
 }
 function rebuildModuleChecks(){
   const units=parseInt($('fUnits').value)||50;
@@ -2180,27 +2162,16 @@ function rebuildModuleChecks(){
 }
 function buildModuleChecks(activeModules,moduleValues){
   const units=parseInt($('fUnits').value)||50;
-  const phaseGroups = [
-    {label:'Fase 1', color:'#820ad1', ids: PHASE_MODULES.fase1},
-    {label:'Fase 2', color:'#e67e00', ids: PHASE_MODULES.fase2},
-    {label:'Fase 3', color:'#00b460', ids: PHASE_MODULES.fase3},
-  ];
-  let html = '';
-  phaseGroups.forEach(group => {
-    html += `<div style="font-size:11px;font-weight:800;color:${group.color};text-transform:uppercase;letter-spacing:.8px;margin:14px 0 6px;display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:3px;background:${group.color};display:inline-block"></span>${group.label}</div>`;
-    group.ids.forEach(mid => {
-      const m = MODULES.find(x=>x.id===mid); if(!m) return;
-      const isActive=activeModules.includes(m.id);
-      const val=(moduleValues[m.id]!==undefined)?moduleValues[m.id]:0;
-      const meta=m.metaFn(units);
-      const pct=isActive?calcPct(m.id,val,units):0;
-      const badgeClass=isActive?pctBadgeClass(pct):'';
-      const barW=isActive?Math.min(100,pct):0;
-      const barColor=pctColor(pct);
-      html += `<div class="mp-row${isActive?' mp-on':''}" id="mp-row-${m.id}"><div class="mp-top"><div class="mp-icon">${m.icon}</div><div class="mp-info"><div class="mp-name">${m.label}</div><div class="mp-meta-label" id="mp-ml-${m.id}">${m.metaLabel(units)}</div></div><div class="mp-num-wrap"><input class="mp-num-input" type="number" min="0" id="mp-num-${m.id}" value="${isActive?val:''}" placeholder="0" ${!isActive?'disabled':''} oninput="onModuleInput('${m.id}',this.value)"/><span class="mp-unit">${m.unit}</span><div class="mp-pct-badge ${badgeClass}" id="mp-badge-${m.id}">${isActive?pct+'%':'—'}</div></div><div class="mp-toggle"><input type="checkbox" id="mp-chk-${m.id}" ${isActive?'checked':''} onchange="toggleModuleCheck('${m.id}',this)"/></div></div><div class="mp-bar-row" id="mp-barrow-${m.id}" ${!isActive?'style="display:none"':''}><div class="mp-bar-track"><div class="mp-bar-fill" id="mp-bar-${m.id}" style="width:${barW}%;background:${barColor}"></div></div><div class="mp-bar-label" id="mp-barlbl-${m.id}">${isActive?val+' / '+meta+' '+m.unit:'—'}</div></div></div>`;
-    });
-  });
-  $('modulesChecks').innerHTML = html;
+  $('modulesChecks').innerHTML=MODULES.map(m=>{
+    const isActive=activeModules.includes(m.id);
+    const val=(moduleValues[m.id]!==undefined)?moduleValues[m.id]:0;
+    const meta=m.metaFn(units);
+    const pct=isActive?calcPct(m.id,val,units):0;
+    const badgeClass=isActive?pctBadgeClass(pct):'';
+    const barW=isActive?Math.min(100,pct):0;
+    const barColor=pctColor(pct);
+    return `<div class="mp-row${isActive?' mp-on':''}" id="mp-row-${m.id}"><div class="mp-top"><div class="mp-icon">${m.icon}</div><div class="mp-info"><div class="mp-name">${m.label}</div><div class="mp-meta-label" id="mp-ml-${m.id}">${m.metaLabel(units)}</div></div><div class="mp-num-wrap"><input class="mp-num-input" type="number" min="0" id="mp-num-${m.id}" value="${isActive?val:''}" placeholder="0" ${!isActive?'disabled':''} oninput="onModuleInput('${m.id}',this.value)"/><span class="mp-unit">${m.unit}</span><div class="mp-pct-badge ${badgeClass}" id="mp-badge-${m.id}">${isActive?pct+'%':'—'}</div></div><div class="mp-toggle"><input type="checkbox" id="mp-chk-${m.id}" ${isActive?'checked':''} onchange="toggleModuleCheck('${m.id}',this)"/></div></div><div class="mp-bar-row" id="mp-barrow-${m.id}" ${!isActive?'style="display:none"':''}><div class="mp-bar-track"><div class="mp-bar-fill" id="mp-bar-${m.id}" style="width:${barW}%;background:${barColor}"></div></div><div class="mp-bar-label" id="mp-barlbl-${m.id}">${isActive?val+' / '+meta+' '+m.unit:'—'}</div></div></div>`;
+  }).join('');
 }
 function onModuleInput(mid,rawVal){
   const units=parseInt($('fUnits').value)||50;
@@ -2304,10 +2275,10 @@ function renderPropertyProgressCards(){
   const sortVal=$('progressSort')?$('progressSort').value:'pct_desc';
   let props=[...state.properties];
   if(progressFilter!=='all')props=props.filter(p=>p.phase===progressFilter);
-  props.sort((a,b)=>{if(sortVal==='pct_desc')return getPropProgress(b)-getPropProgress(a);if(sortVal==='pct_asc')return getPropProgress(a)-getPropProgress(b);if(sortVal==='name')return a.name.localeCompare(b.name);if(sortVal==='phase'){const o={fase1:0,fase2:1,fase3:2};return(o[a.phase]||0)-(o[b.phase]||0);}return 0;});
+  props.sort((a,b)=>{if(sortVal==='pct_desc')return getPropProgress(b)-getPropProgress(a);if(sortVal==='pct_asc')return getPropProgress(a)-getPropProgress(b);if(sortVal==='name')return a.name.localeCompare(b.name);if(sortVal==='phase'){const o={implementation:0,pilot:1,support:2,done:3};return(o[a.phase]||0)-(o[b.phase]||0);}return 0;});
   if(!props.length){$('propProgressGrid').innerHTML=`<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--text-muted);font-size:13px">📭 Sin propiedades en esta fase.</div>`;return;}
   $('propProgressGrid').innerHTML=props.map(p=>{
-    const cfg=PHASES[p.phase]||PHASES.fase1;
+    const cfg=PHASES[p.phase]||PHASES.implementation;
     const mv=p.module_values||{};const units=p.units||50;
     const overall=getPropProgress(p);const clr=pctColor(overall);
     const activeMods=p.modules||[];const inactiveMods=MODULES.filter(m=>!activeMods.includes(m.id));
@@ -2481,7 +2452,7 @@ function renderStrategyOverview() {
     } else {
       const sorted = [...props].sort((a,b)=>getPropProgress(b)-getPropProgress(a));
       body.innerHTML = sorted.map(p => {
-        const cfg = PHASES[p.phase]||PHASES.fase1;
+        const cfg = PHASES[p.phase]||PHASES.implementation;
         const pct = getPropProgress(p);
         const c = pct>=80?'#00b460':pct>=50?'#e67e00':'#e03030';
         return '<tr style="border-bottom:1px solid var(--border)">'
@@ -2589,7 +2560,7 @@ function renderAbismoCards() {
 }
 
 function buildAbismoCard(p) {
-  const cfg = PHASES[p.phase] || PHASES.fase1;
+  const cfg = PHASES[p.phase] || PHASES.implementation;
   const { modData, avgPct, avgGapPct } = calcAbismo(p);
   const units = p.units || 50;
   const lvl = gapLevel(avgPct);
@@ -2714,7 +2685,7 @@ function renderAbismoHeatMap() {
 
   props.forEach(p => {
     const { modData, avgPct } = calcAbismo(p);
-    const cfg = PHASES[p.phase] || PHASES.fase1;
+    const cfg = PHASES[p.phase] || PHASES.implementation;
     const overallLvl = gapLevel(avgPct);
     const overallColor = avgPct >= 80 ? '#00b460' : avgPct >= 50 ? '#e67e00' : '#e03030';
     html += `<div class="abismo-heat-row" style="grid-template-columns:${colFr}">
@@ -3024,7 +2995,7 @@ function renderAdoptionCurve(p, avgPct, avgGapPct) {
 function renderPropKpis(p, avgPct, avgGapPct) {
   const el = $('propChasmKpis');
   if(!el) return;
-  const cfg = PHASES[p.phase] || PHASES.fase1;
+  const cfg = PHASES[p.phase] || PHASES.implementation;
   const lvlColor = avgPct >= 80 ? '#00b460' : avgPct >= 50 ? '#e67e00' : '#e03030';
   const activeMods = (p.modules||[]).length;
   const tasks = propTasks[p.id] || [];

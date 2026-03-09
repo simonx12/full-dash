@@ -1882,7 +1882,6 @@ tr:hover td{background:var(--surface2)}
 // ══════════════════════════════════════════════════════
 const MODULES = [
   {id:'acceso',label:'Acceso',icon:'🔑',unit:'pases de acceso',metaLabel:u=>`Meta: ${Math.round(u*0.50)} pases (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
-  {id:'panico',label:'Botón de Pánico',icon:'🆘',unit:'aptos con botón activo',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
   {id:'muro',label:'Muro',icon:'💬',unit:'publicaciones/mes',metaLabel:u=>`Meta fija: 8 publicaciones al mes`,metaFn:u=>8},
   {id:'alertas',label:'Alertas',icon:'🔔',unit:'alertas/mes',metaLabel:u=>`Meta: mínimo 2, ideal 5 alertas/mes`,metaFn:u=>2},
   {id:'solicitudes',label:'Solicitudes',icon:'📋',unit:'aptos con solicitudes',metaLabel:u=>`Meta: ${Math.round(u*0.50)} aptos (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
@@ -1902,7 +1901,7 @@ function calcPct(mid,value,units){const meta=calcMeta(mid,units);if(!meta||meta<
 
 // Phase → modules mapping
 const PHASE_MODULES = {
-  fase1: ['acceso','panico','muro','alertas','solicitudes'],
+  fase1: ['acceso','muro','alertas','solicitudes'],
   fase2: ['zonas','encuestas','votaciones','eventos'],
   fase3: ['asambleas','normativo','documentos','financiero','superadmin']
 };

@@ -155,6 +155,7 @@ td{padding:11px 14px;font-size:clamp(10px,.9vw,12px);border-bottom:1px solid var
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--surface2)}
 .pill{display:inline-flex;align-items:center;font-size:clamp(8px,.8vw,10px);font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pill-fase0{background:rgba(14,165,233,.1);color:#0284c7}
 .pill-impl{background:rgba(130,10,209,.1);color:#820ad1}
 .pill-pilot{background:rgba(247,181,0,.15);color:#b87e00}
 .pill-support{background:rgba(0,180,100,.1);color:#00a857}
@@ -911,6 +912,7 @@ tr:hover td{background:var(--surface2)}
 <div id="sec-dashboard" style="display:none" class="fade-in">
   <div class="kpi-grid">
     <div class="kpi-card" style="--kc:#820ad1;--kbg:rgba(130,10,209,.1)"><div class="kpi-icon">🏘️</div><div class="kpi-label">Total Propiedades</div><div class="kpi-value" id="kpiTotal">0</div><div class="kpi-sub">En plataforma</div></div>
+    <div class="kpi-card" style="--kc:#0ea5e9;--kbg:rgba(14,165,233,.1)"><div class="kpi-icon">0️⃣</div><div class="kpi-label">Fase 0</div><div class="kpi-value" id="kpiFase0">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiFase0Days">0</span> días</div></div>
     <div class="kpi-card" style="--kc:#820ad1;--kbg:rgba(130,10,209,.1)"><div class="kpi-icon">1️⃣</div><div class="kpi-label">Fase 1</div><div class="kpi-value" id="kpiImpl">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiImplDays">0</span> días</div></div>
     <div class="kpi-card" style="--kc:#e67e00;--kbg:rgba(247,181,0,.12)"><div class="kpi-icon">2️⃣</div><div class="kpi-label">Fase 2</div><div class="kpi-value" id="kpiPilot">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiPilotDays">0</span> días</div></div>
     <div class="kpi-card" style="--kc:#00b460;--kbg:rgba(0,180,100,.1)"><div class="kpi-icon">3️⃣</div><div class="kpi-label">Fase 3</div><div class="kpi-value" id="kpiSupport">0</div><div class="kpi-sub">⏱ Prom. <span id="kpiSupportDays">0</span> días</div></div>
@@ -937,6 +939,7 @@ tr:hover td{background:var(--surface2)}
         <input class="table-search" id="propSearch" placeholder="🔍 Buscar..." oninput="filterProperties()"/>
         <div class="filter-tabs">
           <div class="filter-tab active" onclick="setFilter('all',this)">Todas</div>
+          <div class="filter-tab" onclick="setFilter('fase0',this)">Fase 0</div>
           <div class="filter-tab" onclick="setFilter('fase1',this)">Fase 1</div>
           <div class="filter-tab" onclick="setFilter('fase2',this)">Fase 2</div>
           <div class="filter-tab" onclick="setFilter('fase3',this)">Fase 3</div>
@@ -965,7 +968,7 @@ tr:hover td{background:var(--surface2)}
     <div class="table-topbar"><div class="section-title" style="margin-bottom:0">Resumen de módulos</div><div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted)" id="modTableUpdated"></div></div>
     <div style="overflow-x:auto">
       <table>
-        <thead><tr><th>Módulo</th><th>Unidad</th><th>Meta (por propiedad)</th><th>Promedio actual</th><th>% Cumplimiento</th><th>Impl.</th><th>Piloto</th><th>Soporte</th><th>Completo</th></tr></thead>
+        <thead><tr><th>Módulo</th><th>Unidad</th><th>Meta (por propiedad)</th><th>Promedio actual</th><th>% Cumplimiento</th><th>F0</th><th>Impl.</th><th>Piloto</th><th>Soporte</th><th>Completo</th></tr></thead>
         <tbody id="modulesBody"></tbody>
       </table>
     </div>
@@ -999,6 +1002,7 @@ tr:hover td{background:var(--surface2)}
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
       <div class="filter-tabs" id="progressFilterTabs">
         <div class="filter-tab active" onclick="setPFilter('all',this)">Todas</div>
+        <div class="filter-tab" onclick="setPFilter('fase0',this)">Fase 0</div>
         <div class="filter-tab" onclick="setPFilter('fase1',this)">Fase 1</div>
         <div class="filter-tab" onclick="setPFilter('fase2',this)">Fase 2</div>
         <div class="filter-tab" onclick="setPFilter('fase3',this)">Fase 3</div>
@@ -1091,6 +1095,7 @@ tr:hover td{background:var(--surface2)}
       <span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted);white-space:nowrap">FILTRAR:</span>
       <div class="filter-tabs" id="strategyPhaseTabs">
         <div class="filter-tab active" onclick="setStratPhase('all',this)">Todas</div>
+        <div class="filter-tab" onclick="setStratPhase('fase0',this)">Fase 0</div>
         <div class="filter-tab" onclick="setStratPhase('fase1',this)">Fase 1</div>
         <div class="filter-tab" onclick="setStratPhase('fase2',this)">Fase 2</div>
         <div class="filter-tab" onclick="setStratPhase('fase3',this)">Fase 3</div>
@@ -1516,6 +1521,7 @@ tr:hover td{background:var(--surface2)}
       <span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--text-muted)">FILTRAR:</span>
       <div class="filter-tabs" id="strategyPhaseTabs2">
         <div class="filter-tab active" onclick="setStratPhaseNav('all',this,'2')">Todas</div>
+        <div class="filter-tab" onclick="setStratPhaseNav('fase0',this,'2')">Fase 0</div>
         <div class="filter-tab" onclick="setStratPhaseNav('fase1',this,'2')">Fase 1</div>
         <div class="filter-tab" onclick="setStratPhaseNav('fase2',this,'2')">Fase 2</div>
         <div class="filter-tab" onclick="setStratPhaseNav('fase3',this,'2')">Fase 3</div>
@@ -1836,6 +1842,7 @@ tr:hover td{background:var(--surface2)}
       <div class="form-row">
         <div class="form-group"><label class="form-label">Fase *</label>
           <select class="form-select" id="fPhase" onchange="onPhaseChange()">
+            <option value="fase0">Fase 0 — Configuración y Capacitación</option>
             <option value="fase1">Fase 1 — Acceso, Pánico, Muro, Solicitudes</option>
             <option value="fase2">Fase 2 — Zonas, Encuestas, Votaciones, Eventos</option>
             <option value="fase3">Fase 3 — Asambleas, Normativo, Documental, Financiero, SuperAdmin</option>
@@ -1881,6 +1888,8 @@ tr:hover td{background:var(--surface2)}
 //  MODULE DEFINITIONS
 // ══════════════════════════════════════════════════════
 const MODULES = [
+  {id:'configuracion',label:'Configuración',icon:'⚙️',unit:'ítems configurados',metaLabel:u=>`Meta: configuración completa del conjunto`,metaFn:u=>1},
+  {id:'capacitacion',label:'Capacitación',icon:'🎓',unit:'sesiones realizadas',metaLabel:u=>`Meta: ${Math.round(u*0.30)} residentes capacitados (30% de ${u})`,metaFn:u=>Math.round(u*0.30)},
   {id:'acceso',label:'Acceso',icon:'🔑',unit:'pases de acceso',metaLabel:u=>`Meta: ${Math.round(u*0.50)} pases (50% de ${u})`,metaFn:u=>Math.round(u*0.50)},
   {id:'muro',label:'Muro',icon:'💬',unit:'publicaciones/mes',metaLabel:u=>`Meta fija: 8 publicaciones al mes`,metaFn:u=>8},
   {id:'alertas',label:'Alertas',icon:'🔔',unit:'alertas/mes',metaLabel:u=>`Meta: mínimo 2, ideal 5 alertas/mes`,metaFn:u=>2},
@@ -1901,19 +1910,22 @@ function calcPct(mid,value,units){const meta=calcMeta(mid,units);if(!meta||meta<
 
 // Phase → modules mapping
 const PHASE_MODULES = {
+  fase0: ['configuracion','capacitacion'],
   fase1: ['acceso','muro','alertas','solicitudes'],
   fase2: ['zonas','encuestas','votaciones','eventos'],
   fase3: ['asambleas','normativo','documentos','financiero','superadmin']
 };
 // All modules for a given phase (cumulative: fase2 includes fase1, etc.)
 function getModulesForPhase(phase) {
-  if(phase==='fase1') return [...PHASE_MODULES.fase1];
-  if(phase==='fase2') return [...PHASE_MODULES.fase1,...PHASE_MODULES.fase2];
-  if(phase==='fase3') return [...PHASE_MODULES.fase1,...PHASE_MODULES.fase2,...PHASE_MODULES.fase3];
+  if(phase==='fase0') return [...PHASE_MODULES.fase0];
+  if(phase==='fase1') return [...PHASE_MODULES.fase0,...PHASE_MODULES.fase1];
+  if(phase==='fase2') return [...PHASE_MODULES.fase0,...PHASE_MODULES.fase1,...PHASE_MODULES.fase2];
+  if(phase==='fase3') return [...PHASE_MODULES.fase0,...PHASE_MODULES.fase1,...PHASE_MODULES.fase2,...PHASE_MODULES.fase3];
   return [];
 }
 
 const PHASES={
+  fase0:{label:'Fase 0',color:'#0ea5e9',bg:'rgba(14,165,233,.1)',pill:'pill-fase0'},
   fase1:{label:'Fase 1',color:'#820ad1',bg:'rgba(130,10,209,.1)',pill:'pill-impl'},
   fase2:{label:'Fase 2',color:'#e67e00',bg:'rgba(247,181,0,.12)',pill:'pill-pilot'},
   fase3:{label:'Fase 3',color:'#00b460',bg:'rgba(0,180,100,.1)',pill:'pill-support'}
@@ -2041,7 +2053,7 @@ async function fetchAllData(){
   try{
     const{data:props,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
     if(error)throw error;
-    state.properties=(props||[]).map(p=>({id:p.id,name:p.name||'',city:p.city||'',phase:p.phase||'fase1',days:p.days_elapsed||0,units:p.units||0,modules:Array.isArray(p.active_modules)?p.active_modules:[],module_values:(p.module_values&&typeof p.module_values==='object')?p.module_values:{},notes:p.notes||'',entry_date:p.entry_date||''}));
+    state.properties=(props||[]).map(p=>({id:p.id,name:p.name||'',city:p.city||'',phase:p.phase||'fase0',days:p.days_elapsed||0,units:p.units||0,modules:Array.isArray(p.active_modules)?p.active_modules:[],module_values:(p.module_values&&typeof p.module_values==='object')?p.module_values:{},notes:p.notes||'',entry_date:p.entry_date||''}));
     state.lastUpdated=new Date();
     if(currentSection!=='connect')renderSection(currentSection);
   }catch(e){showToast('Error al cargar datos','error');}
@@ -2061,6 +2073,7 @@ function renderKPIs(){
   const byPhase=ph=>p.filter(x=>x.phase===ph);
   const avg=ph=>{const a=byPhase(ph);return a.length?Math.round(a.reduce((s,x)=>s+(x.days||0),0)/a.length):0;};
   $('kpiTotal').textContent=p.length;
+  $('kpiFase0').textContent=byPhase('fase0').length;$('kpiFase0Days').textContent=avg('fase0');
   $('kpiImpl').textContent=byPhase('fase1').length;$('kpiImplDays').textContent=avg('fase1');
   $('kpiPilot').textContent=byPhase('fase2').length;$('kpiPilotDays').textContent=avg('fase2');
   $('kpiSupport').textContent=byPhase('fase3').length;$('kpiSupportDays').textContent=avg('fase3');
@@ -2133,7 +2146,7 @@ function renderModulesTable(){
     const avgVal=active.length?Math.round(active.reduce((s,p)=>s+((p.module_values||{})[m.id]||0),0)/active.length):0;
     const clr=pctColor(avgPct);
     const refMeta=calcMeta(m.id,80);
-    return `<tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${m.icon}</span><strong>${m.label}</strong></div></td><td><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">${m.unit}</span></td><td><span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--domo)">${refMeta} <span style="font-weight:400;color:var(--text-muted)">(ref. 80 unid.)</span></span></td><td><strong style="font-family:JetBrains Mono,monospace">${avgVal}</strong> ${m.unit}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${avgPct}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${avgPct}%</span></div></td><td><span class="pill pill-impl">${withMod('fase1')}</span></td><td><span class="pill pill-pilot">${withMod('fase2')}</span></td><td><span class="pill pill-support">${withMod('fase3')}</span></td></tr>`;
+    return `<tr><td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${m.icon}</span><strong>${m.label}</strong></div></td><td><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">${m.unit}</span></td><td><span style="font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--domo)">${refMeta} <span style="font-weight:400;color:var(--text-muted)">(ref. 80 unid.)</span></span></td><td><strong style="font-family:JetBrains Mono,monospace">${avgVal}</strong> ${m.unit}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${avgPct}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${avgPct}%</span></div></td><td><span class="pill pill-fase0">${withMod('fase0')}</span></td><td><span class="pill pill-impl">${withMod('fase1')}</span></td><td><span class="pill pill-pilot">${withMod('fase2')}</span></td><td><span class="pill pill-support">${withMod('fase3')}</span></td></tr>`;
   }).join('');
 }
 
@@ -2148,7 +2161,7 @@ function renderModuleCharts(){
 // ══════ MODAL ══════
 function openAddModal(){
   $('modalTitle').textContent='Agregar Propiedad';$('editPropId').value='';
-  $('fName').value='';$('fCity').value='';$('fPhase').value='fase1';
+  $('fName').value='';$('fCity').value='';$('fPhase').value='fase0';
   $('fDays').value='0';$('fUnits').value='50';$('fNotes').value='';
   $('fEntryDate').value=new Date().toISOString().split('T')[0];
   // Auto-activate phase 1 modules
@@ -2158,7 +2171,7 @@ function openAddModal(){
 function openEditModal(id){
   const p=state.properties.find(x=>String(x.id)===String(id));if(!p)return;
   $('modalTitle').textContent='Editar Propiedad';$('editPropId').value=id;
-  $('fName').value=p.name||'';$('fCity').value=p.city||'';$('fPhase').value=p.phase||'fase1';
+  $('fName').value=p.name||'';$('fCity').value=p.city||'';$('fPhase').value=p.phase||'fase0';
   $('fDays').value=p.days||0;$('fUnits').value=p.units||0;$('fEntryDate').value=p.entry_date||'';
   autoCalcDays();$('fNotes').value=p.notes||'';
   // Use the property's existing modules & values (they were set for their phase)
@@ -2181,6 +2194,7 @@ function rebuildModuleChecks(){
 function buildModuleChecks(activeModules,moduleValues){
   const units=parseInt($('fUnits').value)||50;
   const phaseGroups = [
+    {label:'Fase 0 — Configuración y Capacitación', color:'#0ea5e9', ids: PHASE_MODULES.fase0},
     {label:'Fase 1', color:'#820ad1', ids: PHASE_MODULES.fase1},
     {label:'Fase 2', color:'#e67e00', ids: PHASE_MODULES.fase2},
     {label:'Fase 3', color:'#00b460', ids: PHASE_MODULES.fase3},
@@ -2304,7 +2318,7 @@ function renderPropertyProgressCards(){
   const sortVal=$('progressSort')?$('progressSort').value:'pct_desc';
   let props=[...state.properties];
   if(progressFilter!=='all')props=props.filter(p=>p.phase===progressFilter);
-  props.sort((a,b)=>{if(sortVal==='pct_desc')return getPropProgress(b)-getPropProgress(a);if(sortVal==='pct_asc')return getPropProgress(a)-getPropProgress(b);if(sortVal==='name')return a.name.localeCompare(b.name);if(sortVal==='phase'){const o={fase1:0,fase2:1,fase3:2};return(o[a.phase]||0)-(o[b.phase]||0);}return 0;});
+  props.sort((a,b)=>{if(sortVal==='pct_desc')return getPropProgress(b)-getPropProgress(a);if(sortVal==='pct_asc')return getPropProgress(a)-getPropProgress(b);if(sortVal==='name')return a.name.localeCompare(b.name);if(sortVal==='phase'){const o={fase0:0,fase1:1,fase2:2,fase3:3};return(o[a.phase]||0)-(o[b.phase]||0);}return 0;});
   if(!props.length){$('propProgressGrid').innerHTML=`<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--text-muted);font-size:13px">📭 Sin propiedades en esta fase.</div>`;return;}
   $('propProgressGrid').innerHTML=props.map(p=>{
     const cfg=PHASES[p.phase]||PHASES.fase1;

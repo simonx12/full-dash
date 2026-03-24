@@ -1939,7 +1939,6 @@ function getModulesForPhases(phasesArr) {
 function getModulesForPhase(phase) { return getModulesForPhases([phase]); }
 
 // Helper: "primary" phase = highest active phase (for color/badge)
-const PHASE_ORDER = ['fase0','fase1','fase2','fase3'];
 function getPrimaryPhase(p) {
   const phases = p.phases || (p.phase ? [p.phase] : ['fase0']);
   for(let i = PHASE_ORDER.length-1; i >= 0; i--) {
@@ -2102,7 +2101,7 @@ function disconnectSupabase(){if(sbChannel&&sb)sb.removeChannel(sbChannel);sb=nu
 // ══════ KPIs ══════
 function renderKPIs(){
   const p=state.properties;
-  const byPhase=ph=>p.filter(x=>(x.phases||[]).includes(ph));
+  const byPhase=ph=>p.filter(x=>getPrimaryPhase(x)===ph);  // ← CAMBIO AQUÍ
   const avg=ph=>{const a=byPhase(ph);return a.length?Math.round(a.reduce((s,x)=>s+(x.days||0),0)/a.length):0;};
   $('kpiTotal').textContent=p.length;
   $('kpiFase0').textContent=byPhase('fase0').length;$('kpiFase0Days').textContent=avg('fase0');
@@ -2129,9 +2128,9 @@ function renderWeekCompare(){
 function renderPhases(){
   const total=state.properties.length||1;
   $('phasesGrid').innerHTML=Object.entries(PHASES).map(([k,cfg])=>{
-    const cnt=state.properties.filter(p=>(p.phases||[]).includes(k)).length;
+    const cnt=state.properties.filter(p=>getPrimaryPhase(p)===k).length;  // ← CAMBIO AQUÍ
     const pct=Math.round((cnt/total)*100);
-    const avg=cnt?Math.round(state.properties.filter(p=>(p.phases||[]).includes(k)).reduce((s,p)=>s+getDaysFromEntry(p),0)/cnt):0;
+    const avg=cnt?Math.round(state.properties.filter(p=>getPrimaryPhase(p)===k).reduce((s,p)=>s+getDaysFromEntry(p),0)/cnt):0;
     return `<div class="phase-card"><div class="phase-header"><div style="display:flex;align-items:center"><div class="phase-dot" style="background:${cfg.color}"></div><div class="phase-name">${cfg.label}</div></div><div class="phase-count" style="background:${cfg.bg};color:${cfg.color}">${cnt}</div></div><div class="phase-body"><div class="phase-pct" style="color:${cfg.color}">${pct}%</div><div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${cfg.color}"></div></div><div class="phase-days">⏱ Sem. ${Math.min(8,Math.max(1,Math.floor(avg/7)+1))} · ${avg}d prom.</div></div></div>`;
   }).join('');
 }

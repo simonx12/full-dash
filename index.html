@@ -1940,8 +1940,53 @@ let settings={autoRefresh:60,userName:'',curWeekStart:'',prevWeekStart:''};
 let state={properties:[],weekData:{current:{},previous:{}},lastUpdated:null};
 let strategyView='cards',strategyPhaseFilter='all';
 let selectedPropId=null,roadSelectedPropId=null,roadCategory='Administradores';
-let propTasks=JSON.parse(localStorage.getItem('dn_prop_tasks')||'{}');
-function savePropTasks(){localStorage.setItem('dn_prop_tasks',JSON.stringify(propTasks));}
+let propTasks = {};
+
+async function savePropTasks() {
+  // Solo guarda en localStorage como cache local rápido
+  // La fuente de verdad es Supabase
+}
+
+async function saveTaskToSB(propId, task) {
+  if (!sb) return null;
+  const { data, error } = await sb.from('property_tasks').insert({
+    property_id: String(propId),
+    category: task.category,
+    text: task.text,
+    weight: task.weight,
+    progress: task.progress
+  }).select().single();
+  if (error) { showToast('Error guardando tarea: ' + error.message, 'error'); return null; }
+  return data;
+}
+
+async function updateTaskProgressSB(taskId, progress) {
+  if (!sb) return;
+  await sb.from('property_tasks').update({ progress }).eq('id', taskId);
+}
+
+async function deleteTaskSB(taskId) {
+  if (!sb) return;
+  await sb.from('property_tasks').delete().eq('id', taskId);
+}
+
+async function loadTasksFromSupabase() {
+  if (!sb) return;
+  const { data, error } = await sb.from('property_tasks').select('*');
+  if (error) return;
+  propTasks = {};
+  (data || []).forEach(t => {
+    const pid = String(t.property_id);
+    if (!propTasks[pid]) propTasks[pid] = [];
+    propTasks[pid].push({
+      id: t.id,
+      category: t.category || 'Innovadores',
+      text: t.text || '',
+      weight: t.weight || 5,
+      progress: t.progress || 0
+    });
+  });
+}
 
 // ── Persistencia de propiedades (modo offline/demo) ──
 function saveStateLocal(){

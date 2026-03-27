@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+const SUPABASE_URL = "https://dbtlyjaxqoezxbwvkimc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OOOitM2zGuo78KEO_K0Mug_3dkdh6z1";
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2065,35 +2067,62 @@ function renderSection(id){
 async function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
 
 async function connectSupabase(){
-  const url=$('sbUrl').value.trim(),key=$('sbKey').value.trim();
-  if(!url||!key){showToast('Ingresa URL y Key','error');return;}
-  const btn=$('btnConnect');btn.disabled=true;btn.textContent='⏳...';
+  const url = SUPABASE_URL;
+  const key = SUPABASE_KEY;
+
   try{
-    if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
-    sb=window.supabase.createClient(url,key);
-    const{error}=await sb.from('properties').select('id',{count:'exact',head:true});
-    if(error)throw error;
-    localStorage.setItem('dn_sb_url',url);localStorage.setItem('dn_sb_key',key);
-    isConnected=true;
-    showToast('✅ Conectado','success');
-    await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
-  }catch(e){showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Conectar →';}
+    if(!window.supabase){
+      await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js");
+    }
+    sb = window.supabase.createClient(url, key);
+
+    const { error } = await sb.from("properties").select("id", { count:"exact", head:true });
+    if(error) throw error;
+
+    isConnected = true;
+    showToast("✅ Conectado a Supabase","success");
+
+    await fetchAllData();
+    startRealtime();
+    startAutoRefresh();
+    goSection("dashboard");
+  }catch(e){
+    showToast("Error Supabase: " + e.message, "error");
+  }
 }
 
-async function fetchAllData(){
-  if(!sb)return;
-  try{
-    const{data:props,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
-    if(error)throw error;
-    state.properties=(props||[]).map(p=>({id:p.id,name:p.name||'',city:p.city||'',phases:Array.isArray(p.phases)?p.phases:(p.phase?[p.phase]:['fase0']),days:p.days_elapsed||0,units:p.units||0,modules:Array.isArray(p.active_modules)?p.active_modules:[],module_values:(p.module_values&&typeof p.module_values==='object')?p.module_values:{},notes:p.notes||'',entry_date:p.entry_date||''}));
-    state.lastUpdated=new Date();
-    if(currentSection!=='connect')renderSection(currentSection);
-  }catch(e){showToast('Error al cargar datos','error');}
+async function insertSupabase(prop){
+  const { error } = await sb.from("properties").insert({
+    name: prop.name,
+    city: prop.city,
+    admin_name: prop.admin_name || null,
+    phases: prop.phases,                 // <- clave
+    days_elapsed: prop.days,
+    units: prop.units,
+    active_modules: prop.modules,
+    module_values: prop.module_values,
+    notes: prop.notes,
+    entry_date: prop.entry_date || null
+  });
+  if(error) showToast("Error: "+error.message,"error");
 }
 
-async function insertSupabase(prop){if(!sb)return;const{error}=await sb.from('properties').insert({name:prop.name,city:prop.city,phases:prop.phases,days_elapsed:prop.days,units:prop.units,active_modules:prop.modules,module_values:prop.module_values,notes:prop.notes,entry_date:new Date(prop.entry_date).toISOString()});if(error)showToast('Error: '+error.message,'error');}
-async function updateSupabase(id,prop){if(!sb)return;const{error}=await sb.from('properties').update({name:prop.name,city:prop.city,phases:prop.phases,days_elapsed:prop.days,units:prop.units,active_modules:prop.modules,module_values:prop.module_values,notes:prop.notes,entry_date:new Date(prop.entry_date).toISOString()}).eq('id',id);if(error)showToast('Error: '+error.message,'error');}
-async function deleteSupabase(id){if(!sb)return;const{error}=await sb.from('properties').delete().eq('id',id);if(error)showToast('Error: '+error.message,'error');}
+async function updateSupabase(id, prop){
+  const { error } = await sb.from("properties").update({
+    name: prop.name,
+    city: prop.city,
+    admin_name: prop.admin_name || null,
+    phases: prop.phases,                 // <- clave
+    days_elapsed: prop.days,
+    units: prop.units,
+    active_modules: prop.modules,
+    module_values: prop.module_values,
+    notes: prop.notes,
+    entry_date: prop.entry_date || null
+  }).eq("id", id);
+
+  if(error) showToast("Error: "+error.message,"error");
+}
 
 function startRealtime(){if(!sb)return;sbChannel=sb.channel('dn-rt').on('postgres_changes',{event:'*',schema:'public',table:'properties'},()=>fetchAllData()).subscribe();}
 function startAutoRefresh(){if(autoRefreshTimer)clearInterval(autoRefreshTimer);const sec=parseInt(settings.autoRefresh)||60;if(sb&&sec>0)autoRefreshTimer=setInterval(()=>fetchAllData(),sec*1000);}
@@ -3403,29 +3432,15 @@ function refreshData(){if(!isConnected){showToast('Conecta primero o usa Demo','
 function showToast(msg,type=''){const c=$('toastContainer'),e=document.createElement('div');e.className='toast'+(type?' toast-'+type:'');e.textContent=msg;c.appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transform='translateX(36px)';setTimeout(()=>e.remove(),350);},3000);}
 
 // ══════ INIT ══════
-document.addEventListener('DOMContentLoaded',async()=>{
-  loadSettings();document.body.dataset.theme=theme;$('themeBtn').textContent=theme==='dark'?'☀️':'🌙';
-  updateGreeting();setInterval(updateClock,1000);updateClock();autoSetDates();
-  const savedUrl=localStorage.getItem('dn_sb_url'),savedKey=localStorage.getItem('dn_sb_key');
-  if(savedUrl&&savedKey){
-    $('sbUrl').value=savedUrl;$('sbKey').value=savedKey;
-    try{
-      if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
-      sb=window.supabase.createClient(savedUrl,savedKey);
-      const{error}=await sb.from('properties').select('id',{count:'exact',head:true});
-      if(error)throw error;
-      isConnected=true;localStorage.removeItem('dn_state_props');await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
-    }catch(e){localStorage.removeItem('dn_sb_url');localStorage.removeItem('dn_sb_key');}
-  } else {
-    // Sin Supabase: si hay datos locales guardados, restaurar automáticamente
-    const hasLocal = loadStateLocal();
-    if(hasLocal){
-      isConnected=true;
-      state.weekData={current:{alertas:4,solicitudes:28,muro:9,acceso:12},previous:{alertas:3,solicitudes:24,muro:7,acceso:10}};
-      goSection('dashboard');
-      showToast('💾 Datos locales restaurados','success');
-    }
-  }
+document.addEventListener("DOMContentLoaded", async () => {
+  loadSettings();                // si decides conservar settings (ver punto 2)
+  document.body.dataset.theme = theme;
+  updateGreeting();
+  setInterval(updateClock, 1000);
+  updateClock();
+  autoSetDates();
+
+  await connectSupabase();        // conecta directo
 });
 
 // ══════════════════════════════════════════════

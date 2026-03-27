@@ -3658,9 +3658,13 @@ function addTaskForProp() {
   const text = ($('tafTaskText')||{}).value?.trim();
   if(!text) { showToast('Escribe una descripción','error'); return; }
   const weight = parseInt(($('tafWeight')||{}).value) || 5;
-  if(!propTasks[id]) propTasks[id] = [];
-  propTasks[id].push({ id: Date.now(), category: taskCat, text, weight, progress: 0 });
-  savePropTasks();
+  const newTask = { id: Date.now(), category: taskCat, text, weight, progress: 0 };
+  if (sb) {
+    const saved = await saveTaskToSB(id, newTask);
+    if (saved) newTask.id = saved.id;
+  }
+  if (!propTasks[id]) propTasks[id] = [];
+  propTasks[id].push(newTask);
   if($('tafTaskText')) $('tafTaskText').value = '';
   renderTasksSection();
   showToast('✅ Tarea agregada','success');

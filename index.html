@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-const SUPABASE_URL = "https://dbtlyjaxqoezxbwvkimc.supabase.co";
-const SUPABASE_KEY = "sb_publishable_OOOitM2zGuo78KEO_K0Mug_3dkdh6z1";
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -924,7 +922,7 @@ tr:hover td{background:var(--surface2)}
     <div class="wc-grid" id="wcGrid"></div>
   </div>
   <div class="section-title">Progreso por Fase</div>
-  <div class="phase-grid" id="phasesGrid"></div>
+  <div class="phases-grid" id="phasesGrid"></div>
   <div class="charts-grid">
     <div class="chart-card"><div class="chart-header"><div class="section-title">Propiedades por Fase</div></div><div class="chart-body"><canvas id="chartPhase"></canvas></div></div>
     <div class="chart-card"><div class="chart-header"><div class="section-title">Adopción de Módulos</div></div><div class="chart-body"><canvas id="chartModules"></canvas></div></div>
@@ -1842,25 +1840,13 @@ tr:hover td{background:var(--surface2)}
         <div class="form-group"><label class="form-label">Ciudad</label><input class="form-input" id="fCity" placeholder="Ej: Medellín"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Fases activas *</label>
-          <div id="fPhaseChecks" style="display:flex;flex-direction:column;gap:7px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius)">
-            <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:clamp(10px,.9vw,12px);font-weight:600">
-              <input type="checkbox" id="fPhase-fase0" value="fase0" onchange="onPhasesChange()" style="accent-color:#0ea5e9;width:15px;height:15px">
-              <span style="color:#0ea5e9">0️⃣ Fase 0</span><span style="color:var(--text-muted);font-weight:400">— Configuración y Capacitación</span>
-            </label>
-            <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:clamp(10px,.9vw,12px);font-weight:600">
-              <input type="checkbox" id="fPhase-fase1" value="fase1" onchange="onPhasesChange()" style="accent-color:#820ad1;width:15px;height:15px">
-              <span style="color:#820ad1">1️⃣ Fase 1</span><span style="color:var(--text-muted);font-weight:400">— Acceso, Pánico, Muro, Solicitudes</span>
-            </label>
-            <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:clamp(10px,.9vw,12px);font-weight:600">
-              <input type="checkbox" id="fPhase-fase2" value="fase2" onchange="onPhasesChange()" style="accent-color:#e67e00;width:15px;height:15px">
-              <span style="color:#e67e00">2️⃣ Fase 2</span><span style="color:var(--text-muted);font-weight:400">— Zonas, Encuestas, Votaciones, Eventos</span>
-            </label>
-            <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:clamp(10px,.9vw,12px);font-weight:600">
-              <input type="checkbox" id="fPhase-fase3" value="fase3" onchange="onPhasesChange()" style="accent-color:#00b460;width:15px;height:15px">
-              <span style="color:#00b460">3️⃣ Fase 3</span><span style="color:var(--text-muted);font-weight:400">— Asambleas, Normativo, Documental, Financiero, SuperAdmin</span>
-            </label>
-          </div>
+        <div class="form-group"><label class="form-label">Fase *</label>
+          <select class="form-select" id="fPhase" onchange="onPhaseChange()">
+            <option value="fase0">Fase 0 — Configuración y Capacitación</option>
+            <option value="fase1">Fase 1 — Acceso, Pánico, Muro, Solicitudes</option>
+            <option value="fase2">Fase 2 — Zonas, Encuestas, Votaciones, Eventos</option>
+            <option value="fase3">Fase 3 — Asambleas, Normativo, Documental, Financiero, SuperAdmin</option>
+          </select>
         </div>
         <div class="form-group"><label class="form-label">Días en Fase</label><input class="form-input" id="fDays" readonly style="background:var(--surface2);color:var(--text-muted)" type="number" min="0" value="0"/></div>
       </div>
@@ -1929,33 +1915,13 @@ const PHASE_MODULES = {
   fase2: ['zonas','encuestas','votaciones','eventos'],
   fase3: ['asambleas','normativo','documentos','financiero','superadmin']
 };
-
-// Helper: get modules for an array of phases (union)
-function getModulesForPhases(phasesArr) {
-  const arr = Array.isArray(phasesArr) ? phasesArr : [phasesArr];
-  const result = [];
-  arr.forEach(ph => { (PHASE_MODULES[ph]||[]).forEach(m => { if(!result.includes(m)) result.push(m); }); });
-  return result;
-}
-// Legacy single-phase compat
-function getModulesForPhase(phase) { return getModulesForPhases([phase]); }
-
-// Helper: "primary" phase = highest active phase (for color/badge)
-const PHASE_ORDER = ['fase0','fase1','fase2','fase3'];
-function getPrimaryPhase(p) {
-  const phases = p.phases || (p.phase ? [p.phase] : ['fase0']);
-  for(let i = PHASE_ORDER.length-1; i >= 0; i--) {
-    if(phases.includes(PHASE_ORDER[i])) return PHASE_ORDER[i];
-  }
-  return 'fase0';
-}
-
-// Helper: read checked phases from form
-function getCheckedPhases() {
-  return PHASE_ORDER.filter(ph => {
-    const el = document.getElementById('fPhase-'+ph);
-    return el && el.checked;
-  });
+// All modules for a given phase (cumulative: fase2 includes fase1, etc.)
+function getModulesForPhase(phase) {
+  if(phase==='fase0') return [...PHASE_MODULES.fase0];
+  if(phase==='fase1') return [...PHASE_MODULES.fase0,...PHASE_MODULES.fase1];
+  if(phase==='fase2') return [...PHASE_MODULES.fase0,...PHASE_MODULES.fase1,...PHASE_MODULES.fase2];
+  if(phase==='fase3') return [...PHASE_MODULES.fase0,...PHASE_MODULES.fase1,...PHASE_MODULES.fase2,...PHASE_MODULES.fase3];
+  return [];
 }
 
 const PHASES={
@@ -2015,11 +1981,11 @@ function useDemoData(){
   const loaded = loadStateLocal();
   if(!loaded){
     state.properties=[
-      {id:'1',name:'Torres del Parque',city:'Bogotá',phases:['fase0','fase1'],days:45,units:120,modules:['configuracion','capacitacion','acceso','muro','solicitudes'],module_values:{configuracion:1,capacitacion:20,acceso:80,muro:5,solicitudes:25},notes:'Iniciando',entry_date:'2024-11-01'},
-      {id:'2',name:'Conjunto Los Andes',city:'Medellín',phases:['fase1','fase2'],days:30,units:85,modules:['acceso','muro','solicitudes','zonas','encuestas','votaciones','eventos'],module_values:{acceso:68,muro:8,solicitudes:18,zonas:10,encuestas:40,votaciones:30,eventos:2},notes:'Fase 1 y 2 activas',entry_date:'2024-10-15'},
-      {id:'3',name:'Residencias Bolívar',city:'Cali',phases:['fase1','fase2','fase3'],days:180,units:200,modules:['acceso','muro','solicitudes','zonas','encuestas','votaciones','eventos','asambleas','normativo','documentos','financiero','superadmin'],module_values:{acceso:160,muro:9,solicitudes:40,zonas:35,encuestas:80,votaciones:100,eventos:4,asambleas:120,normativo:100,documentos:120,financiero:100,superadmin:1},notes:'Consolidado',entry_date:'2024-05-01'},
-      {id:'4',name:'Ciudad Verde',city:'Pereira',phases:['fase0'],days:15,units:75,modules:['configuracion','capacitacion'],module_values:{configuracion:1,capacitacion:5},notes:'Inicio — configuración',entry_date:'2024-12-15'},
-      {id:'5',name:'Altos del Prado',city:'Bucaramanga',phases:['fase1','fase2'],days:22,units:95,modules:['acceso','muro','solicitudes','zonas','votaciones'],module_values:{acceso:76,muro:7,solicitudes:16,zonas:12,votaciones:30},notes:'Buen avance',entry_date:'2024-12-01'}
+      {id:'1',name:'Torres del Parque',city:'Bogotá',phase:'fase1',days:45,units:120,modules:['acceso','panico','muro','solicitudes'],module_values:{acceso:80,panico:60,muro:5,solicitudes:25},notes:'Iniciando',entry_date:'2024-11-01'},
+      {id:'2',name:'Conjunto Los Andes',city:'Medellín',phase:'fase2',days:30,units:85,modules:['acceso','panico','muro','solicitudes','zonas','encuestas','votaciones','eventos'],module_values:{acceso:68,panico:50,muro:8,solicitudes:18,zonas:10,encuestas:40,votaciones:30,eventos:2},notes:'Fase 2 activa',entry_date:'2024-10-15'},
+      {id:'3',name:'Residencias Bolívar',city:'Cali',phase:'fase3',days:180,units:200,modules:['acceso','panico','muro','solicitudes','zonas','encuestas','votaciones','eventos','asambleas','normativo','documentos','financiero','superadmin'],module_values:{acceso:160,panico:130,muro:9,solicitudes:40,zonas:35,encuestas:80,votaciones:100,eventos:4,asambleas:120,normativo:100,documentos:120,financiero:100,superadmin:1},notes:'Consolidado',entry_date:'2024-05-01'},
+      {id:'4',name:'Ciudad Verde',city:'Pereira',phase:'fase1',days:15,units:75,modules:['acceso','panico'],module_values:{acceso:20,panico:10},notes:'Inicio',entry_date:'2024-12-15'},
+      {id:'5',name:'Altos del Prado',city:'Bucaramanga',phase:'fase2',days:22,units:95,modules:['acceso','panico','muro','solicitudes','zonas','votaciones'],module_values:{acceso:76,panico:60,muro:7,solicitudes:16,zonas:12,votaciones:30},notes:'Buen avance',entry_date:'2024-12-01'}
     ];
     saveStateLocal();
   }
@@ -2067,62 +2033,35 @@ function renderSection(id){
 async function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
 
 async function connectSupabase(){
-  const url = SUPABASE_URL;
-  const key = SUPABASE_KEY;
-
+  const url=$('sbUrl').value.trim(),key=$('sbKey').value.trim();
+  if(!url||!key){showToast('Ingresa URL y Key','error');return;}
+  const btn=$('btnConnect');btn.disabled=true;btn.textContent='⏳...';
   try{
-    if(!window.supabase){
-      await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js");
-    }
-    sb = window.supabase.createClient(url, key);
-
-    const { error } = await sb.from("properties").select("id", { count:"exact", head:true });
-    if(error) throw error;
-
-    isConnected = true;
-    showToast("✅ Conectado a Supabase","success");
-
-    await fetchAllData();
-    startRealtime();
-    startAutoRefresh();
-    goSection("dashboard");
-  }catch(e){
-    showToast("Error Supabase: " + e.message, "error");
-  }
+    if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
+    sb=window.supabase.createClient(url,key);
+    const{error}=await sb.from('properties').select('id',{count:'exact',head:true});
+    if(error)throw error;
+    localStorage.setItem('dn_sb_url',url);localStorage.setItem('dn_sb_key',key);
+    isConnected=true;
+    showToast('✅ Conectado','success');
+    await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
+  }catch(e){showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Conectar →';}
 }
 
-async function insertSupabase(prop){
-  const { error } = await sb.from("properties").insert({
-    name: prop.name,
-    city: prop.city,
-    admin_name: prop.admin_name || null,
-    phases: prop.phases,                 // <- clave
-    days_elapsed: prop.days,
-    units: prop.units,
-    active_modules: prop.modules,
-    module_values: prop.module_values,
-    notes: prop.notes,
-    entry_date: prop.entry_date || null
-  });
-  if(error) showToast("Error: "+error.message,"error");
+async function fetchAllData(){
+  if(!sb)return;
+  try{
+    const{data:props,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
+    if(error)throw error;
+    state.properties=(props||[]).map(p=>({id:p.id,name:p.name||'',city:p.city||'',phase:p.phase||'fase0',days:p.days_elapsed||0,units:p.units||0,modules:Array.isArray(p.active_modules)?p.active_modules:[],module_values:(p.module_values&&typeof p.module_values==='object')?p.module_values:{},notes:p.notes||'',entry_date:p.entry_date||''}));
+    state.lastUpdated=new Date();
+    if(currentSection!=='connect')renderSection(currentSection);
+  }catch(e){showToast('Error al cargar datos','error');}
 }
 
-async function updateSupabase(id, prop){
-  const { error } = await sb.from("properties").update({
-    name: prop.name,
-    city: prop.city,
-    admin_name: prop.admin_name || null,
-    phases: prop.phases,                 // <- clave
-    days_elapsed: prop.days,
-    units: prop.units,
-    active_modules: prop.modules,
-    module_values: prop.module_values,
-    notes: prop.notes,
-    entry_date: prop.entry_date || null
-  }).eq("id", id);
-
-  if(error) showToast("Error: "+error.message,"error");
-}
+async function insertSupabase(prop){if(!sb)return;const{error}=await sb.from('properties').insert({name:prop.name,city:prop.city,phase:prop.phase,days_elapsed:prop.days,units:prop.units,active_modules:prop.modules,module_values:prop.module_values,notes:prop.notes,entry_date:new Date(prop.entry_date).toISOString()});if(error)showToast('Error: '+error.message,'error');}
+async function updateSupabase(id,prop){if(!sb)return;const{error}=await sb.from('properties').update({name:prop.name,city:prop.city,phase:prop.phase,days_elapsed:prop.days,units:prop.units,active_modules:prop.modules,module_values:prop.module_values,notes:prop.notes,entry_date:new Date(prop.entry_date).toISOString()}).eq('id',id);if(error)showToast('Error: '+error.message,'error');}
+async function deleteSupabase(id){if(!sb)return;const{error}=await sb.from('properties').delete().eq('id',id);if(error)showToast('Error: '+error.message,'error');}
 
 function startRealtime(){if(!sb)return;sbChannel=sb.channel('dn-rt').on('postgres_changes',{event:'*',schema:'public',table:'properties'},()=>fetchAllData()).subscribe();}
 function startAutoRefresh(){if(autoRefreshTimer)clearInterval(autoRefreshTimer);const sec=parseInt(settings.autoRefresh)||60;if(sb&&sec>0)autoRefreshTimer=setInterval(()=>fetchAllData(),sec*1000);}
@@ -2131,7 +2070,7 @@ function disconnectSupabase(){if(sbChannel&&sb)sb.removeChannel(sbChannel);sb=nu
 // ══════ KPIs ══════
 function renderKPIs(){
   const p=state.properties;
-  const byPhase=ph=>p.filter(x=>(x.phases||[]).includes(ph));
+  const byPhase=ph=>p.filter(x=>x.phase===ph);
   const avg=ph=>{const a=byPhase(ph);return a.length?Math.round(a.reduce((s,x)=>s+(x.days||0),0)/a.length):0;};
   $('kpiTotal').textContent=p.length;
   $('kpiFase0').textContent=byPhase('fase0').length;$('kpiFase0Days').textContent=avg('fase0');
@@ -2158,16 +2097,16 @@ function renderWeekCompare(){
 function renderPhases(){
   const total=state.properties.length||1;
   $('phasesGrid').innerHTML=Object.entries(PHASES).map(([k,cfg])=>{
-    const cnt=state.properties.filter(p=>(p.phases||[]).includes(k)).length;
+    const cnt=state.properties.filter(p=>p.phase===k).length;
     const pct=Math.round((cnt/total)*100);
-    const avg=cnt?Math.round(state.properties.filter(p=>(p.phases||[]).includes(k)).reduce((s,p)=>s+getDaysFromEntry(p),0)/cnt):0;
+    const avg=cnt?Math.round(state.properties.filter(p=>p.phase===k).reduce((s,p)=>s+getDaysFromEntry(p),0)/cnt):0;
     return `<div class="phase-card"><div class="phase-header"><div style="display:flex;align-items:center"><div class="phase-dot" style="background:${cfg.color}"></div><div class="phase-name">${cfg.label}</div></div><div class="phase-count" style="background:${cfg.bg};color:${cfg.color}">${cnt}</div></div><div class="phase-body"><div class="phase-pct" style="color:${cfg.color}">${pct}%</div><div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${cfg.color}"></div></div><div class="phase-days">⏱ Sem. ${Math.min(8,Math.max(1,Math.floor(avg/7)+1))} · ${avg}d prom.</div></div></div>`;
   }).join('');
 }
 
 function getFilteredProps(){
   let list=[...state.properties];
-  if(activeFilter!=='all')list=list.filter(p=>(p.phases||[]).includes(activeFilter));
+  if(activeFilter!=='all')list=list.filter(p=>p.phase===activeFilter);
   if(searchQuery){const q=searchQuery.toLowerCase();list=list.filter(p=>p.name.toLowerCase().includes(q)||(p.city||'').toLowerCase().includes(q));}
   return list;
 }
@@ -2178,13 +2117,10 @@ function renderPropertiesTable(){
   const tbody=$('propsBody'),list=getFilteredProps();
   if(!list.length){tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state">📭 Sin propiedades. ¡Agrega la primera!</div></td></tr>`;return;}
   tbody.innerHTML=list.map(p=>{
-    const phases=p.phases||['fase0'];
-    const primaryPh=getPrimaryPhase(p);
-    const cfg=PHASES[primaryPh]||PHASES.fase0;
+    const cfg=PHASES[p.phase]||PHASES.fase1;
     const overall=getPropProgress(p);
     const clr=pctColor(overall);
-    const phasePills=phases.map(ph=>`<span class="pill ${(PHASES[ph]||PHASES.fase0).pill}" style="margin-right:2px">${(PHASES[ph]||PHASES.fase0).label}</span>`).join('');
-    return `<tr><td><strong>${p.name}</strong>${p.entry_date?`<div style="display:flex;align-items:center;gap:4px;margin-top:2px"><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">📅 ${p.entry_date}</span><button style="font-size:9px;padding:1px 6px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;font-family:'Montserrat',sans-serif" onclick="openQuickDateEdit('${p.id}','${p.entry_date}')">✏️</button></div>`:''}</td><td>${p.city||'—'}</td><td>${phasePills}</td><td style="font-family:JetBrains Mono,monospace">${p.units||0}</td><td><strong>${(p.modules||[]).length}</strong>/${MODULES.length}</td><td style="font-family:JetBrains Mono,monospace">${p.days||0}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${overall}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${overall}%</span></div></td><td><div class="actions-cell"><button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Editar</button><button class="btn-del" onclick="deleteProp('${p.id}')">🗑️</button></div></td></tr>`;
+    return `<tr><td><strong>${p.name}</strong>${p.entry_date?`<div style="display:flex;align-items:center;gap:4px;margin-top:2px"><span style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted)">📅 ${p.entry_date}</span><button style="font-size:9px;padding:1px 6px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;font-family:'Montserrat',sans-serif" onclick="openQuickDateEdit('${p.id}','${p.entry_date}')">✏️</button></div>`:''}</td><td>${p.city||'—'}</td><td><span class="pill ${cfg.pill}">${cfg.label}</span></td><td style="font-family:JetBrains Mono,monospace">${p.units||0}</td><td><strong>${(p.modules||[]).length}</strong>/${MODULES.length}</td><td style="font-family:JetBrains Mono,monospace">${p.days||0}</td><td><div class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${overall}%;background:${clr}"></div></div><span class="pct-label" style="color:${clr}">${overall}%</span></div></td><td><div class="actions-cell"><button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Editar</button><button class="btn-del" onclick="deleteProp('${p.id}')">🗑️</button></div></td></tr>`;
   }).join('');
 }
 
@@ -2204,7 +2140,7 @@ function renderModuleMeters(){
 
 function renderModulesTable(){
   $('modulesBody').innerHTML=MODULES.map(m=>{
-    const withMod=ph=>state.properties.filter(p=>(p.phases||[]).includes(ph)&&(p.modules||[]).includes(m.id)).length;
+    const withMod=ph=>state.properties.filter(p=>p.phase===ph&&(p.modules||[]).includes(m.id)).length;
     const active=state.properties.filter(p=>(p.modules||[]).includes(m.id));
     const avgPct=active.length?Math.round(active.reduce((s,p)=>s+calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/active.length):0;
     const avgVal=active.length?Math.round(active.reduce((s,p)=>s+((p.module_values||{})[m.id]||0),0)/active.length):0;
@@ -2225,32 +2161,29 @@ function renderModuleCharts(){
 // ══════ MODAL ══════
 function openAddModal(){
   $('modalTitle').textContent='Agregar Propiedad';$('editPropId').value='';
-  $('fName').value='';$('fCity').value='';
-  PHASE_ORDER.forEach(ph=>{const el=document.getElementById('fPhase-'+ph);if(el)el.checked=(ph==='fase0');});
+  $('fName').value='';$('fCity').value='';$('fPhase').value='fase0';
   $('fDays').value='0';$('fUnits').value='50';$('fNotes').value='';
   $('fEntryDate').value=new Date().toISOString().split('T')[0];
-  setTimeout(()=>onPhasesChange(),0);
+  // Auto-activate phase 1 modules
+  setTimeout(()=>onPhaseChange(),0);
   $('propModal').style.display='flex';
 }
 function openEditModal(id){
   const p=state.properties.find(x=>String(x.id)===String(id));if(!p)return;
   $('modalTitle').textContent='Editar Propiedad';$('editPropId').value=id;
-  $('fName').value=p.name||'';$('fCity').value=p.city||'';
-  const activePh = p.phases||(p.phase?[p.phase]:['fase0']);
-  PHASE_ORDER.forEach(ph=>{const el=document.getElementById('fPhase-'+ph);if(el)el.checked=activePh.includes(ph);});
+  $('fName').value=p.name||'';$('fCity').value=p.city||'';$('fPhase').value=p.phase||'fase0';
   $('fDays').value=p.days||0;$('fUnits').value=p.units||0;$('fEntryDate').value=p.entry_date||'';
   autoCalcDays();$('fNotes').value=p.notes||'';
+  // Use the property's existing modules & values (they were set for their phase)
   buildModuleChecks(p.modules||[],p.module_values||{});$('propModal').style.display='flex';
 }
-function onPhasesChange(){
-  const phases = getCheckedPhases();
-  const phaseModules = getModulesForPhases(phases);
+function onPhaseChange(){
+  const phase = $('fPhase').value;
+  const phaseModules = getModulesForPhase(phase);
   const currentVals = {};
   MODULES.forEach(m=>{const el=document.getElementById('mp-num-'+m.id);if(el&&el.value)currentVals[m.id]=parseInt(el.value)||0;});
   buildModuleChecks(phaseModules, currentVals);
 }
-// Keep legacy alias
-function onPhaseChange(){ onPhasesChange(); }
 function rebuildModuleChecks(){
   const units=parseInt($('fUnits').value)||50;
   const currentActive=MODULES.filter(m=>document.getElementById('mp-chk-'+m.id)?.checked).map(m=>m.id);
@@ -2340,7 +2273,7 @@ async function saveProperty(){
   if(!name){showToast('El nombre es requerido','error');return;}
   const modules=[],module_values={};
   MODULES.forEach(m=>{const chk=$('mp-chk-'+m.id),num=$('mp-num-'+m.id);if(chk&&chk.checked){modules.push(m.id);module_values[m.id]=Math.max(0,parseInt(num.value)||0);}});
-  const prop={name,city:$('fCity').value.trim(),phases:getCheckedPhases(),days:parseInt($('fDays').value)||0,units:parseInt($('fUnits').value)||0,entry_date:$('fEntryDate').value,notes:$('fNotes').value.trim(),modules,module_values};
+  const prop={name,city:$('fCity').value.trim(),phase:$('fPhase').value,days:parseInt($('fDays').value)||0,units:parseInt($('fUnits').value)||0,entry_date:$('fEntryDate').value,notes:$('fNotes').value.trim(),modules,module_values};
   const editId=$('editPropId').value;
   closeModal();
   if(editId){
@@ -2371,7 +2304,7 @@ function renderGlobalProgress(){
   const totalMods=props.reduce((s,p)=>s+(p.modules||[]).length,0);
   $('pgSub').textContent=props.length+' propiedades · '+totalMods+' módulos activos';
   $('pgStats').innerHTML=Object.entries(PHASES).map(([k,cfg])=>{
-    const arr=props.filter(p=>(p.phases||[]).includes(k));
+    const arr=props.filter(p=>p.phase===k);
     const avg=arr.length?Math.round(arr.reduce((s,p)=>s+getPropProgress(p),0)/arr.length):0;
     return `<div class="pg-stat"><div class="pg-stat-val" style="color:${cfg.color}">${avg}%</div><div class="pg-stat-label">${cfg.label} (${arr.length})</div></div>`;
   }).join('');
@@ -2384,18 +2317,16 @@ function renderGlobalProgress(){
 function renderPropertyProgressCards(){
   const sortVal=$('progressSort')?$('progressSort').value:'pct_desc';
   let props=[...state.properties];
-  if(progressFilter!=='all')props=props.filter(p=>(p.phases||[]).includes(progressFilter));
-  props.sort((a,b)=>{if(sortVal==='pct_desc')return getPropProgress(b)-getPropProgress(a);if(sortVal==='pct_asc')return getPropProgress(a)-getPropProgress(b);if(sortVal==='name')return a.name.localeCompare(b.name);if(sortVal==='phase'){const o={fase0:0,fase1:1,fase2:2,fase3:3};return(PHASE_ORDER.filter(ph=>(a.phases||[]).includes(ph)).map(ph=>o[ph]).reduce((mx,v)=>Math.max(mx,v),-1))-(PHASE_ORDER.filter(ph=>(b.phases||[]).includes(ph)).map(ph=>o[ph]).reduce((mx,v)=>Math.max(mx,v),-1));}return 0;});
+  if(progressFilter!=='all')props=props.filter(p=>p.phase===progressFilter);
+  props.sort((a,b)=>{if(sortVal==='pct_desc')return getPropProgress(b)-getPropProgress(a);if(sortVal==='pct_asc')return getPropProgress(a)-getPropProgress(b);if(sortVal==='name')return a.name.localeCompare(b.name);if(sortVal==='phase'){const o={fase0:0,fase1:1,fase2:2,fase3:3};return(o[a.phase]||0)-(o[b.phase]||0);}return 0;});
   if(!props.length){$('propProgressGrid').innerHTML=`<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--text-muted);font-size:13px">📭 Sin propiedades en esta fase.</div>`;return;}
   $('propProgressGrid').innerHTML=props.map(p=>{
-    const primaryPh=getPrimaryPhase(p);
-    const cfg=PHASES[primaryPh]||PHASES.fase0;
-    const phasePills=(p.phases||[]).map(ph=>`<span class="pill ${(PHASES[ph]||PHASES.fase0).pill}" style="margin-right:2px">${(PHASES[ph]||PHASES.fase0).label}</span>`).join('');
+    const cfg=PHASES[p.phase]||PHASES.fase1;
     const mv=p.module_values||{};const units=p.units||50;
     const overall=getPropProgress(p);const clr=pctColor(overall);
     const activeMods=p.modules||[];const inactiveMods=MODULES.filter(m=>!activeMods.includes(m.id));
     const modRows=MODULES.filter(m=>activeMods.includes(m.id)).map(m=>{const val=mv[m.id]||0;const meta=m.metaFn(units);const pct=calcPct(m.id,val,units);const mc=pctColor(pct);return `<div class="pp-mod-row"><div class="pp-mod-icon">${m.icon}</div><div class="pp-mod-name">${m.label}</div><div class="pp-mod-num">${val}/${meta}</div><div class="pp-mod-pct" style="color:${mc}">${pct}%</div></div><div class="pp-mod-bar-wrap"><div class="pp-mod-fill" style="width:${Math.min(100,pct)}%;background:${mc}"></div></div>`;}).join('');
-    return `<div class="pp-card"><div class="pp-header"><div><div class="pp-name">${p.name}</div><div class="pp-city">📍 ${p.city||'—'} · ${units} unid.</div>${p.entry_date?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:2px">📅 ${p.entry_date}</div>`:''}</div><div style="text-align:right"><div class="pp-pct-big" style="color:${clr}">${overall}%</div><div style="margin-top:4px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:2px">${phasePills}</div></div></div><div class="pp-body"><div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:4px"><span>Avance ponderado</span><span style="font-weight:700;color:${clr}">${overall}%</span></div><div class="pp-overall-bar"><div class="pp-overall-fill" style="width:${overall}%;background:${clr}"></div></div></div>${activeMods.length?`<div style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Módulos activos (${activeMods.length}/${MODULES.length})</div><div class="pp-mod-list">${modRows}</div>`:`<div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted);padding:10px 0;text-align:center">Sin módulos activos</div>`}${inactiveMods.length?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:8px">Pendientes: ${inactiveMods.map(m=>m.icon+' '+m.label).join(', ')}</div>`:''}</div><div class="pp-footer"><div class="pp-days">⏱ Sem. ${getPropWeek(p)}/8 · ${getDaysFromEntry(p)} días</div><button class="pp-edit-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button></div></div>`;
+    return `<div class="pp-card"><div class="pp-header"><div><div class="pp-name">${p.name}</div><div class="pp-city">📍 ${p.city||'—'} · ${units} unid.</div>${p.entry_date?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:2px">📅 ${p.entry_date}</div>`:''}</div><div style="text-align:right"><div class="pp-pct-big" style="color:${clr}">${overall}%</div><span class="pill ${cfg.pill}" style="margin-top:4px;display:inline-flex">${cfg.label}</span></div></div><div class="pp-body"><div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:4px"><span>Avance ponderado</span><span style="font-weight:700;color:${clr}">${overall}%</span></div><div class="pp-overall-bar"><div class="pp-overall-fill" style="width:${overall}%;background:${clr}"></div></div></div>${activeMods.length?`<div style="font-size:clamp(8px,.8vw,10px);font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Módulos activos (${activeMods.length}/${MODULES.length})</div><div class="pp-mod-list">${modRows}</div>`:`<div style="font-size:clamp(10px,.9vw,12px);color:var(--text-muted);padding:10px 0;text-align:center">Sin módulos activos</div>`}${inactiveMods.length?`<div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-top:8px">Pendientes: ${inactiveMods.map(m=>m.icon+' '+m.label).join(', ')}</div>`:''}</div><div class="pp-footer"><div class="pp-days">⏱ Sem. ${getPropWeek(p)}/8 · ${getDaysFromEntry(p)} días</div><button class="pp-edit-btn" onclick="openEditModal('${p.id}')">✏️ Editar</button></div></div>`;
   }).join('');
 }
 function renderModuleProgressChart(){
@@ -2430,7 +2361,7 @@ function setStratPhase(f, el) {
 
 function getStrategyProps() {
   let props = [...state.properties];
-  if(strategyPhaseFilter !== 'all') props = props.filter(p => (p.phases||[]).includes(strategyPhaseFilter));
+  if(strategyPhaseFilter !== 'all') props = props.filter(p => p.phase === strategyPhaseFilter);
   return props;
 }
 
@@ -2564,15 +2495,13 @@ function renderStrategyOverview() {
     } else {
       const sorted = [...props].sort((a,b)=>getPropProgress(b)-getPropProgress(a));
       body.innerHTML = sorted.map(p => {
-        const primaryPh=getPrimaryPhase(p);
-        const cfg = PHASES[primaryPh]||PHASES.fase0;
-        const phasePills=(p.phases||[]).map(ph=>`<span class="pill ${(PHASES[ph]||PHASES.fase0).pill}" style="margin-right:2px">${(PHASES[ph]||PHASES.fase0).label}</span>`).join('');
+        const cfg = PHASES[p.phase]||PHASES.fase1;
         const pct = getPropProgress(p);
         const c = pct>=80?'#00b460':pct>=50?'#e67e00':'#e03030';
         return '<tr style="border-bottom:1px solid var(--border)">'
           +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-weight:700">'+p.name+'</td>'
           +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);color:var(--text-muted)">'+( p.city||'—')+'</td>'
-          +'<td style="padding:11px 14px">'+phasePills+'</td>'
+          +'<td style="padding:11px 14px"><span class="pill '+cfg.pill+'">'+cfg.label+'</span></td>'
           +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-family:JetBrains Mono,monospace">'+( p.units||0)+'</td>'
           +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-weight:700;color:var(--domo)">'+(p.modules||[]).length+'/'+MODULES.length+'</td>'
           +'<td style="padding:11px 14px;font-size:clamp(10px,.9vw,12px);font-family:JetBrains Mono,monospace">S'+getPropWeek(p)+'/8 · '+getDaysFromEntry(p)+'d</td>'
@@ -2596,7 +2525,7 @@ function renderStrategyOverview() {
   if(c1){
     charts['chartOverviewPhase']=new Chart(c1.getContext('2d'),{
       type:'doughnut',
-      data:{labels:Object.values(PHASES).map(p=>p.label),datasets:[{data:Object.keys(PHASES).map(k=>props.filter(p=>(p.phases||[]).includes(k)).length),backgroundColor:Object.values(PHASES).map(p=>p.color),borderWidth:0,hoverOffset:6}]},
+      data:{labels:Object.values(PHASES).map(p=>p.label),datasets:[{data:Object.keys(PHASES).map(k=>props.filter(p=>p.phase===k).length),backgroundColor:Object.values(PHASES).map(p=>p.color),borderWidth:0,hoverOffset:6}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:tc,font:{family:'Montserrat',size:10},boxWidth:10}}}}
     });
   }
@@ -2674,12 +2603,7 @@ function renderAbismoCards() {
 }
 
 function buildAbismoCard(p) {
-  const primaryPh = getPrimaryPhase(p);
-  const cfg = PHASES[primaryPh] || PHASES.fase0;
-  const phaseBadges = (p.phases||[]).map(ph => {
-    const c = PHASES[ph]||PHASES.fase0;
-    return `<span class="ach-phase-badge" style="background:${c.bg};color:${c.color};border:1px solid ${c.color}40">${c.label}</span>`;
-  }).join(' ');
+  const cfg = PHASES[p.phase] || PHASES.fase1;
   const { modData, avgPct, avgGapPct } = calcAbismo(p);
   const units = p.units || 50;
   const lvl = gapLevel(avgPct);
@@ -2727,7 +2651,7 @@ function buildAbismoCard(p) {
           <div>
             <div class="ach-name">${p.name}</div>
             <div class="ach-city">📍 ${p.city || '—'} · ${units} unidades</div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">${phaseBadges}</div>
+            <div class="ach-phase-badge" style="background:${cfg.bg};color:${cfg.color};border:1px solid ${cfg.color}40">${cfg.label}</div>
           </div>
           <div style="text-align:right">
             <div class="ach-pct">${avgPct}%</div>
@@ -2804,8 +2728,7 @@ function renderAbismoHeatMap() {
 
   props.forEach(p => {
     const { modData, avgPct } = calcAbismo(p);
-    const primaryPh = getPrimaryPhase(p);
-    const cfg = PHASES[primaryPh] || PHASES.fase0;
+    const cfg = PHASES[p.phase] || PHASES.fase1;
     const overallLvl = gapLevel(avgPct);
     const overallColor = avgPct >= 80 ? '#00b460' : avgPct >= 50 ? '#e67e00' : '#e03030';
     html += `<div class="abismo-heat-row" style="grid-template-columns:${colFr}">
@@ -3115,8 +3038,7 @@ function renderAdoptionCurve(p, avgPct, avgGapPct) {
 function renderPropKpis(p, avgPct, avgGapPct) {
   const el = $('propChasmKpis');
   if(!el) return;
-  const primaryPh = getPrimaryPhase(p);
-  const cfg = PHASES[primaryPh] || PHASES.fase0;
+  const cfg = PHASES[p.phase] || PHASES.fase1;
   const lvlColor = avgPct >= 80 ? '#00b460' : avgPct >= 50 ? '#e67e00' : '#e03030';
   const activeMods = (p.modules||[]).length;
   const tasks = propTasks[p.id] || [];
@@ -3131,8 +3053,8 @@ function renderPropKpis(p, avgPct, avgGapPct) {
       <div class="pck-item"><div class="pck-val" style="color:#00b460">${sealPct}%</div><div class="pck-label">Cierre por tareas</div></div>
     </div>
     <div style="margin-top:12px;padding:10px 12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
-      <div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Fases activas</div>
-      <div style="display:flex;flex-wrap:wrap;gap:4px">${(p.phases||[]).map(ph=>`<span class="pill ${(PHASES[ph]||PHASES.fase0).pill}">${(PHASES[ph]||PHASES.fase0).label}</span>`).join('')}</div>
+      <div style="font-size:clamp(8px,.8vw,10px);color:var(--text-muted);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Fase actual</div>
+      <span class="pill ${cfg.pill}">${cfg.label}</span>
       <div style="font-size:clamp(9px,.85vw,11px);color:var(--text-muted);margin-top:6px">⏱ Sem. ${getPropWeek(p)}/8 · ${getDaysFromEntry(p)} días · ${p.units||0} unidades</div>
     </div>`;
 }
@@ -3388,20 +3310,20 @@ function makeChart(id,type,labels,datasets,extra={},extraOpts={}){
 
 function renderDashCharts(){
   const props=state.properties;if(!props.length)return;
-  makeChart('chartPhase','doughnut',Object.values(PHASES).map(c=>c.label),[{data:Object.keys(PHASES).map(k=>props.filter(p=>(p.phases||[]).includes(k)).length),backgroundColor:Object.values(PHASES).map(c=>c.color),borderWidth:0,hoverOffset:8}]);
+  makeChart('chartPhase','doughnut',Object.values(PHASES).map(c=>c.label),[{data:Object.keys(PHASES).map(k=>props.filter(p=>p.phase===k).length),backgroundColor:Object.values(PHASES).map(c=>c.color),borderWidth:0,hoverOffset:8}]);
   makeChart('chartModules','bar',MODULES.map(m=>m.label),[{label:'Propiedades',data:MODULES.map(m=>props.filter(p=>(p.modules||[]).includes(m.id)).length),backgroundColor:['#820ad1','#e67e00','#00b460','#0088cc','#F7B500','#a34dde','#00ccaa','#ff6b6b'],borderRadius:6,borderSkipped:false}]);
   const sorted=[...props].sort((a,b)=>getPropProgress(b)-getPropProgress(a));
-  makeChart('chartProps','bar',sorted.map(p=>p.name.length>20?p.name.substring(0,20)+'…':p.name),[{label:'Avance real (%)',data:sorted.map(p=>getPropProgress(p)),backgroundColor:sorted.map(p=>PHASES[getPrimaryPhase(p)]?.color||'#0ea5e9'),borderRadius:6,borderSkipped:false}],{},{indexAxis:'y'});
+  makeChart('chartProps','bar',sorted.map(p=>p.name.length>20?p.name.substring(0,20)+'…':p.name),[{label:'Avance real (%)',data:sorted.map(p=>getPropProgress(p)),backgroundColor:sorted.map(p=>PHASES[p.phase]?.color||'#820ad1'),borderRadius:6,borderSkipped:false}],{},{indexAxis:'y'});
 }
 
 function renderChartsPage(){
   const props=state.properties;if(!props.length)return;
-  makeChart('chartPhase2','doughnut',Object.values(PHASES).map(c=>c.label),[{data:Object.keys(PHASES).map(k=>props.filter(p=>(p.phases||[]).includes(k)).length),backgroundColor:Object.values(PHASES).map(c=>c.color),borderWidth:0,hoverOffset:8}]);
+  makeChart('chartPhase2','doughnut',Object.values(PHASES).map(c=>c.label),[{data:Object.keys(PHASES).map(k=>props.filter(p=>p.phase===k).length),backgroundColor:Object.values(PHASES).map(c=>c.color),borderWidth:0,hoverOffset:8}]);
   const avgPcts=MODULES.map(m=>{const active=props.filter(p=>(p.modules||[]).includes(m.id));return active.length?Math.round(active.reduce((s,p)=>s+calcPct(m.id,(p.module_values||{})[m.id]||0,p.units||50),0)/active.length):0;});
   makeChart('chartRadar','radar',MODULES.map(m=>m.label),[{label:'% Cumplimiento promedio',data:avgPcts,backgroundColor:'rgba(130,10,209,.15)',borderColor:'#820ad1',pointBackgroundColor:'#820ad1',borderWidth:2,pointRadius:4}]);
-  makeChart('chartDays','bar',props.map(p=>p.name.length>16?p.name.substring(0,16)+'…':p.name),[{label:'Días',data:props.map(p=>p.days||0),backgroundColor:props.map(p=>PHASES[getPrimaryPhase(p)]?.color||'#0ea5e9'),borderRadius:6,borderSkipped:false}]);
+  makeChart('chartDays','bar',props.map(p=>p.name.length>16?p.name.substring(0,16)+'…':p.name),[{label:'Días',data:props.map(p=>p.days||0),backgroundColor:props.map(p=>PHASES[p.phase]?.color||'#820ad1'),borderRadius:6,borderSkipped:false}]);
   const sorted=[...props].sort((a,b)=>getPropProgress(b)-getPropProgress(a));
-  makeChart('chartProps2','bar',sorted.map(p=>p.name.length>20?p.name.substring(0,20)+'…':p.name),[{label:'Avance real (%)',data:sorted.map(p=>getPropProgress(p)),backgroundColor:sorted.map(p=>PHASES[getPrimaryPhase(p)]?.color||'#0ea5e9'),borderRadius:6,borderSkipped:false}],{},{indexAxis:'y'});
+  makeChart('chartProps2','bar',sorted.map(p=>p.name.length>20?p.name.substring(0,20)+'…':p.name),[{label:'Avance real (%)',data:sorted.map(p=>getPropProgress(p)),backgroundColor:sorted.map(p=>PHASES[p.phase]?.color||'#820ad1'),borderRadius:6,borderSkipped:false}],{},{indexAxis:'y'});
 }
 
 // ══════ SETTINGS ══════
@@ -3432,15 +3354,29 @@ function refreshData(){if(!isConnected){showToast('Conecta primero o usa Demo','
 function showToast(msg,type=''){const c=$('toastContainer'),e=document.createElement('div');e.className='toast'+(type?' toast-'+type:'');e.textContent=msg;c.appendChild(e);setTimeout(()=>{e.style.opacity='0';e.style.transform='translateX(36px)';setTimeout(()=>e.remove(),350);},3000);}
 
 // ══════ INIT ══════
-document.addEventListener("DOMContentLoaded", async () => {
-  loadSettings();                // si decides conservar settings (ver punto 2)
-  document.body.dataset.theme = theme;
-  updateGreeting();
-  setInterval(updateClock, 1000);
-  updateClock();
-  autoSetDates();
-
-  await connectSupabase();        // conecta directo
+document.addEventListener('DOMContentLoaded',async()=>{
+  loadSettings();document.body.dataset.theme=theme;$('themeBtn').textContent=theme==='dark'?'☀️':'🌙';
+  updateGreeting();setInterval(updateClock,1000);updateClock();autoSetDates();
+  const savedUrl=localStorage.getItem('dn_sb_url'),savedKey=localStorage.getItem('dn_sb_key');
+  if(savedUrl&&savedKey){
+    $('sbUrl').value=savedUrl;$('sbKey').value=savedKey;
+    try{
+      if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
+      sb=window.supabase.createClient(savedUrl,savedKey);
+      const{error}=await sb.from('properties').select('id',{count:'exact',head:true});
+      if(error)throw error;
+      isConnected=true;localStorage.removeItem('dn_state_props');await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
+    }catch(e){localStorage.removeItem('dn_sb_url');localStorage.removeItem('dn_sb_key');}
+  } else {
+    // Sin Supabase: si hay datos locales guardados, restaurar automáticamente
+    const hasLocal = loadStateLocal();
+    if(hasLocal){
+      isConnected=true;
+      state.weekData={current:{alertas:4,solicitudes:28,muro:9,acceso:12},previous:{alertas:3,solicitudes:24,muro:7,acceso:10}};
+      goSection('dashboard');
+      showToast('💾 Datos locales restaurados','success');
+    }
+  }
 });
 
 // ══════════════════════════════════════════════

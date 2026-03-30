@@ -3189,7 +3189,7 @@ function updateRoadTaskProgress(propId, taskId, val) {
   const t = propTasks[propId].find(x => x.id === taskId);
   if(!t) return;
   t.progress = parseInt(val);
-  updateTaskProgressSB(t.id, t.progress);
+  savePropTasks();
   // Actualizar card visualmente sin re-render (slider sigue activo)
   const sid = String(taskId);
   const bc = t.progress===100?'#00b460':t.progress>=50?'#e67e00':'#820ad1';
@@ -3208,7 +3208,8 @@ function updateRoadTaskProgress(propId, taskId, val) {
 function deleteRoadTask(propId, taskId) {
   if(!propTasks[propId]) return;
   propTasks[propId] = propTasks[propId].filter(x => x.id !== taskId);
-  deleteTaskSB(taskId);
+  savePropTasks();
+  renderPropRoadmapTab();
 }
 
 function getRoadSealPct(propId) {
@@ -3663,7 +3664,7 @@ function updateTaskItemProgress(propId, taskId, val) {
   const t = tasks.find(x => x.id === taskId);
   if(!t) return;
   t.progress = val;
-  updateTaskProgressSB(t.id, t.progress);
+  savePropTasks();
   // Update UI inline (no full re-render for smoothness)
   renderTaskList(propId);
   renderTaskDetail(propId);
@@ -3674,8 +3675,8 @@ function deleteTaskItem(btn) {
   const propId = btn.dataset.pid;
   const taskId = parseInt(btn.dataset.tid);
   if(!propTasks[propId]) return;
- propTasks[propId] = propTasks[propId].filter(x => x.id !== taskId);
-  deleteTaskSB(taskId);
+  propTasks[propId] = propTasks[propId].filter(x => x.id !== taskId);
+  savePropTasks();
   renderTasksSection();
   showToast('Tarea eliminada','success');
 }
@@ -3917,9 +3918,8 @@ function navAddRoadTask() {
   if(!text){showToast('Escribe una descripción','error');return;}
   const weight=parseInt(($('navRoadTaskWeight')||{}).value)||5;
   if(!propTasks[id])propTasks[id]=[];
-  const newTask = {id:Date.now(),category:navRoadCategory,text,weight,progress:0};
-  if (sb) { const saved = await saveTaskToSB(id, newTask); if (saved) newTask.id = saved.id; }
-  propTasks[id].push(newTask);
+  propTasks[id].push({id:Date.now(),category:navRoadCategory,text,weight,progress:0});
+  savePropTasks();
   if($('navRoadNewTaskText'))$('navRoadNewTaskText').value='';
   navRenderRoadmapTab();
   showToast('✅ Tarea agregada','success');
@@ -4760,7 +4760,7 @@ function toggleAbismoTaskCheck(propId, taskId) {
   const t = tasks.find(x => x.id === taskId);
   if (!t) return;
   t.progress = t.progress === 100 ? 0 : 100;
-  updateTaskProgressSB(t.id, t.progress);
+  savePropTasks();
   renderAbismoTaskBadge(propId);
   showToast(t.progress===100 ? '✅ Tarea completada' : '↩️ Tarea pendiente', t.progress===100?'success':'info');
 }
@@ -4771,9 +4771,9 @@ function addAbismoTask(propId) {
   const text = input.value.trim();
   if (!text) return;
   const zone = abismoZoneSelected[propId] || 'Innovadores';
-  if  const newTask = { id: Date.now(), category: zone, text, weight: 5, progress: 0 };
-  if (sb) { const saved = await saveTaskToSB(String(propId), newTask); if (saved) newTask.id = saved.id; }
-  propTasks[String(propId)].push(newTask);
+  if (!propTasks[String(propId)]) propTasks[String(propId)] = [];
+  propTasks[String(propId)].push({ id: Date.now(), category: zone, text, weight: 5, progress: 0 });
+  savePropTasks();
   input.value = '';
   input.placeholder = 'Tarea para ' + zone + '...';
   renderAbismoTaskBadge(propId);
@@ -4782,7 +4782,7 @@ function addAbismoTask(propId) {
 function toggleAbismoTask(propId, taskId, checked) {
   const tasks = propTasks[String(propId)] || [];
   const t = tasks.find(x => x.id === taskId);
-  if (t) { t.progress = checked ? 100 : 0; updateTaskProgressSB(t.id, t.progress); }
+  if (t) { t.progress = checked ? 100 : 0; savePropTasks(); }
   renderAbismoTaskBadge(propId);
   // refresh combined seal in the card header if visible
   const pct = document.getElementById('abt-seal-' + propId);
@@ -4797,9 +4797,9 @@ function toggleAbismoTask(propId, taskId, checked) {
 }
 
 function deleteAbismoTask(propId, taskId) {
-  if (propTasks[String(propId)] = propTasks[String(propId)].filter(x => x.id !== taskId);
-  deleteTaskSB(taskId);
-  renderAbismoTaskBadge(propId);
+  if (!propTasks[String(propId)]) return;
+  propTasks[String(propId)] = propTasks[String(propId)].filter(x => x.id !== taskId);
+  savePropTasks();
   renderAbismoTaskBadge(propId);
 }
 
@@ -4809,8 +4809,8 @@ function stepAbismoTaskProgress(propId, taskId, delta) {
   const t = tasks.find(x => x.id === taskId);
   if (!t) return;
 
-   t.progress = Math.min(100, Math.max(0, t.progress + delta));
-  updateTaskProgressSB(t.id, t.progress);
+  t.progress = Math.min(100, Math.max(0, t.progress + delta));
+  savePropTasks();
 
   const sid   = String(taskId);
   const spid  = String(propId);

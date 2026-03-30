@@ -3182,19 +3182,7 @@ function selectRoadProp(id) {
   renderPropRoadmapTab();
 }
 
-function addRoadTask() { return; // Deshabilitado — agregar tareas desde la pestaña Tareas
-  const id = roadSelectedPropId;
-  if(!id) { showToast('Selecciona una propiedad primero','error'); return; }
-  const text = $('roadNewTaskText')?.value?.trim();
-  if(!text) { showToast('Escribe una descripción','error'); return; }
-  const weight = parseInt($('roadTaskWeight')?.value) || 5;
-  if(!propTasks[id]) const newTask = { id: Date.now(), category: roadCategory, text, weight, progress: 0 };
-  if (sb) { const saved = await saveTaskToSB(id, newTask); if (saved) newTask.id = saved.id; }
-  propTasks[id].push(newTask);
-  if($('roadNewTaskText')) $('roadNewTaskText').value = '';
-  renderPropRoadmapTab();
-  showToast('✅ Tarea agregada','success');
-}
+function addRoadTask() {}
 
 function updateRoadTaskProgress(propId, taskId, val) {
   if(!propTasks[propId]) return;

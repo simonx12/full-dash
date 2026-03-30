@@ -2082,6 +2082,7 @@ async function fetchAllData(){
     if(error)throw error;
     state.properties=(props||[]).map(p=>({id:p.id,name:p.name||'',city:p.city||'',phase:p.phase||'fase0',days:p.days_elapsed||0,units:p.units||0,modules:Array.isArray(p.active_modules)?p.active_modules:[],module_values:(p.module_values&&typeof p.module_values==='object')?p.module_values:{},notes:p.notes||'',entry_date:p.entry_date||''}));
     state.lastUpdated=new Date();
+    await loadTasksFromSupabase();
     if(currentSection!=='connect')renderSection(currentSection);
   }catch(e){showToast('Error al cargar datos','error');}
 }
@@ -3171,7 +3172,7 @@ function updateRoadTaskProgress(propId, taskId, val) {
   const t = propTasks[propId].find(x => x.id === taskId);
   if(!t) return;
   t.progress = parseInt(val);
-  savePropTasks();
+  updateTaskProgressSB(t.id,t.progress);
   // Actualizar card visualmente sin re-render (slider sigue activo)
   const sid = String(taskId);
   const bc = t.progress===100?'#00b460':t.progress>=50?'#e67e00':'#820ad1';
@@ -3190,7 +3191,7 @@ function updateRoadTaskProgress(propId, taskId, val) {
 function deleteRoadTask(propId, taskId) {
   if(!propTasks[propId]) return;
   propTasks[propId] = propTasks[propId].filter(x => x.id !== taskId);
-  savePropTasks();
+  deleteTaskSB(taskId);
   renderPropRoadmapTab();
 }
 
@@ -3372,25 +3373,20 @@ function showToast(msg,type=''){const c=$('toastContainer'),e=document.createEle
 document.addEventListener('DOMContentLoaded',async()=>{
   loadSettings();document.body.dataset.theme=theme;$('themeBtn').textContent=theme==='dark'?'☀️':'🌙';
   updateGreeting();setInterval(updateClock,1000);updateClock();autoSetDates();
-  const savedUrl=localStorage.getItem('dn_sb_url'),savedKey=localStorage.getItem('dn_sb_key');
-  if(savedUrl&&savedKey){
-    $('sbUrl').value=savedUrl;$('sbKey').value=savedKey;
-    try{
-      if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
-      sb=window.supabase.createClient(savedUrl,savedKey);
-      const{error}=await sb.from('properties').select('id',{count:'exact',head:true});
-      if(error)throw error;
-      isConnected=true;localStorage.removeItem('dn_state_props');await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
-    }catch(e){localStorage.removeItem('dn_sb_url');localStorage.removeItem('dn_sb_key');}
-  } else {
-    // Sin Supabase: si hay datos locales guardados, restaurar automáticamente
-    const hasLocal = loadStateLocal();
-    if(hasLocal){
-      isConnected=true;
-      state.weekData={current:{alertas:4,solicitudes:28,muro:9,acceso:12},previous:{alertas:3,solicitudes:24,muro:7,acceso:10}};
-      goSection('dashboard');
-      showToast('💾 Datos locales restaurados','success');
-    }
+  // Credenciales hardcodeadas
+  const SB_URL='https://dbtlyjaxqoezxbwvkimc.supabase.co';
+  const SB_KEY='sb_publishable_OOOitM2zGuo78KEO_K0Mug_3dkdh6z1';
+  if($('sbUrl'))$('sbUrl').value=SB_URL;
+  if($('sbKey'))$('sbKey').value=SB_KEY;
+  try{
+    if(!window.supabase)await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
+    sb=window.supabase.createClient(SB_URL,SB_KEY);
+    const{error}=await sb.from('properties').select('id',{count:'exact',head:true});
+    if(error)throw error;
+    isConnected=true;
+    await fetchAllData();startRealtime();startAutoRefresh();goSection('dashboard');
+  }catch(e){
+    showToast('Error al conectar: '+e.message,'error');
   }
 });
 
@@ -3646,7 +3642,7 @@ function updateTaskItemProgress(propId, taskId, val) {
   const t = tasks.find(x => x.id === taskId);
   if(!t) return;
   t.progress = val;
-  savePropTasks();
+  updateTaskProgressSB(t.id,t.progress);
   // Update UI inline (no full re-render for smoothness)
   renderTaskList(propId);
   renderTaskDetail(propId);
@@ -3658,7 +3654,7 @@ function deleteTaskItem(btn) {
   const taskId = parseInt(btn.dataset.tid);
   if(!propTasks[propId]) return;
   propTasks[propId] = propTasks[propId].filter(x => x.id !== taskId);
-  savePropTasks();
+  deleteTaskSB(taskId);
   renderTasksSection();
   showToast('Tarea eliminada','success');
 }
@@ -3893,15 +3889,16 @@ function setNavRoadCategory(cat, el) {
   el.className = 'road-cat-btn road-cat-active';
 }
 
-function navAddRoadTask() {
+async function navAddRoadTask() {
   const id = navRoadSelectedPropId;
   if(!id){showToast('Selecciona una propiedad','error');return;}
   const text=($('navRoadNewTaskText')||{}).value?.trim();
   if(!text){showToast('Escribe una descripción','error');return;}
   const weight=parseInt(($('navRoadTaskWeight')||{}).value)||5;
   if(!propTasks[id])propTasks[id]=[];
-  propTasks[id].push({id:Date.now(),category:navRoadCategory,text,weight,progress:0});
-  savePropTasks();
+  const newTask={id:Date.now(),category:navRoadCategory,text,weight,progress:0};
+  if(sb){const saved=await saveTaskToSB(id,newTask);if(saved)newTask.id=saved.id;}
+  propTasks[id].push(newTask);
   if($('navRoadNewTaskText'))$('navRoadNewTaskText').value='';
   navRenderRoadmapTab();
   showToast('✅ Tarea agregada','success');
@@ -4742,20 +4739,21 @@ function toggleAbismoTaskCheck(propId, taskId) {
   const t = tasks.find(x => x.id === taskId);
   if (!t) return;
   t.progress = t.progress === 100 ? 0 : 100;
-  savePropTasks();
+  updateTaskProgressSB(t.id,t.progress);
   renderAbismoTaskBadge(propId);
   showToast(t.progress===100 ? '✅ Tarea completada' : '↩️ Tarea pendiente', t.progress===100?'success':'info');
 }
 
-function addAbismoTask(propId) {
+async function addAbismoTask(propId) {
   const input = document.getElementById('abt-input-' + propId);
   if (!input) return;
   const text = input.value.trim();
   if (!text) return;
   const zone = abismoZoneSelected[propId] || 'Innovadores';
   if (!propTasks[String(propId)]) propTasks[String(propId)] = [];
-  propTasks[String(propId)].push({ id: Date.now(), category: zone, text, weight: 5, progress: 0 });
-  savePropTasks();
+  const newTask={id:Date.now(),category:zone,text,weight:5,progress:0};
+  if(sb){const saved=await saveTaskToSB(String(propId),newTask);if(saved)newTask.id=saved.id;}
+  propTasks[String(propId)].push(newTask);
   input.value = '';
   input.placeholder = 'Tarea para ' + zone + '...';
   renderAbismoTaskBadge(propId);
@@ -4764,7 +4762,7 @@ function addAbismoTask(propId) {
 function toggleAbismoTask(propId, taskId, checked) {
   const tasks = propTasks[String(propId)] || [];
   const t = tasks.find(x => x.id === taskId);
-  if (t) { t.progress = checked ? 100 : 0; savePropTasks(); }
+  if (t) { t.progress = checked ? 100 : 0; updateTaskProgressSB(t.id,t.progress); }
   renderAbismoTaskBadge(propId);
   // refresh combined seal in the card header if visible
   const pct = document.getElementById('abt-seal-' + propId);
@@ -4781,7 +4779,7 @@ function toggleAbismoTask(propId, taskId, checked) {
 function deleteAbismoTask(propId, taskId) {
   if (!propTasks[String(propId)]) return;
   propTasks[String(propId)] = propTasks[String(propId)].filter(x => x.id !== taskId);
-  savePropTasks();
+  deleteTaskSB(taskId);
   renderAbismoTaskBadge(propId);
 }
 
@@ -4792,7 +4790,7 @@ function stepAbismoTaskProgress(propId, taskId, delta) {
   if (!t) return;
 
   t.progress = Math.min(100, Math.max(0, t.progress + delta));
-  savePropTasks();
+  updateTaskProgressSB(t.id,t.progress);
 
   const sid   = String(taskId);
   const spid  = String(propId);
@@ -5006,7 +5004,7 @@ function checkToggleTask(propId, taskId) {
   const t = tasks.find(x => x.id === taskId);
   if(!t) return;
   t.progress = t.progress === 100 ? 0 : 100;
-  savePropTasks();
+  updateTaskProgressSB(t.id,t.progress);
   // Re-render suave
   renderTaskList(propId);
   renderTaskDetail(propId);
@@ -5045,7 +5043,7 @@ function toggleRoadTask(propId, taskId) {
   const t = tasks.find(x => x.id === taskId);
   if(!t) return;
   t.progress = t.progress === 100 ? 0 : 100;
-  savePropTasks();
+  updateTaskProgressSB(t.id,t.progress);
   updateRoadTaskProgress(String(propId), taskId, t.progress);
   // Re-render lista para actualizar tachado y header
   renderRoadTaskList(String(propId));
@@ -5059,7 +5057,7 @@ function stepRoadTask(propId, taskId, delta) {
   const t = tasks.find(x => x.id === taskId);
   if(!t) return;
   t.progress = Math.min(100, Math.max(0, t.progress + delta));
-  savePropTasks();
+  updateTaskProgressSB(t.id,t.progress);
   // Actualizar UI inline sin re-render
   const sid = String(taskId);
   const bc = t.progress===100?'#00b460':t.progress>=50?'#e67e00':'#820ad1';
@@ -5085,7 +5083,7 @@ function stepTaskProgress(propId, taskId, delta) {
   const t = tasks.find(x => x.id === taskId);
   if(!t) return;
   t.progress = Math.min(100, Math.max(0, t.progress + delta));
-  savePropTasks();
+  updateTaskProgressSB(t.id,t.progress);
 
   const sid = String(taskId);
   const bc = t.progress===100?'#00b460':t.progress>=50?'#e67e00':'#820ad1';

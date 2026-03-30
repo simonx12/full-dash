@@ -896,8 +896,7 @@ tr:hover td{background:var(--surface2)}
       <div class="form-group"><label class="form-label">Project URL</label><input class="form-input" id="sbUrl" type="text" placeholder="https://xyzabc.supabase.co"/></div>
       <div class="form-group"><label class="form-label">Anon Public Key</label><input class="form-input" id="sbKey" type="password" placeholder="eyJhbGciOiJIUzI1NiIs..."/></div>
       <div style="display:flex;gap:10px;margin-top:8px">
-        <button class="btn-primary" id="btnConnect" onclick="connectSupabase()" style="flex:1">Conectar →</button>
-        <button class="btn-outline" onclick="useDemoData()">🧪 Demo</button>
+        <button class="btn-primary" id="btnConnect" onclick="connectSupabase()" style="width:100%">Conectar →</button>
       </div>
       <div style="margin-top:18px;padding:14px;border-radius:10px;background:var(--surface2);font-size:clamp(9px,.85vw,11px);color:var(--text-muted);line-height:1.9">
         <strong style="color:var(--text)">Tablas requeridas:</strong><br>
@@ -2020,24 +2019,7 @@ function pctColor(pct){return pct>=80?'#00b460':pct>=50?'#e67e00':'#820ad1';}
 function pctBadgeClass(pct){return pct>=80?'c-green':pct>=50?'c-orange':'c-purple';}
 
 // ══════ DEMO DATA ══════
-function useDemoData(){
-  isConnected=true;
-  // Si hay datos guardados localmente, usarlos en lugar del demo
-  const loaded = loadStateLocal();
-  if(!loaded){
-    state.properties=[
-      {id:'1',name:'Torres del Parque',city:'Bogotá',phase:'fase1',days:45,units:120,modules:['acceso','panico','muro','solicitudes'],module_values:{acceso:80,panico:60,muro:5,solicitudes:25},notes:'Iniciando',entry_date:'2024-11-01'},
-      {id:'2',name:'Conjunto Los Andes',city:'Medellín',phase:'fase2',days:30,units:85,modules:['acceso','panico','muro','solicitudes','zonas','encuestas','votaciones','eventos'],module_values:{acceso:68,panico:50,muro:8,solicitudes:18,zonas:10,encuestas:40,votaciones:30,eventos:2},notes:'Fase 2 activa',entry_date:'2024-10-15'},
-      {id:'3',name:'Residencias Bolívar',city:'Cali',phase:'fase3',days:180,units:200,modules:['acceso','panico','muro','solicitudes','zonas','encuestas','votaciones','eventos','asambleas','normativo','documentos','financiero','superadmin'],module_values:{acceso:160,panico:130,muro:9,solicitudes:40,zonas:35,encuestas:80,votaciones:100,eventos:4,asambleas:120,normativo:100,documentos:120,financiero:100,superadmin:1},notes:'Consolidado',entry_date:'2024-05-01'},
-      {id:'4',name:'Ciudad Verde',city:'Pereira',phase:'fase1',days:15,units:75,modules:['acceso','panico'],module_values:{acceso:20,panico:10},notes:'Inicio',entry_date:'2024-12-15'},
-      {id:'5',name:'Altos del Prado',city:'Bucaramanga',phase:'fase2',days:22,units:95,modules:['acceso','panico','muro','solicitudes','zonas','votaciones'],module_values:{acceso:76,panico:60,muro:7,solicitudes:16,zonas:12,votaciones:30},notes:'Buen avance',entry_date:'2024-12-01'}
-    ];
-    saveStateLocal();
-  }
-  state.weekData={current:{alertas:4,solicitudes:28,muro:9,acceso:12},previous:{alertas:3,solicitudes:24,muro:7,acceso:10}};
-  goSection('dashboard');
-  showToast(loaded ? '💾 Datos guardados restaurados' : '🧪 Modo demo activo','success');
-}
+function useDemoData(){ showToast('Modo demo desactivado. Conecta a Supabase.','error'); }
 
 // ══════ NAVIGATION ══════
 function goSection(id){
